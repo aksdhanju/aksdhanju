@@ -1,0 +1,970 @@
+https://www.youtube.com/watch?v=hW8PrQrvMNc&list=PL_z_8CaSLPWdtY9W22VjnPxG30CXNZpI9
+https://www.youtube.com/watch?v=ywx-Onrdx4U&list=PLUcsbZa0qzu3yNzzAxgvSgRobdUUJvz7p&index=31
+
+Identification
+K given
+Maximum/Minimum given
+
+K + smallest = max heap 
+K + largest = min heap
+
+Heap size is k
+All heap questions are sorting questions. Time complexity changes from O(nlogn) to O(nlogk)
+
+
+
+Insert element in heap is O(logn) operation. Because height of heap is O(logn) as it is complete binary tree.
+
+Delete **root element in heap is O(logn) operation. Because height of heap is O(logn) as it is complete binary tree. There are at most logn swaps in total.
+Note: Always root is deleted.
+
+
+Insertion, Deletion handled by internal implementation of PQ in java. We just need to call these functions.
+Example pq.add(), pq.poll().
+Heap Sort
+
+
+
+
+
+Interview Bit documentation
+Map declaration :
+    TreeMap<Integer, Integer> A = new TreeMap<Integer, Integer>(); // O(1) declaration which declares an empty tree map.
+Insert a new key, value pair K, V:
+    A.put(K, V); // Note that we expect key K to be unique here. If you have keys that will repeat, they will be replaced. 
+             // O(log n)
+Delete a key K:
+    A.remove(K); // O(log n)
+Search if a key K exists in map:
+    A.containsKey(K)  // O(log n)
+Search for the value with key K:
+     A.get(K)     // O(log n)
+Find minimum key K in the map ( if the map is not empty ) :
+    A.firstKey() OR A.firstEntry().getKey()     // O(1)
+Find maximum key K in the map ( if map is not empty ) :
+    A.lastKey() OR A.lastEntry().getKey()     // O(1)
+Iterate over keys in sorted order :
+    for (Map.Entry<Integer, Integer> entry : A.entrySet()) {
+        // entry.getKey() has the key, entry.getValue() has the value
+    } 
+Find closest key K >= x :
+    A.ceilingEntry(x).getKey()     // O(log n). Do need to handle the case when x is more than the max key in the map.
+Find closest key K <= x :
+    A.floorEntry(x).getKey()     // O(log n). Do need to handle the case when x is smaller than min key in the map
+Size ( number of entries in the map ) :
+    A.size() 
+
+
+In Java, by default, it is a min-heap. 
+Min Heap: PriorityQueue<Integer> minHeap = new PriorityQueue<>(); 
+Max Heap: Using comparator to make it a max heap.
+PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> b - a);
+PriorityQueue<Integer>  maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+
+Kth Smallest Element in the Array Easy. InterviewBit problem. Tags: Heap, Array, Sorting.26 May, 2022
+Using Sorting. O(nlogn)
+Using MaxHeap. Time complexity = O(nlogk)
+public class Solution {
+    public int kthsmallest(final List<Integer> ar, int k) {
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        for(int element: ar) {
+            maxHeap.add(element);
+            if (maxHeap.size() > k) {
+                maxHeap.poll();
+            }
+        }
+        return maxHeap.peek();
+    }
+}
+215. Kth Largest Element in an Array Medium LC problem. Tags: Heap, Array, Sorting.27 May, 2022
+Note that it is the kth largest element in the sorted order, not the kth distinct element.
+Using Sorting. O(nlogn)
+Using QuickSelect Method. Variation of partition process of quick sort
+class Solution {
+    int ans;
+    public int findKthLargest(int[] nums, int k) {
+        ans=0;
+        int n = nums.length;
+        if(n<2){
+            return nums[n-1];
+        }
+        quickSort(nums,0, n-1, k);
+        return ans;
+    }
+    void quickSort(int nums[], int low, int high, int k){
+        if(low<=high){
+            int j = partition(nums, low, high);
+            if(j>nums.length-k){
+                quickSort(nums, low, j-1, k);
+            }else if(j<nums.length-k){
+                quickSort(nums, j+1, high, k);
+            }else if(j==nums.length-k){
+                ans = nums[j];
+                return;
+            }
+            
+        }
+    }
+    int partition(int nums[], int low, int high){
+        int pivot = nums[low];
+        int i=low, j= high;
+        while(i<j){
+            while(i<=high && nums[i]<=pivot){
+                i++;
+            }
+            while(j>=low && nums[j]>pivot){
+                j--;
+            }
+            if(i<j){
+                swap(nums, i, j);
+            }
+        }
+        swap(nums,low,j);
+        return j;
+    } 
+    void swap(int[] nums, int start, int end){
+        int temp = nums[start];
+        nums[start]=nums[end];
+        nums[end]=temp;
+    }
+
+}
+
+Using MinHeap. Time complexity = O(nlogk)
+public class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        for(int element: nums) {
+            minHeap.add(element);
+            if (minHeap.size() > k) {
+                minHeap.poll();
+            }
+        }
+        return minHeap.peek();
+    }
+}
+Alternative implementation
+public class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        int n = nums.length;
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        for(int i=0;i<k;i++){
+            minHeap.add(nums[i]);
+        }
+        for(int i=k;i<n;i++){
+            if(nums[i]>minHeap.peek()){
+                minHeap.poll();
+                minHeap.add(nums[i]);
+            }
+        }
+        return minHeap.peek();
+    }
+}
+
+Return K largest Elements in array InterviewBit problem. Tags: Heap, Array, Sorting.27 May, 2022
+Using Sorting. O(nlogn)
+Using Min Heap.
+Only difference from above question. Return all elements left in MinHeap at the end and not just peek element.
+public class Solution {
+    public ArrayList<Integer> solve(ArrayList<Integer> nums, int k) {
+        PriorityQueue<Integer>minHeap = new PriorityQueue<>();
+        for(int element: nums){
+            minHeap.add(element);
+            if(minHeap.size()>k){
+                minHeap.poll();
+            }
+        }
+        ArrayList<Integer> result = new ArrayList<>();
+        while(minHeap.isEmpty()==false){
+            result.add(minHeap.poll());
+        }
+        return result;
+    }
+}
+
+
+4 Sort a K Sorted Array | Sort Nearly Sorted Array.Aditya verma Video Question/GFG Problem. Tags: Heap, sorting. 27 May, 2022
+Given an array of n elements, where each element is at most k away from its target position, devise an algorithm that sorts in O(n log k) time.
+Input : arr[] = {6, 5, 3, 2, 8, 10, 9}
+            k = 3 
+Output : arr[] = {2, 3, 5, 6, 8, 9, 10}
+Input : arr[] = {10, 9, 8, 7, 4, 70, 60, 50}
+         k = 4
+Output : arr[] = {4, 7, 8, 9, 10, 50, 60, 70}
+
+Using Sorting
+Using Min Heap.
+Time complexity =O(nlogk)
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class GFG {
+	public static void main (String[] args) {
+		Scanner sc= new Scanner(System.in);
+        int t = sc.nextInt();
+        while(t>0){
+            int n = sc.nextInt();
+            int k = sc.nextInt();
+            int nums[] = new int[n];
+            for(int j =0;j<n;j++){
+                nums[j]=sc.nextInt();
+            }
+            PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+            for(int num: nums){
+                minHeap.add(num);
+                if(minHeap.size()>k){
+                    System.out.print(minHeap.peek() + " ");
+                    minHeap.poll();
+                }
+            }
+            while(minHeap.isEmpty()==false){
+                System.out.print(minHeap.peek() + " ");
+                minHeap.poll();
+            }
+            System.out.println();
+            t--;
+	    }
+	}
+}
+GFG Implementation. Time complexity = O(k) + O((n-k)logk). Updated the elements in original array only. It is inplace sorting.
+First adding k/k+1 elements is picture wala tareeka.
+private static void kSort(int[] arr, int n, int k)
+    {
+ 
+        // min heap
+        PriorityQueue<Integer> priorityQueue
+            = new PriorityQueue<>();
+ 
+        // add first k + 1 items to the min heap
+        for (int i = 0; i < k + 1; i++) {
+            priorityQueue.add(arr[i]);
+        }
+ 
+        int index = 0;
+        for (int i = k + 1; i < n; i++) {
+            arr[index++] = priorityQueue.peek();
+            priorityQueue.poll();
+            priorityQueue.add(arr[i]);
+        }
+ 
+        Iterator<Integer> itr = priorityQueue.iterator();
+ 
+        while (itr.hasNext()) {
+            arr[index++] = priorityQueue.peek();
+            priorityQueue.poll();
+        }
+    }
+
+658. Find K Closest Elements Medium LC Problem.Tags: Heap, sorting. 27 May, 2022
+Using Max Heap. Time complexity O(nlogk + klogk)
+Priority Queue comparator concept checked. Important
+class Pair{
+    int key;  //key contains absolute difference between value and x
+    int value;
+    public Pair(int key, int value){
+        this.key = key;
+        this.value = value;
+    }
+}
+class Solution {
+    public List<Integer> findClosestElements(int[] nums, int k, int x) {
+        PriorityQueue<Pair> maxHeap = new PriorityQueue<>(new PairComparator());
+        for(int num: nums){
+            maxHeap.add(new Pair(Math.abs(num-x),num));
+            if(maxHeap.size()>k){
+                maxHeap.poll();
+            }
+        }
+        List<Integer>result = new LinkedList<>();
+        // while(maxHeap.isEmpty()==false){
+        //     result.add(maxHeap.poll().value);
+        // }
+        Iterator<Pair> itr = maxHeap.iterator();
+        while(itr.hasNext()){
+            result.add(maxHeap.poll().value);
+        }
+        Collections.sort(result);   //O(klogk) step
+        return result;
+    }
+}
+class PairComparator implements Comparator<Pair>{
+            public int compare(Pair a, Pair b) {
+                if((b.key - a.key) == 0)
+                    return b.value - a.value;
+                return b.key - a.key;
+                // if (b.key == a.key){
+                //     if(b.value>a.value){
+                //         return 1;
+                //     }else if(b.value < a.value){
+                //         return -1;
+                //     }else{
+                //         return 0;
+                //     }
+                // }else if (b.key > a.key){
+                //     return 1;
+                // }
+                // return -1;
+        }
+}
+
+347. Top K Frequent Elements Medium LC Problem.Tags: Heap, sorting. 27 May, 2022
+Example 1:
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+Example 2:
+Input: nums = [1], k = 1
+Output: [1]
+
+Using Min Heap.
+See how to use comparator with Min Heap
+class Pair{
+    int key;  //key contains frequency of value
+    int value;
+    public Pair(int key, int value){
+        this.key = key;
+        this.value = value;
+    }
+}
+class Solution {
+    public int[]  topKFrequent(int[] nums, int k) {
+        HashMap<Integer, Integer>map = new HashMap<>();
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num,0)+1);
+        }
+        //Important: Map key contains value of Pair, Map value contains key of pair
+        PriorityQueue<Pair> minHeap = new PriorityQueue<>(new PairComparator());
+        for(Map.Entry<Integer, Integer> element: map.entrySet()){
+            minHeap.add(new Pair(element.getValue(), element.getKey()));
+            if(minHeap.size()>k){
+                minHeap.poll();
+            }
+        }
+        int[]result = new int[k];
+        int index=0;
+        Iterator<Pair> itr = minHeap.iterator();
+        while(itr.hasNext()){
+            result[index++] = (minHeap.poll().value);
+        }
+        // Collections.sort(result);   //O(klogk) step   //not asked in question to sort
+        return result;
+    }
+}
+class PairComparator implements Comparator<Pair>{
+            public int compare(Pair a, Pair b) {
+                return a.key - b.key;
+        }
+}
+Using Map as element of Min Heap
+public List<Integer> topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int n: nums){
+            map.put(n, map.getOrDefault(n,0)+1);
+        }
+
+
+        PriorityQueue<Map.Entry<Integer, Integer>> minHeap =
+            new PriorityQueue<>((a, b) -> Integer.compare(a.getValue(), b.getValue()));
+        for(Map.Entry<Integer,Integer> entry: map.entrySet()){
+            minHeap.add(entry);
+            if (minHeap.size() > k) minHeap.poll(); 
+        }
+
+
+        List<Integer> res = new ArrayList<>();
+        while(res.size()<k){
+            Map.Entry<Integer, Integer> entry = minHeap.poll();
+            res.add(entry.getKey());
+        }
+        return res;
+    }
+Using Min Heap. Alternative implementation of above solution. Note Priority Queue has each element as Map.Entry object and not Map object. 
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int n: nums){
+            map.put(n, map.getOrDefault(n,0)+1);
+        }
+
+        PriorityQueue<Map.Entry<Integer, Integer>> minHeap =
+            new PriorityQueue<>(new EntryComparator());
+        for(Map.Entry<Integer,Integer> entry: map.entrySet()){
+            minHeap.add(entry);
+            if (minHeap.size() > k) minHeap.poll(); 
+        }
+
+        int[]result = new int[k];
+        int index=0;
+        while(minHeap.isEmpty()==false){
+            Map.Entry<Integer, Integer> entry = minHeap.poll();
+            result[index++] = entry.getKey();
+        }
+        return result;
+    }
+}
+class EntryComparator implements Comparator<Map.Entry<Integer,Integer>>{
+            public int compare(Map.Entry<Integer,Integer> a, Map.Entry<Integer,Integer> b) {
+                return a.getValue() - b.getValue();
+        }
+}
+Using Max Heap. Again create MaxHeap of Map.Entry<Integer,Integer>. Top most elements in maxheap would be of highest frequency. Just pop them.
+// use maxHeap. Put entry into maxHeap so we can always poll a number with largest frequency
+public class Solution {
+    public List<Integer> topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int n: nums){
+            map.put(n, map.getOrDefault(n,0)+1);
+        }
+           
+        PriorityQueue<Map.Entry<Integer, Integer>> maxHeap = 
+                         new PriorityQueue<>((a,b)->(b.getValue()-a.getValue()));
+        for(Map.Entry<Integer,Integer> entry: map.entrySet()){
+            maxHeap.add(entry);
+        }
+        
+        List<Integer> res = new ArrayList<>();
+        while(res.size()<k){
+            Map.Entry<Integer, Integer> entry = maxHeap.poll();
+            res.add(entry.getKey());
+        }
+        return res;
+    }
+}
+Using TreeMap
+Using BucketSort. O(n) Solution. See NeetCode video on the same
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        int n = nums.length;
+        ArrayList<Integer>[]ar = new ArrayList[n+1];
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num,0)+1);
+        }
+        for(Map.Entry<Integer,Integer> entry: map.entrySet()){
+            if(ar[entry.getValue()] == null){
+                ar[entry.getValue()] = new ArrayList<>();
+            }
+            ar[entry.getValue()].add(entry.getKey());
+        }
+        // List<Integer>result = new ArrayList<>();
+        // for(int i=n;i>0 && result.size()<k;i--){
+        //     if(ar[i]!=null){
+        //         result.addAll(ar[i]);
+        //     }
+        // }
+        // return result.stream().mapToInt(i -> i).toArray();
+        int[] result = new int[k];
+        int index =0;
+        for(int i=n;i>0;i--){
+            if(ar[i]!=null){
+                for(int j=0;j<ar[i].size();j++){
+                    result[index]=ar[i].get(j);
+                    index++;
+                    if(index==k){
+                        return result;
+                    }
+                }
+               
+            }
+        }
+        return result;
+        
+    }
+}
+Bucket Sort Top voted LC Solution
+public List<Integer> topKFrequent(int[] nums, int k) {
+
+
+	List<Integer>[] bucket = new List[nums.length + 1];
+	Map<Integer, Integer> frequencyMap = new HashMap<Integer, Integer>();
+
+
+	for (int n : nums) {
+		frequencyMap.put(n, frequencyMap.getOrDefault(n, 0) + 1);
+	}
+
+
+	for (int key : frequencyMap.keySet()) {
+		int frequency = frequencyMap.get(key);
+		if (bucket[frequency] == null) {
+			bucket[frequency] = new ArrayList<>();
+		}
+		bucket[frequency].add(key);
+	}
+
+
+	List<Integer> res = new ArrayList<>();
+
+
+	for (int pos = bucket.length - 1; pos >= 0 && res.size() < k; pos--) {
+		if (bucket[pos] != null) {
+			res.addAll(bucket[pos]);
+		}
+	}
+	return res;
+}
+
+451. Sort Characters By Frequency Medium LC Problem.Tags: Heap, sorting. 27 May, 2022
+Multiple approaches discussed in this wonderful article
+https://leetcode.com/problems/sort-characters-by-frequency/discuss/365179/Blueprint-to-100-or-Optimisation-or-38-ms-to-2ms-or-5-Solution-or-optimisation-step-by-step
+https://leetcode.com/problems/sort-characters-by-frequency/discuss/93420/Java-O(n)-Bucket-Sort-Solution-O(nlogm)-PriorityQueue-Solution-easy-to-understand
+
+Jab bhi frequency ki baat aaye, map banao
+Using MaxHeap
+class Solution {
+    public String frequencySort(String s) {
+        int n = s.length();
+        //frequency map
+        Map<Character, Integer>map = new HashMap<>();
+        for(char c: s.toCharArray()){
+            map.put(c, map.getOrDefault(c,0)+1);
+        }
+        PriorityQueue<Map.Entry<Character, Integer>>maxHeap = new PriorityQueue<>(new EntryComparator());
+        for(Map.Entry<Character, Integer> entry: map.entrySet()){
+            maxHeap.add(entry);
+        }
+// pq.addAll(map.entrySet());
+StringBuilder sb = new StringBuilder();
+Iterator<Map.Entry<Character, Integer>> itr = maxHeap.iterator();        
+        while(itr.hasNext()){
+            int t = maxHeap.peek().getValue();
+            while(t>0){
+                sb.append(maxHeap.peek().getKey());
+                t--;
+            }
+            maxHeap.poll();
+        }
+        return sb.toString();
+    }
+}
+class EntryComparator implements Comparator<Map.Entry<Character, Integer>>{
+            public int compare(Map.Entry<Character, Integer> a, Map.Entry<Character, Integer> b) {
+                return b.getValue() - a.getValue();
+        }
+}
+Using BucketSort
+Here buckets array has index= count/freq of characters and value equal to List<Character> having that frequency.
+class Solution {
+    public String frequencySort(String s) {
+        int n = s.length();
+        //frequency map
+        Map<Character, Integer>map = new HashMap<>();
+        for(char c: s.toCharArray()){
+            map.put(c, map.getOrDefault(c,0)+1);
+        }
+        List<Character>[]buckets  = new List[n+1];
+        for(Map.Entry<Character, Integer> entry: map.entrySet()){
+            if(buckets[entry.getValue()]==null){
+                buckets[entry.getValue()] = new ArrayList<>();
+            }
+            buckets[entry.getValue()].add(entry.getKey());
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for(int i=n;i>=1;i--){
+            if(buckets[i]!=null){
+                for(char c: buckets[i]){
+                    int freq=i;
+                    while(freq>0){
+                        sb.append(c);
+                        freq--;
+                    }
+                }
+            }
+        }
+        return sb.toString();
+    }
+}
+973. K Closest Points to Origin Medium
+Using Custom comprator
+class Solution {
+    public int[][] kClosest(int[][] points, int k) {
+        Arrays.sort(points, new DistanceComparator());
+        return Arrays.copyOf(points, k);
+    }
+}
+class DistanceComparator implements Comparator<int[]>{
+    public int compare(int[] point1, int[] point2) {
+                return getDistance(point1) - getDistance(point2);
+        }
+    int getDistance(int[] point){
+        return point[0]*point[0]+point[1]*point[1];
+    }
+
+}
+Using Max Heap
+class Solution {
+    public int[][] kClosest(int[][] points, int k) {
+        int m = points.length;
+        PriorityQueue<Pair>maxHeap = new PriorityQueue<>(new PairComparator());        
+        for(int i=0;i<m;i++){
+            int distance = points[i][0]*points[i][0] + points[i][1]*points[i][1];
+            maxHeap.add(new Pair(distance, i));
+            if(maxHeap.size()>k){
+                maxHeap.poll();
+            }
+        }
+        int[][]result = new int[k][2];
+        int x=0;
+        while(maxHeap.isEmpty()==false){
+            Pair pair = maxHeap.poll();
+            result[x][0] = points[pair.index][0];
+            result[x][1] = points[pair.index][1];
+//result[x] = points[pair.index];   //replacement for above 2 lines.
+            x++;
+        }
+        return result;
+    }
+}
+class PairComparator implements Comparator<Pair>{
+    public int compare(Pair a, Pair b) {
+                return b.distance - a.distance;
+        }
+
+}
+class Pair{
+    int distance;
+    int index;
+    public Pair(int distance, int index){
+        this.distance = distance;
+        this.index = index;
+    }
+}
+Using Quick Select method(Variation of partition process of Quick Sort)
+9 Connect Ropes to Minimise the Cost.Aditya Verma Problem/GFG Problem. Tags: Heap. 28 May,2022
+One comment: It is similar to Huffman coding problem and Optimal Merge Pattern Problem"
+Using Min Heap
+class Solution
+{
+    long minCost(long nums[], int n) {
+        PriorityQueue<Long> minHeap = new PriorityQueue<>();
+        for(long num: nums){
+            minHeap.add(num);
+        }
+        long cost =0;
+        while(minHeap.size()>1){
+            long num1 = minHeap.poll();
+            long num2 = minHeap.poll();
+            cost+=(num1+num2);
+            minHeap.add(num1+num2);
+        }
+        return cost;
+    }
+}
+1636. Sort Array by Increasing Frequency Easy
+767. Reorganize String Medium LeetCode Problem. Tags:Heap, Strings, HashMap, Greedy, Stack. 6 June, 2022
+Example 1:
+Input: s = "aab"
+Output: "aba"
+Example 2:
+Input: s = "aaab"
+Output: ""
+Input: aaabbcc
+Output: abacacb/……others also
+Using MaxHeap
+Very different, nuanced approach.
+class Solution {
+    public String reorganizeString(String s) {
+        int n = s.length();
+        Map<Character, Integer> map = new HashMap<>();
+        for(int i=0;i<n;i++){
+            map.put(s.charAt(i), map.getOrDefault(s.charAt(i),0)+1);
+        }
+        PriorityQueue<Map.Entry<Character, Integer>>maxHeap = new PriorityQueue<>(new EntryComparator());
+        for(Map.Entry<Character, Integer> entry: map.entrySet()){
+            maxHeap.offer(entry);
+        }
+        Map.Entry<Character, Integer> prev = null;
+        StringBuilder sb = new StringBuilder();
+        while(!maxHeap.isEmpty() || prev!=null){
+            if(maxHeap.isEmpty() && prev.getValue()>0){
+                return "";
+            }
+            Map.Entry<Character, Integer> obj = maxHeap.poll();
+            sb.append(obj.getKey());
+            obj.setValue(obj.getValue()-1);
+            
+            if(prev!=null){
+                maxHeap.offer(prev);
+                prev = null;
+            }
+            if(obj.getValue()!=0){
+                prev = obj;
+            }
+        }
+        return sb.toString();
+    }
+    
+}
+class EntryComparator implements Comparator<Map.Entry<Character, Integer>>{
+    public int compare(Map.Entry<Character, Integer> a, Map.Entry<Character, Integer> b){
+        return b.getValue()-a.getValue();
+    }
+}
+https://leetcode.com/problems/task-scheduler/
+
+295. Find Median from Data Stream Hard LeetCode Problem. Tags:Heap, Design, Data Stream. 7 June, 2022
+Finding max in MaxHeap is O(1). Finding min in MinHeap is O(1). Deleting and Inserting element in minheap/maxheap is O(logn).
+All elements in small Heap would be less than or equal to all elements in large Heap. 
+Difference between sizes of small Heap and Large Heap would be at max 1.
+Small Heap would be Max Heap and Large Heap would be Minheap.
+Other Approach:
+Could have formed sorted array. Whenever num comes, insert it at correct position in array. Can be done in O(n).
+Whereas in case of Heaps, it can be done in O(logn).
+
+Using Max Heap and Min Heap
+class MedianFinder {
+    PriorityQueue<Integer> minHeap;
+    PriorityQueue<Integer> maxHeap;
+    public MedianFinder() {
+        minHeap = new PriorityQueue<>();
+        maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+    }
+    
+    public void addNum(int num) {
+        if(maxHeap.isEmpty()){
+            maxHeap.offer(num);
+            return;
+        }
+        if(maxHeap.size()>minHeap.size()){
+            if(num<maxHeap.peek()){
+                minHeap.offer(maxHeap.poll());
+                maxHeap.offer(num);
+            }else{
+                minHeap.offer(num);
+            }
+        }else if(maxHeap.size()<minHeap.size()){
+            if(num<=minHeap.peek()){
+                maxHeap.offer(num);
+            }else{
+                maxHeap.offer(minHeap.poll());
+                minHeap.offer(num);
+            }
+        }else{
+            if(num<minHeap.peek()){
+                maxHeap.offer(num);
+            }else{
+                minHeap.offer(num);
+            }
+        }
+    }
+    
+    public double findMedian() {
+        if(maxHeap.size()>minHeap.size()){
+            return maxHeap.peek();
+        }
+        if(minHeap.size()>maxHeap.size()){
+            return minHeap.peek();
+        }
+        return (minHeap.peek() + maxHeap.peek())/2.0;
+    }
+}
+LC Top voted solution
+class MedianFinder {
+	PriorityQueue<Integer> maxHeap, minHeap;
+	
+    public MedianFinder() {
+        maxHeap = new PriorityQueue(Collections.reverseOrder()); 
+        minHeap = new PriorityQueue<>();                
+    }
+    
+    public void addNum(int num) {
+        // smaller number is added to maxHeap 
+		if(maxHeap.isEmpty() || maxHeap.peek() >= num){ 
+            maxHeap.add(num); 
+        }else{
+            minHeap.add(num);
+        } 
+		// maxHeap size must be 2 more than minHeap (for odd size array)
+		if(maxHeap.size() > minHeap.size() + 1){
+            minHeap.add(maxHeap.poll());
+        }else if(maxHeap.size() < minHeap.size()){
+            maxHeap.add(minHeap.poll());
+        }
+    }
+    
+    public double findMedian() {
+        if(maxHeap.size()  == minHeap.size()){
+            // even size array
+            return (maxHeap.peek() + minHeap.peek()) / 2.0;
+        }else{
+            // odd size array
+            return maxHeap.peek();  
+        } 
+    }
+}
+Using MinHeap and Stack. Gives TLE
+class MedianFinder {
+    PriorityQueue<Integer> minHeap;
+    Stack<Integer>stack;
+    public MedianFinder() {
+        minHeap = new PriorityQueue<>();
+        stack = new Stack<>();
+    }
+    
+    public void addNum(int num) {
+        minHeap.offer(num);
+    }
+    
+    public double findMedian() {
+        int n = minHeap.size();
+        int count = (n-1)/2;
+        while(count>0){
+            stack.push(minHeap.poll());
+            count--;
+        }
+        int first = minHeap.poll();
+        stack.push(first);
+        int second =0;
+        if(!minHeap.isEmpty()){
+            second = minHeap.peek();
+        }
+        while(!stack.isEmpty()){
+                minHeap.offer(stack.pop());
+            }
+        return (n%2==1)?first:(first+second)/2.0;
+    }
+}
+23. Merge k Sorted Lists Hard. LC Problem. Tags: Sorting, LL. 7 June, 2022
+If we take sequentially the lists and then merge them, then time complexity would be O(n*k). Convert merge k lists problem to merge 2 lists (k-1) times. 
+(Divide and Conquer strategy)Using Merge 2 sorted lists concept. Time Complexity=O(nlogk). Where k is number of linked lists. And n is at worst length of each list.
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists.length==0){
+            return null;
+        }
+        return solve(lists, 0, lists.length-1);
+    }
+    ListNode solve(ListNode[] lists, int low, int high){
+        if(low<high){
+            int mid = low+(high-low)/2;
+            ListNode list1 = solve(lists,low, mid);
+            ListNode list2 = solve(lists,mid+1,high);
+            return mergeTwoLists(list1,list2);
+        }
+        return lists[low];
+    }
+
+    ListNode mergeTwoLists(ListNode list1, ListNode list2){
+        ListNode dummy = new ListNode();
+        ListNode curr = dummy;
+        while(list1!=null && list2!=null){
+            if(list1.val<list2.val){
+                curr.next = list1;
+                list1=list1.next;
+                curr=curr.next;
+            }else{
+                curr.next = list2;
+                list2=list2.next;
+                curr=curr.next;
+            }
+        }
+        curr.next = (list1!=null)?list1:list2;
+        return dummy.next;
+    }
+}
+Using MinHeap
+Time Complexity = O(nk). Put everything in MinHeap. Then take it out, create Nodes, establish link to next nodes, and return head of resultant list
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists){
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        for(int i = 0; i < lists.length;i++){
+            ListNode curr = lists[i];
+            while(curr!=null){
+                minHeap.offer(curr.val);
+                curr = curr.next;
+            }
+        }
+    
+        ListNode dummy = new ListNode();
+        ListNode temp = dummy;
+
+        while(!minHeap.isEmpty()){
+            ListNode node = new ListNode();
+            node.val = minHeap.poll();
+            temp.next = node;
+            temp = temp.next;
+        }
+        return dummy.next;
+    }
+}
+355. Design Twitter Medium LeetCode Problem. Tags:Design. 7 June, 2022
+Using HashMap, MinHeap, HashSet
+class Pair{
+    int time;
+    int tweetId;
+    public Pair(int time, int tweetId){
+        this.time = time;
+        this.tweetId = tweetId;
+    }
+}
+class PairComparator implements Comparator<Pair>{
+    public int compare(Pair a, Pair b){
+        return a.time - b.time;
+    }
+}
+class Twitter {
+    HashMap<Integer, HashSet<Integer>> followersMap;
+    HashMap<Integer, List<Pair>>tweetMap;
+    int time;
+    public Twitter() {
+        time =0;
+        followersMap = new HashMap<>();
+        tweetMap = new HashMap<>();
+    }
+    
+    public void postTweet(int userId, int tweetId) {
+        Pair pair = new Pair(time, tweetId);
+        time++;
+        if(tweetMap.get(userId)==null){
+            tweetMap.put(userId, new ArrayList<Pair>());
+        }
+        tweetMap.get(userId).add(pair);
+    }
+    
+    public List<Integer> getNewsFeed(int userId) {
+        
+        PriorityQueue<Pair>minHeap = new PriorityQueue<>(new PairComparator());
+        
+        List<Pair> userTweetList = tweetMap.getOrDefault(userId, new ArrayList<>());
+         for(Pair pair: userTweetList){
+            minHeap.offer(pair);
+            if(minHeap.size()>10){
+                minHeap.poll();
+            }
+        }
+       
+        HashSet<Integer> set = followersMap.getOrDefault(userId, new HashSet<>());
+        for(int num: set){
+            List<Pair> followerTweetList = tweetMap.getOrDefault(num, new ArrayList<>());
+            for(Pair pair: followerTweetList){
+                minHeap.offer(pair);
+                if(minHeap.size()>10){
+                    minHeap.poll();
+                }
+            }
+        } 
+        
+        List<Integer> newsFeed = new ArrayList<>();
+        while(!minHeap.isEmpty()){
+            newsFeed.add(0,minHeap.poll().tweetId);
+        }
+        return newsFeed;
+    }
+    
+    public void follow(int followerId, int followeeId) {
+        if(followersMap.get(followerId)==null){
+            followersMap.put(followerId, new HashSet<>());
+        }
+        followersMap.get(followerId).add(followeeId);
+    }
+    
+    public void unfollow(int followerId, int followeeId) {
+        if(followersMap.get(followerId)!=null){
+            followersMap.get(followerId).remove(followeeId);
+        }
+        
+    }
+}
+
