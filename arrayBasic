@@ -1,0 +1,1583 @@
+Array Questions
+
+
+
+Find minimum and maximum element in an array Basic. GFG Question. 11 July, 2022
+class Compute 
+{
+    static pair getMinMax(long nums[], long n)  {
+        long max = Long.MIN_VALUE;
+        long min = Long.MAX_VALUE;
+        for(int i=0;i<n;i++){
+            if(nums[i]<min){
+                min = nums[i];
+            }
+            if(nums[i]>max){
+                max = nums[i];
+            }
+        }
+        return new pair(min, max);
+    }
+}
+Find Second largest element in an array GFG Question. 11 July, 2022
+Example:
+Input: arr[] = {12, 35, 1, 10, 34, 1}
+Output: The second largest element is 34.
+Explanation: The largest element of the 
+array is 35 and the second 
+largest element is 34
+
+Input: arr[] = {10, 5, 10}
+Output: The second largest element is 5.
+Explanation: The largest element of 
+the array is 10 and the second 
+largest element is 5
+
+Input: arr[] = {10, 10, 10}
+Output: The second largest does not exist.
+Explanation: Largest element of the array 
+is 10 there is no second largest element
+Using Sorting 
+Just sort in O(nlogn). Find second last element.
+Using Two passes
+In first pass find max element. In second pass find element just smaller than max. Time=O(n). Space=O(1).
+Using One Pass
+Time=O(n). Space=O(1).
+ public static void print2largest(int arr[],
+                                     int arr_size)
+    {
+        int i, first, second;
+  
+        /* There should be atleast two elements */
+        if (arr_size < 2) {
+            System.out.print(" Invalid Input ");
+            return;
+        }
+  
+        first = second = Integer.MIN_VALUE;
+        for (i = 0; i < arr_size; i++) {
+            /* If current element is greater than 
+            first then update both first and second */
+            if (arr[i] > first) {
+                second = first;
+                first = arr[i];
+            }
+  
+            /* If arr[i] is in between first and 
+               second then update second  */
+            else if (arr[i] > second && arr[i] != first)
+                second = arr[i];
+        }
+  
+        if (second == Integer.MIN_VALUE)
+            System.out.print("There is no second largest"
+                             + " element\n");
+        else
+            System.out.print("The second largest element"
+                             + " is " + second);
+    }
+
+217. Contains Duplicate Easy
+Using HashSet to store unique elements. O(n) extra space. O(n) time complexity.
+public boolean containsDuplicate(int[] nums) {
+        HashSet<Integer> set = new HashSet<>();
+        for(int element : nums){
+            if(set.contains(element)){
+                return true;
+            }
+            set.add(element);
+        }
+        return false;
+    }
+Using HashMap(same as above, just different implementation)
+public boolean containsDuplicate(int[] nums) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for(int element : nums){
+            if(map.containsKey(element)){
+                return true;
+            }
+            map.put(element, 1);
+            //a dummy value has been put in value of hashmap. Our focus here is on key
+        }
+        return false;
+    }
+Sorting the array and traversing to check for duplicates. No extra space.
+import java.util.Arrays;
+import java.util.Collections;
+public boolean containsDuplicate(int[] nums) {
+        Arrays.sort(nums);
+        int i = 0, j = 1;
+        while(j<nums.length){
+            if(nums[i]==nums[j]){
+                return true;
+            }
+            i++;  
+j++;
+        }
+        return false;
+    }
+
+
+
+189. Rotate Array Medium
+Brute force solution. Use array of size k for storing elements.
+public void rotate(int[] nums, int k) {
+        if(k==0)return;
+        int size = nums.length;
+        k = k%size;
+        int[] ar = new int[k];
+        //copying contents of k sized window in separate array
+        for(int index = size-k;index<size;index++){
+            ar[index-(size-k)]=nums[index];
+        }
+        
+        // moving first size-k elements to the end
+        for(int index = size-k-1;index>=0;index--){
+            nums[index+k]= nums[index];
+        }
+        
+        //copying elements from ar array to original nums array in first k indices
+        for(int index = 0;index<k;index++){
+            nums[index] = ar[index];
+        }
+        
+    }
+Using Recursion. My own implementation. It appears similar to Block swap algorithm.
+public void rotate(int[] nums, int k) {
+        int size = nums.length;
+        rotateByK(nums, 0,size -1, k);
+    }
+    void rotateByK(int[] nums, int start, int end, int k){
+        int sizeNewArray = end - start + 1;
+        k = k%sizeNewArray;
+        if(k == 0){
+            return;
+        }
+        int windowStart = start + sizeNewArray - k;
+        swap(nums, start, windowStart, k);
+        rotateByK(nums, start + k, end, k);
+    }
+    void swap(int[] nums, int start, int windowStart, int k){
+        for(int index = 0;index<k;index++){
+            int temp = nums[index + start];
+            nums[index + start] = nums[index + windowStart];
+            nums[index + windowStart] = temp;
+        }
+    }
+Reversal algorithm for array rotation. Time complexity = O(n). Space complexity = O(1).
+public void rotate(int[] nums, int k) {
+        if(k==0){
+            return;
+        }
+        int size = nums.length;
+        k = k%size;
+        
+        reverse(nums,0,size-k-1);
+        reverse(nums, size -k,size-1);
+        reverse(nums, 0,size-1);
+    }
+    void reverse(int[] nums, int start, int end){
+        while(start<end){
+            swap(nums, start, end);
+            start++;
+            end--;
+        }
+    }
+    void swap(int[] nums, int start, int end){
+        int temp = nums[start];
+        nums[start] = nums[end];
+        nums[end] = temp;
+    }
+349. Intersection of Two Arrays Easy. LeetCode problem. Tags: HashSet, 
+Using HashSet
+public int[] intersection(int[] nums1, int[] nums2) {
+        HashSet<Integer> set = new HashSet<>();
+        int m= nums1.length;
+        for(int i=0;i<m;i++){
+            if(!set.contains(nums1[i])){
+                set.add(nums1[i]);
+            }
+        }
+        int n = nums2.length;
+        List<Integer> result = new ArrayList<>();
+        for(int j=0;j<n;j++){
+            if(set.contains(nums2[j])){
+                set.remove(nums2[j]);
+                result.add(nums2[j]);
+            }
+        }
+        // int [] intArray = result.stream().mapToInt(Integer::intValue).toArray();
+        //can use this also -> list.stream().mapToInt(i->i).toArray();
+        Object[] objectArray = result.toArray();
+        int length = objectArray.length;
+        int[] intArray = new int[length];
+        for(int i =0; i < length; i++){
+            intArray[i] = (int)objectArray[i];
+        }
+        return intArray;
+    }
+
+350. Intersection of Two Arrays II Easy. LC Problem. Tags: Arrays, HashTable, 2 pointers, Binary Search, Sorting. 12 July, 2022
+Using Map
+class Solution {
+    public int[] intersect(int[] nums1, int[] nums2) {
+        List<Integer> list = new ArrayList<>();
+        Integer[] map = new Integer[1001];
+        for(int num: nums1){
+            if(map[num]==null){
+                map[num]=new Integer(0);
+            }
+            map[num]++;
+        }
+        for(int num: nums2){
+            if(map[num]==null){
+                continue;
+            }
+            if(map[num]==0){
+                continue;
+            }
+            list.add(num);
+            map[num]--;
+        }
+        int[] res = new int[list.size()];
+        for(int i=0;i<list.size();i++){
+            res[i]=list.get(i);
+        }
+        return res;
+    }
+}
+This solution is O(N + M) time complexity, O(N) for iterate one of the array to create a hashmap and O(M) to iterate the other array. O(N) space to store such hashmap.
+Follow Up:
+What if the given array is already sorted? How would you optimize your algorithm?
+Classic two pointer iteration, i points to nums1 and j points to nums2. Because a sorted array is in ascending order, so if nums1[i] > nums[j], we need to increment j, and vice versa. Only when nums1[i] == nums[j], we add it to the result array. Time Complexity O(max(N, M)). Worst case, for example, would be nums1 = {100}, and nums2 = {1, 2, ..., 100 }. We will always iterate the longest array. The example code is below(I sorted it so it could go through OJ):
+public int[] intersect(int[] nums1, int[] nums2) {
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int n = nums1.length, m = nums2.length;
+        int i = 0, j = 0;
+        List<Integer> list = new ArrayList<>();
+        while(i < n && j < m){
+            int a = nums1[i], b= nums2[j];
+            if(a == b){
+                list.add(a);
+                i++;
+                j++;
+            }else if(a < b){
+                i++;
+            }else{
+                j++;
+            }
+        }
+        int[] ret = new int[list.size()];
+        for(int k = 0; k < list.size();k++) ret[k] = list.get(k);
+        return ret;
+    }
+What if nums1's size is small compared to nums2's size? Which algorithm is better?
+This one is a bit tricky. Let's say nums1 is K size. Then we should do binary search for every element in nums1. Each lookup is O(log N), and if we do K times, we have O(K log N).
+If K this is small enough, O(K log N) < O(max(N, M)). Otherwise, we have to use the previous two pointers method.
+let's say A = [1, 2, 2, 2, 2, 2, 2, 2, 1], B = [2, 2]. For each element in B, we start a binary search in A. To deal with duplicate entry, once you find an entry, all the duplicate element is around that that index, so you can do linear search scan afterward.
+Time complexity, O(K(logN) + N). Plus N is worst case scenario which you have to linear scan every element in A. But on average, that shouldn't be the case. so I'd say the Time complexity is O(K(logN) + c), c (constant) is number of linear scan you did.
+What if elements of nums2 are stored on disk, and the memory is limited such that you cannot load all elements into the memory at once?
+This one is open-ended. But Map-Reduce I believe is a good answer.
+
+121. Best Time to Buy and Sell Stock Easy LC Problem. Tags: 2 pointers, arrays, dp. 18 June, 2022. (Only one time we can buy and sell)
+
+Using 2 pointers
+Pointers at start and start+1
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int i=0,j=1;
+        int max = 0;
+        while(j<n){
+            if(prices[j]<=prices[i]){
+                i=j;
+                j++;
+            }else{
+                max = Math.max(max, prices[j]-prices[i]);
+                j++;
+            }
+        }
+        return max;
+    }
+}
+Using Kadane’s algorithm type logic
+class Solution {
+    public int maxProfit(int[] prices) {
+        int max = 0;
+        int  sum = 0;
+        for (int i = 0; i < prices.length - 1; i++){
+            sum += prices[i + 1] - prices[i];
+            if (sum > max){
+                max = sum;
+            }else if (sum < 0){
+                sum = 0;
+            }
+        }
+        return max;
+    }
+}
+Using O(n) space and Time complexity = O(n)
+public int maxProfit(int[] prices) {
+        int size = prices.length;
+        int[] aux = new int[size];
+        aux[size-1] = prices[size-1];
+        for(int i =size -2;i>=0;i--){
+            aux[i] = Math.max(aux[i+1], prices[i]);
+        }
+        int maxProfit = Integer.MIN_VALUE;
+        for(int i =0;i<size;i++){
+            int profit = aux[i]-prices[i];
+            if(maxProfit<profit){
+                maxProfit = profit;
+            }
+        }
+        return maxProfit;
+    }
+Using O(n) time complexity and O(1) space complexity
+public int maxProfit(int[] prices) {
+        int size = prices.length;
+        int minSoFar = prices[0];
+        int maxProfit = 0;
+        for(int i =1;i<size;i++){
+            minSoFar = Math.min(minSoFar, prices[i]);
+            int profit = prices[i] - minSoFar;
+            maxProfit = Math.max(maxProfit, profit);
+        }
+        return maxProfit;
+    }
+122. Best Time to Buy and Sell Stock II Medium LC Problem. Tags: 2 pointers, arrays, dp. 18 June, 2022. (We can buy and sell any number of times)
+On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at any time. 
+Example 1:
+Input: prices = [7,1,5,3,6,4]
+Output: 7
+Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+Total profit is 4 + 3 = 7.
+Example 2:
+Input: prices = [1,2,3,4,5]
+Output: 4
+Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+Total profit is 4.
+Example 3:
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
+ 
+
+Variation of Kadane’s algorithm
+class Solution {
+    public int maxProfit(int[] prices) {
+        int profit = 0;
+        int sum = 0;
+        int n = prices.length;
+        for(int i =0;i<n-1;i++){
+            sum += prices[i+1]-prices[i];
+            if(sum>0){
+                profit+=sum;
+            }
+            sum=0;
+        }
+        return profit;
+    }
+}
+Using 2 pointers at start and start+1
+class Solution {
+    public int maxProfit(int[] prices) {
+        int profit = 0;
+        int n = prices.length;
+        int i=0,j=1;
+        while(j<n){
+            if(prices[j]<=prices[i]){
+                i=j;
+                j++;
+            }else{
+                profit +=prices[j]-prices[i];
+                i=j;
+                j++;
+            }
+        }
+        return profit;
+    }
+}
+More simplified implementation
+public int maxProfit(int[] prices) {
+        int profit = 0;
+        int n = prices.length;
+        for(int i =0;i<n-1;i++){
+            if(prices[i]<prices[i+1]){
+                profit+=prices[i+1]-prices[i];
+            }
+        }
+        return profit;
+    }
+123. Best Time to Buy and Sell Stock III Hard(DP to be used try later)
+188. Best Time to Buy and Sell Stock IV Hard (DP to be used try later)
+(see Keerti Purswani Video)
+309. Best Time to Buy and Sell Stock with Cooldown Medium LC Problem. Tags: 2 pointers, arrays, dp. 18 June, 2022
+See Dp Section
+
+Kadane’s Algorithm Questions
+Largest Sum Contiguous Subarray
+152. Maximum Product Subarray Medium
+238. Product of Array Except Self Medium
+121. Best Time to Buy and Sell Stock Easy 
+See dp section
+Array Maths
+Count of subsequences consisting of the same element
+166. Fraction to Recurring Decimal Medium
+50. Pow(x, n) Medium
+172. Factorial Trailing Zeroes Medium
+
+
+
+
+42. Trapping Rain Water Hard
+Brute force solution. Using O(n2) Time complexity and O(1) space complexity. 
+
+Using O(n) time complexity and O(n) space complexity. Also explained by Aditya Verma. We see absolute greatest element in left and right array
+public int trap(int[] height) {
+        int size = height.length;
+        int []left = new int[size];
+        int []right = new int[size];
+        left[0] = height[0];
+        right[size-1]=height[size-1];
+        for(int i =1;i<size;i++){
+            left[i] = Math.max(left[i-1], height[i]);
+        }
+        for(int i = size-2;i>=0;i--){
+            right[i]=Math.max(right[i+1], height[i]);
+        }
+        int sum =0;
+        for(int i =0;i<size;i++){
+            sum+=Math.min(left[i], right[i])-height[i];
+        }
+        return sum;
+    }
+Using 2 pointers approach as explained by Nick White	
+438. Find All Anagrams in a String Medium
+Sliding Window Algorithm. Using Solution explained by Aditya Verma.
+public List<Integer> findAnagrams(String s, String p) {
+        int k = p.length();
+        int size = s.length();
+        Map<Character, Integer> mapPtr = new HashMap<>();
+        for (int i = 0; i < k; i++) {
+			char charPi = p.charAt(i);
+			Integer intPi = mapPtr.get(charPi);
+			if (intPi == null) {
+				intPi = 0;
+			}
+			mapPtr.put(charPi, intPi + 1);
+		}
+        int distinctElementCount = mapPtr.size();
+        int i =0, j=0, ans =0;
+        List<Integer> startIndices = new ArrayList<>();
+        while(j<size){
+            char charJ = s.charAt(j);
+            Integer intJ = mapPtr.get(charJ);
+            if(intJ !=null){
+                mapPtr.put(charJ, intJ-1);
+                if(intJ == 1){
+                    distinctElementCount--;
+                }
+            }
+            if(j-i+1==k){
+                if(distinctElementCount==0){
+                    startIndices.add(i);
+                }
+                char charI = s.charAt(i);
+                Integer intI = mapPtr.get(charI);
+                if(intI != null){
+                    mapPtr.put(charI, intI+1);
+                    if(intI == 0){
+                        distinctElementCount++;
+                    }
+                }
+                i++;
+            }
+            j++;
+        }
+        return startIndices;
+    }
+Cleaner implementation of the above. Less performance
+public List<Integer> findAnagrams(String s, String p) {
+		int k = p.length();
+		int size = s.length();
+		Map<Character, Integer> mapPtr = new HashMap<>();
+		for (int i = 0; i < k; i++) {
+			char charPi = p.charAt(i);
+			Integer intPi = mapPtr.get(charPi);
+			if (intPi == null) {
+				intPi = 0;
+			}
+			mapPtr.put(charPi, intPi + 1);
+		}
+		int distinctElementCount = mapPtr.size();
+		int i = 0, j = 0, ans = 0;
+		List<Integer> startIndices = new ArrayList<>();
+		while (j < size) {
+			char charJ = s.charAt(j);
+			if (mapPtr.containsKey(charJ)) {
+				mapPtr.put(charJ, mapPtr.get(charJ) - 1);
+				if (mapPtr.get(charJ) == 0) {
+					distinctElementCount--;
+				}
+			}
+			if (j - i + 1 == k) {
+				if (distinctElementCount == 0) {
+					startIndices.add(i);
+				}
+				char charI = s.charAt(i);
+				if (mapPtr.containsKey(charI)) {
+					mapPtr.put(charI, mapPtr.get(charI) + 1);
+					if (mapPtr.get(charI) == 1) {
+						distinctElementCount++;
+					}
+				}
+				i++;
+			}
+			j++;
+		}
+		return startIndices;
+	}
+
+908. Smallest Range I Easy
+public int smallestRangeI(int[] nums, int k) {
+        Arrays.sort(nums);
+        int size = nums.length;
+        int prod = 2*k;
+        int diff = nums[size-1]-nums[0];
+        if(diff<=prod){
+            return 0;
+        }
+        return diff-prod;
+    }
+910. Smallest Range II Medium(Minimize the maximum difference between the heights)
+
+Moore’s voting algorithm problems
+169. Majority Element Easy
+229. Majority Element II Medium
+169. Majority Element Easy
+Given an array nums of size n, return the majority element.
+The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
+ 
+Example 1:
+Input: nums = [3,2,3]
+Output: 3
+Example 2:
+Input: nums = [2,2,1,1,1,2,2]
+Output: 2
+ Follow-up: Could you solve the problem in linear time and in O(1) space?
+Brute force solution. Using 2 for loops. Time complexity = O(n2). Space complexity =O(1). Gives TLE on LeetCode
+public int majorityElement(int[] nums) {
+        int n = nums.length;
+        int count;
+        for(int i=0;i<n;i++){
+            count =0;
+            for(int j =0;j<n;j++){
+                if(nums[i]==nums[j]){
+                    count++;
+                }
+                if(count>n/2){
+                    return nums[i];
+                }
+            }
+        }
+        return -1;
+    }
+Using Sorting and returning value. Time complexity=O(nlogn). Space complexity=O(1)
+public int majorityElement(int[] nums) {
+        Arrays.sort(nums);
+        return nums[nums.length/2];
+    }
+Using HashMap. See how to iterate over a hashMap. Time complexity=O(n). Space complexity=O(n). 2 traversals.
+public int majorityElement(int[] nums) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int n = nums.length;
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num, 0)+1);
+        }
+        for (Map.Entry mapElement : map.entrySet()) {
+            int value = (int)mapElement.getValue();
+            if(value>n/2){
+                return (int)mapElement.getKey();
+            }
+        }
+        return -1;
+    }
+Using HashMap. Time=O(n). Space=O(n). Single traversal.
+class Solution {
+    public int majorityElement(int[] nums) {
+        int n = nums.length;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int majorityElement =0;
+        int max =0;
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num,0)+1);
+            int count = map.get(num);
+            if(count> max){
+               max = count;
+                majorityElement = num;
+            }
+        }
+        return majorityElement;
+    }
+}
+Moore's Voting Algorithm. Solution by TakeUForward. GFG code is too complex. Dry run it again with different test cases. 
+It is guaranteed array will have a majority element
+If we had some way of counting instances of the majority element as +1+1 and instances of any other element as -1−1, summing them would make it obvious that the majority element is indeed the majority element.
+Time=O(n). Space=O(1).
+public int majorityElement(int[] nums) {
+        int count =0, majElement = 0;
+        for(int num:nums){
+            if(count==0){
+                majElement=num;
+                count++;
+            }
+            else if(num==majElement){
+                count++;
+            }else{
+                count--;
+            }
+        }
+        return majElement;
+    }
+229. Majority Element II Medium
+Brute Force solution. O(n2) time complexity
+Using HashMap. Time=O(n). Space=O(n). 2 traversals needed
+public List<Integer> majorityElement(int[] nums) {
+        List<Integer> list = new ArrayList<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int n = nums.length;
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num, 0)+1);
+        }
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            int value =entry.getValue();
+            if(value>n/3){
+                list.add(entry.getKey());
+            }
+        }
+        return list;
+    }
+Using HashMap. Single traversal needed. Time = O(n). Space=O(n).
+class Solution {
+    public List<Integer> majorityElement(int[] nums) {
+        List<Integer> list = new ArrayList<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int n = nums.length;
+        for(int num: nums){
+            if(map.getOrDefault(num,0)==-1){
+                continue;
+            }
+            map.put(num, map.getOrDefault(num, 0)+1);
+            int count = map.get(num);
+            if(count> n/3){
+                map.put(num, -1);
+                list.add(num);
+            }         
+        }
+        return list;
+    }
+}
+Moore Voting algorithm. Very important to add bold content on the above. If not, it fails on following test case.
+Input:[2,1,1,3,1,4,5,6]
+Output:[]
+Expected:[1]
+
+public List<Integer> majorityElement(int[] nums) {
+        int count1 =0, count2=0;
+        int majElement1 = -1, majElement2 = -1;
+        int n = nums.length;
+        for(int num:nums){
+            if(majElement1==num){
+                count1++;
+            }else if(majElement2==num){
+                count2++;
+            }else if(count1==0){
+                majElement1=num;
+                count1++;
+            }else if(count2==0){
+                majElement2=num;
+                count2++;
+            }else{
+                count1--;
+                count2--;
+            }
+        }
+        List<Integer> list = new ArrayList<>();
+        count1=0;
+        count2=0;
+        for(int num:nums){
+            if(num==majElement1){
+                count1++;
+            }else if(num==majElement2){
+                count2++;
+            }
+        }
+        if(count1>n/3){
+            list.add(majElement1);
+        }
+        if(count2>n/3){
+            list.add(majElement2);
+        }
+        return list;
+    }
+
+Interval Problems
+https://docs.google.com/document/d/1rUyk-1pioNOZvh9gp7lPbDbm0G6cEKP0QlyrlrvVQhY/edit
+
+56. Merge Intervals Medium.
+
+
+(Searching and Sorting)56. Merge Intervals Medium.LC Problem.Tags: Sorting, Arrays. 8 June, 2022SBlind 75 Problem
+Start<end mentioned in Q.
+Approach using O(nlogn) time complexity.
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        int m = intervals.length;
+        int n = intervals[0].length;
+        List<int[]> result = new ArrayList<>();
+        // sortByColumn(intervals, 0);
+        Arrays.sort(intervals, (a,b)->Integer.compare(a[0],b[0]));
+        int index =0;
+        for(int i=1; i<m; i++){
+                if(intervals[i][0]<=intervals[index][1]){
+                    intervals[index][1] = Math.max(intervals[index][1], intervals[i][1]);
+                }else{
+                    result.add(new int[]{intervals[index][0], intervals[index][1]});
+                    index++;
+                    intervals[index][0]= intervals[i][0];
+                    intervals[index][1]= intervals[i][1];
+                }
+                    
+            }
+        result.add(new int[]{intervals[index][0], intervals[index][1]});
+        return result.toArray(new int[result.size()][]);
+        }     
+}
+Much cleaner implementation of above
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        List<int[]> result = new ArrayList<>();
+        Arrays.sort(intervals, new IntervalComparator());
+        for(int[] interval: intervals){
+            if (result.isEmpty() || result.get(result.size()-1)[1] < interval[0]){
+                result.add(interval);
+            }else{
+                result.get(result.size()-1)[1]=Math.max(result.get(result.size()-1)[1], interval[1]);
+            }
+        }
+        int[][]RESULT = new int[result.size()][];
+        int index=0;
+        for(int[] ar: result){
+            RESULT[index]=ar;
+            index++;
+        }
+        return RESULT;
+        // return result.toArray(new int[result.size()][]);
+    }
+}
+class IntervalComparator implements Comparator<int[]>{
+    public int compare(int[] a, int[] b){
+        return a[0]-b[0];
+    }
+}
+Two Sum Easy
+My Solution using concepts from Subset sum problem. Almost got TLE. Do not use it. Failed approach. It is not a DP problem. This Q appears similar to Subset sum pattern but it is not.
+class Solution {
+    List<Integer> list;
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        list = new ArrayList<>();
+        twoSumUtil(n, nums, target, 2,0 , 0);
+        return list.stream().mapToInt(Integer::intValue).toArray();
+    }
+    public  boolean twoSumUtil(int n, int[] nums, int sum, int count, int a, int b){
+         if(count==0 &&sum==0){
+             list.add(a);
+             list.add(b);
+             return true;
+         }
+        if(count==0){
+            return false;
+        }
+        if(n==0){
+            return false;
+        }
+        if(a==0){
+            return twoSumUtil(n-1, nums, sum, count,a , b)|| twoSumUtil(n-1, nums, sum-nums[n-1], count-1,n-1 , b);  
+        }else{
+            return twoSumUtil(n-1, nums, sum, count,a , b)|| twoSumUtil(n-1, nums, sum-nums[n-1], count-1,a , n-1);  
+        }
+    }
+}
+Brute force solution. O(n2) time complexity. Space complexity=O(1).
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        int[] result = new int[2];
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                if(nums[i]+nums[j]==target){
+                    result[0]=i;
+                    result[1]=j;
+                    return result;
+                }
+            }
+        }
+        return result;
+    }
+}
+Failed Approach. Gives wrong indices. But worth seeing. Used binary Search. Gives indices of sorted array rather than original array. If answer requires Yes/No only, then this approach is Ok.
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        int[] result = new int[2];
+        
+        for(int i=0;i<n;i++){
+            int endIndex = binarySearch(nums, target-nums[i], i+1, n-1);
+            if(endIndex!=-1){
+                result[0]=i;
+                result[1]=endIndex;
+                return result;
+            }
+        }
+        return result;
+    }
+Sorting and 2 pointers technique. Failed approach. Only works when return type is Boolean. If we want indices where values occurred, then this approach fails because we lose indices during sorting.
+Using Hashing. Store array value as key and array index as value in hashmap. Time complexity is O(n). Space complexity is O(n).
+public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int[] result = new int[2];
+        for(int i =0;i<n;i++){
+            if(map.containsKey(target- nums[i])){
+                result[0]=i;
+                result[1]= map.get(target-nums[i]);
+                return result;
+            }else{
+                map.put(nums[i], i);
+            }
+        }
+        return result;
+    }
+Count pairs with given sum Easy. GFG question. Not on Leetcode. Variation of 2 sum problem.
+int getPairsCount(int[] nums, int n, int target) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        int count =0;
+        for(int i =0;i<n;i++){
+            if(map.containsKey(target- nums[i])){
+                count+=map.get(target-nums[i]);
+            }
+            map.put(nums[i], map.getOrDefault(nums[i],0)+1);
+        }
+        return count;
+    }
+Triplet Sum in Array Medium. Not on Leetcode. Did on GFG practice.
+Using sorting and 2 pointers technique
+public boolean find3Numbers(int ar[], int n, int X) { 
+        Arrays.sort(ar);
+        for(int i=0;i<n;i++){
+            if(findBy2Pointers(ar, X-ar[i], i+1,n-1)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean findBy2Pointers(int ar[], int sum , int start, int end){
+        int i =start, j=end;
+        while(i<j){
+            if(ar[i]+ar[j]==sum){
+                return true;
+            }else if(ar[i]+ar[j]<sum){
+                i++;
+            }else{
+                j--;
+            }
+        }
+        return false;
+    }
+
+
+Count the triplets Easy. GFG Must Do Coding Q Tags: Sorting, 2 pointers.
+Used 2 pointers approach. Time complexity is O(n2). Space complexity is O(1). Used first second and third pointers.
+class Solution {
+    int countTriplet(int ar[], int n) {
+        Arrays.sort(ar);
+        int count =0;
+        int f=0;
+        while(f<n-2){
+            int s=f+1, t=f+2;
+            while(t<n){
+                if(ar[f]+ar[s]==ar[t]){
+                    count++;
+                    s++;
+                    t++;
+                }else if(ar[f]+ar[s]<ar[t]){
+                    if(s<t-1){
+                        s++;
+                    }else{
+                        s++;
+                        t++;
+                    }
+                }else{
+                    t++;
+                }
+            }
+            f++;
+        }
+        return count;
+    }
+}
+Clean implementation of the above solution. Using start and end pointers at start and end. Classic 2 pointers Question,
+class Solution {
+   int countTriplet(int arr[], int n) {
+       Arrays.sort(arr);
+       int count = 0;
+       for(int i=0;i<n;i++){
+           int target = arr[i];
+           int s = 0,  e = n-1;  //s=pointer at start and e = pointer at end
+          while(s<e) {
+              
+           if(arr[s]+arr[e] == target){
+               count++;s++;e--;
+           }
+           else if(arr[s]+arr[e] > target)e--;
+           else s++;
+          } 
+       }
+       return count;
+   }
+}
+18. 4Sum Medium .Leetcode problem. Tags: 2 Pointers, Sorting
+class Solution {
+    public List<List<Integer>> fourSum(int[] ar, int target) {
+		int n = ar.length;
+		if (n < 4) {
+			return new ArrayList<>();
+		}
+		Arrays.sort(ar);
+		Set<List<Integer>> res = new HashSet<>();
+		for (int i = 0; i <= n - 4; i++) {
+			for (int j = i + 1; j <= n - 3; j++) {
+				int start = j + 1, end = n - 1;
+				while (start < end) {
+					if (ar[start] + ar[end] == target-(ar[i]+ar[j])) {
+						res.add(Arrays.asList(ar[i],ar[j], ar[start], ar[end]));
+						start++;
+						end--;
+					} else if (ar[start] + ar[end] <  target-(ar[i]+ar[j])) {
+						start++;
+					} else {
+						end--;
+					}
+				}
+			}
+		}
+        return new ArrayList<>(res);
+	}
+}
+
+88. Merge Sorted Array Easy. LeetCode problem. Tags: Sorting
+Other solutions also. Can implement sort method using insertion sort. Euclid’s solution also using Gap method. Just know the approach from Strivers video.
+Using extra space. Array of size m+n. Like merge function of merge sort.
+public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int[]nums = new int[m+n];
+        int i=0,j=0,k=0;
+        while(i<m&&j<n){
+            if(nums1[i]<=nums2[j]){
+                nums[k++]=nums1[i++];
+            }else{
+                nums[k++]=nums2[j++];
+            }
+        }
+        while(i<m){
+            nums[k++]=nums1[i++];
+        }
+        while(j<n){
+            nums[k++]=nums2[j++];
+        }
+        //copy from nums to nums1
+        for(i=0;i<m+n;i++){
+            nums1[i]=nums[i];
+        }
+    }
+Without using extra space. But space is consumed to sort array
+public void merge(int[] nums1, int m, int[] nums2, int n) {
+        if(n==0){
+            return;
+        }
+        int i=0;
+        while(i<m){
+            if(nums1[i]>nums2[0]){
+                swap(nums1,i,nums2);
+                Arrays.sort(nums2);
+            }
+            i++;
+        }
+        //copy from nums2 to nums1
+        for(i=m;i<m+n;i++){
+            nums1[i]=nums2[i-m];
+        }
+    }
+    private void swap(int[] nums1, int i, int[] nums2){
+        int temp = nums1[i];
+        nums1[i]=nums2[0];
+        nums2[0]=temp;
+    }
+Merge two sorted arrays with O(1) extra space HardGFG Problem. Tags: Arrays, Sorting. 18 June, 2022
+Example: 
+Input: ar1[] = {10};
+       ar2[] = {2, 3};
+Output: ar1[] = {2}
+        ar2[] = {3, 10}  
+
+Input: ar1[] = {1, 5, 9, 10, 15, 20};
+       ar2[] = {2, 3, 8, 13};
+Output: ar1[] = {1, 2, 3, 5, 8, 9}
+        ar2[] = {10, 13, 15, 20}
+
+Example 1:
+Input: 
+n = 4, arr1[] = [1 3 5 7] 
+m = 5, arr2[] = [0 2 6 8 9]
+Output: 
+arr1[] = [0 1 2 3]
+arr2[] = [5 6 7 8 9]
+Explanation:
+After merging the two 
+non-decreasing arrays, we get, 
+0 1 2 3 5 6 7 8 9.
+Example 2:
+Input: 
+n = 2, arr1[] = [10, 12] 
+m = 3, arr2[] = [5 18 20]
+Output: 
+arr1[] = [5 10]
+arr2[] = [12 18 20]
+Explanation:
+After merging two sorted arrays 
+we get 5 10 12 18 20.
+class Solution{
+    //Function to merge the arrays.
+    public static void merge(long nums1[], long nums2[], int m, int n) {
+        int i=0,j=0;
+        while(i<m && j<n){
+            if(nums1[i]<=nums2[j]){
+                i++;
+            }else{
+                //swap nums1[i], nums2[j]
+                long temp = nums1[i];
+                nums1[i] = nums2[j];
+                nums2[j]=temp;
+                
+                i++;
+                //place nums1[i] in its correct place in nums2. //similar to insertion sort step
+                if (j < n - 1 && nums2[j + 1] < nums2[j]) {
+                    long tempi = nums2[j];
+                    int tempj = j + 1;
+                    while (tempj<n && nums2[tempj] < tempi) {
+                        nums2[tempj - 1] = nums2[tempj];
+                        tempj++;
+                    }
+                    nums2[tempj - 1] = tempi;
+                }
+            }
+        }
+    }
+}
+
+Like Partition process of QuickSort Questions
+238. Move Zeroes(at the end)
+905. Sort Array By Parity
+Segregate 0s and 1s in an array Medium(IB)
+Move All Negative Numbers To Beginning And Positive To End
+27. Remove Element
+
+
+Swap Sort Problems
+268. Missing Number Easy
+448. Find All Numbers Disappeared in an Array Easy
+287. Find the Duplicate Number Medium
+442. Find All Duplicates in an Array Medium
+Set Mismatch
+
+Merge Sort Algorithm Code. GFG Problem. Tags:Sorting
+void merge(int ar[], int low, int mid, int high){   //only called when low<high
+        int m = mid-low+1, n=high-mid;
+        int[]L = new int[m];
+        int[]H = new int[n];
+        for(int i=0;i<m;i++){
+            L[i]=ar[i+low];
+        }
+        for(int j=0;j<n;j++){
+            H[j]=ar[mid+1+j];
+        }
+        int i=0, j=0;
+        int k=low;
+        while(i<m&&j<n){
+            if(L[i]<=H[j]){
+                ar[k++]=L[i++];
+            }else{
+                ar[k++]=H[j++];
+            }
+        }
+        while(i<m){
+            ar[k++]=L[i++];
+        }
+        while(j<n){
+            ar[k++]=H[j++];
+        }
+    }
+    void mergeSort(int ar[], int low, int high){
+        if(low<high){
+            int mid = low+(high-low)/2;
+            mergeSort(ar,low, mid);
+            mergeSort(ar,mid+1,high);
+            merge(ar,low,mid,high);
+        }
+    }
+
+Count Inversions MediumGFG Problem. Tags: Sorting, Arrays, BST, BIT. 19 June, 2022
+See sorting problems.
+
+118. Pascal's Triangle Easy . LeetCode problem. Tags: Arrays
+My own adhoc implementation seeing a pattern.
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> result = new ArrayList<>();
+        // result.add(new ArrayList<>({1}));
+        Integer[] oneArray = new Integer[1];
+        oneArray[0]=1;
+        result.add(Arrays.asList(oneArray));
+        if(numRows==1){
+            return result;
+        }
+        Integer[] twoArray = new Integer[2];
+        twoArray[0]=1;
+        twoArray[1]=1;
+        result.add(twoArray.asList(twoArray));
+        if(numRows==2){
+            return result;
+        }
+        for(int i=3;i<=numRows;i++){
+            result.add(pascal(i, result.get(i-2)));
+        }
+        return result;
+    }
+    private List<Integer> pascal(int n, List<Integer>previousList){
+        Integer[]ar = new Integer[n];
+        ar[0]=1;
+        int index=1;
+        int oldSize=previousList.size();
+        for(int j=0;j<oldSize/2;j++){
+            ar[index]=previousList.get(j)+previousList.get(j+1);
+            ar[oldSize-index]=ar[index];
+            index++;
+        }
+        ar[n-1]=1;
+        return Arrays.asList(ar);
+    }
+}
+46. Permutations Medium. LeetCode Problem. Tags: Backtracking, Arrays (NO DUPLICATES)
+Note: Similar problem for Strings also. Just see String2 file.
+Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.
+2 variations: Can just print all permutations. Here return all permutations as List<List<Integer>>
+Using result(List<List<Integer>>) as global variable. Using Backtracking approach. Time Complexity: O(n*n!) Note that there are n! permutations and it requires O(n) time to print a permutation.
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> permute(int[] nums) {
+        int n = nums.length;
+        result = new ArrayList<>();
+        permuteArray(nums, 0,n-1);
+        return result;
+    }
+    void permuteArray(int[] nums, int low, int high) {
+        if(low==high) {
+        	List<Integer> list = new ArrayList<>();
+            for (int element: nums) {
+                list.add(element);
+            }
+        	result.add(list);
+        	return;
+        }
+        
+        for(int i=low;i<=high;i++) {
+        	swap(nums,i,low);
+        	permuteArray(nums, low+1,high);
+        	swap(nums,i,low);    //important step here. Can be skipped if nums is //String because strings are immutable and kind of pass by value
+        }
+    }
+}
+
+Can also Not pass result as global variable but in arguments of method.
+Using pick and not pick method. Top voted LC solution. Very difficult to implement. Good to see the solution.
+public List<List<Integer>> permute(int[] nums) {
+   List<List<Integer>> list = new ArrayList<>();
+   // Arrays.sort(nums); // not necessary
+   backtrack(list, new ArrayList<>(), nums);
+   return list;
+}
+
+
+private void backtrack(List<List<Integer>> list, List<Integer> tempList, int [] nums){
+   if(tempList.size() == nums.length){
+      list.add(new ArrayList<>(tempList));
+   } else{
+      for(int i = 0; i < nums.length; i++){ 
+         if(tempList.contains(nums[i])) continue; // element already exists, skip
+         tempList.add(nums[i]);
+         backtrack(list, tempList, nums);
+         tempList.remove(tempList.size() - 1);
+      }
+   }
+} 
+47. Permutations II Medium. LeetCode problem. Tags: Backtracking. Arrays.
+(WITH DUPLICATES)
+Using HashSet
+class Solution {
+    List<List<Integer>> result;
+    HashSet<List<Integer>>set;
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        int n = nums.length;
+        set = new HashSet<>();
+        result = new ArrayList<>();
+        permuteArray(nums, 0,n-1);
+        return result;
+    }
+    void permuteArray(int[] nums, int low, int high) {
+        if(low==high) {
+        	List<Integer> list = new ArrayList<>();
+            for (int element: nums) {
+                list.add(element);
+            }
+            if(!set.contains(list)){
+                set.add(list);
+                result.add(list);
+            }
+        	return;
+        }
+        
+        for(int i=low;i<=high;i++) {
+        	swap(nums,i,low);
+        	permuteArray(nums, low+1,high);
+        	swap(nums,i,low);    //important step here. Can be skipped if nums is //String because strings are immutable and kind of pass by value
+        }
+    }
+}
+Not able to understand other solutions Revisit again. 
+
+31. Next Permutation Medium. LeetCode problem. Tags: 2pointers, arrays
+My implementation. Can  be optimized. See comments in next solution.
+class Solution {
+    public void nextPermutation(int[] nums) {
+        int n = nums.length;
+        int i=n-1;
+        while(i>0){
+            if(nums[i-1]<nums[i]){
+                break;
+            }
+            i--;
+        }
+        if(i==0){
+            //array in descending order. Extreme case.
+            reverse(nums,0,n-1);
+            return;
+        }
+        //i-1;
+        int j=n-1;
+        while(j>(i-1)){
+            if(nums[j]>nums[i-1]){
+                break;
+            }
+            j--;
+        }
+        //j
+        swap(nums,i-1,j);
+        reverse(nums,i,n-1);
+    }
+    private void swap(int[]nums, int start, int end){
+        int temp = nums[start];
+        nums[start]=nums[end];
+        nums[end]=temp;
+    }
+    private void reverse(int[]nums, int start, int end){   //do not use for loop for writing reverse method. Unnecessary complexity increases. Use while loop.
+        while(start<end){
+            swap(nums,start,end);
+            start++;
+            end--;
+        }
+    }
+}
+
+Striver’s solution. Better optimized and readable code than above
+class Solution {
+    public void nextPermutation(int[] nums) {
+        int n = nums.length;
+        if(n==1)return;
+        int i=n-1;
+        while(i>0 && (nums[i-1]>=nums[i])){  //see previous code. If there is while loop and there is if loop inside while loop which has a condition and a break statement, then we can imporve code readability by merging if and while loop.
+            i--;
+        }
+        if(i>0){
+            int j=n-1;
+            while(nums[j]<=nums[i-1]){    //no need to do j>i-1 because we know there will be a number greater than nums[i-1] to the right of nums[i-1]
+                j--;
+            }
+            swap(nums,i-1,j);
+        }
+        //also for array in descending order. Extreme case.
+        reverse(nums,i,n-1);
+    }
+485. Max Consecutive Ones Easy.LeetCode problem. Tags: Arrays. Ignore the question
+public int findMaxConsecutiveOnes(int[] nums) {
+        int n = nums.length;
+        int count=0, maxCount=0;
+        for(int i=0;i<n;i++){
+            if(nums[i]==1){
+                count++;
+                maxCount=Math.max(maxCount, count);
+            }else{
+                count=0;
+            }
+        }
+        return maxCount;
+    }
+Find The Duplicates.Pramp Question28 May, 2022
+Brute force solution. Time complexity = O(n+m). Space complexity = O(1)
+static int[] findDuplicates(int[] arr1, int[] arr2) {
+    int n = arr1.length;
+    int m = arr2.length;
+    int i=0,j=0;
+    List<Integer> duplicates = new ArrayList<>();
+    while(i<n && j<m){
+      if(arr1[i]<arr2[j]){
+        i++;
+      }else if(arr2[j]<arr1[i]){
+        j++;
+      }else{
+        duplicates.add(arr1[i]);
+        i++;
+        j++;
+      }
+    }
+    int[] result = new int[duplicates.size()];
+    int index =0;
+    for(Integer num: duplicates){
+      result[index++]=num;
+    }
+    return result;
+  }
+HashMap based solution. Time complexity = O(n+m). Space complexity = O(n/m)
+
+//HashMap solution
+  static int[] findDuplicates(int[] arr1, int[] arr2) {
+    int n = arr1.length;
+    int m = arr2.length;
+    HashMap<Integer, Integer>map = new HashMap<>();
+    for(int num: arr1){
+      map.put(num, map.getOrDefault(num,0)+1);
+    }
+    List<Integer> duplicates = new ArrayList<>();
+    for(int num: arr2){
+      if(map.get(num)!=null){
+        duplicates.add(num);
+      }
+    }
+    int[] result = new int[duplicates.size()];
+    int index =0;
+    for(Integer num: duplicates){
+      result[index++]=num;
+    }
+    return result;
+  }
+Using HashSet
+//HashSet solution
+  static int[] findDuplicates(int[] arr1, int[] arr2) {
+    HashSet<Integer>set = new HashSet<>();
+    for(int num: arr1){
+      set.add(num);
+    }
+    List<Integer> duplicates = new ArrayList<>();
+    for(int num: arr2){
+      if(set.contains(num)){
+        duplicates.add(num);
+      }
+    }
+    int[] result = new int[duplicates.size()];
+    int index =0;
+    for(Integer num: duplicates){
+      result[index++]=num;
+    }
+    return result;
+  }
+
+Using Binary Search
+If m>>n. Then for each element in arr1 of size n, do binary search in arr2 of size m.
+Time complexity = O(nlogm).
+If we do reverse, it would be O(mlogn)
+If n=2, m=64. O(nlogm)=2*6=12
+O(mlogn)=64*log2=64
+O(m+n)=64+2=66
+
+static int[] findDuplicates(int[] arr1, int[] arr2) {
+    int n = arr1.length;
+    int m = arr2.length;
+    List<Integer> duplicates = new ArrayList<>();
+    for(int i =0;i<n;i++){
+      if(search(arr2, 0,m-1, arr1[i])!=-1){
+        duplicates.add(arr1[i]);
+      }
+    }
+    int[] result = new int[duplicates.size()];
+    int index =0;
+    for(Integer num: duplicates){
+      result[index++]=num;
+    }
+    return result;
+  }
+  static int search(int[] nums, int low, int high, int target){
+    while(low<=high){
+      int mid = low+(high-low)/2;
+      if(nums[mid]==target){
+        return mid;
+      }else if(target<nums[mid]){
+        high = mid-1;
+      }else{
+        low=mid+1;
+      }
+    }
+    return -1;
+  }
+
+Pick from both sides! Very Easy Asked In: Media.Net InterviewBit Problem. Tags: Arrays, PrefixSum, Array math 3 June, 2022. 
+Using Prefix Sum and Suffix Sum arrays
+public class Solution {
+    public int solve(ArrayList<Integer> ar, int B) {
+        int n = ar.size();
+        int[] left = new int[B];
+        int[] right = new int[B];
+        left[0]=ar.get(0);
+        right[0]= ar.get(n-1);
+        for(int i=1;i<B;i++){
+            left[i] = left[i-1]+ar.get(i); 
+            right[i]=right[i-1]+ar.get(n-1-i);
+        }
+        int max = Integer.MIN_VALUE;
+        for(int i=0;i<=B;i++){
+            int a = (i==0)?0:left[i-1];
+            int b = (i==B)?0:right[B-1-i];
+            max = Math.max(max, a+b);
+        }
+        return max;
+    }
+}
+Without using 2 Arrays. Just use 2 pointers starting at B-1 and A.size()-1
+public class Solution {
+    public int solve(ArrayList<Integer> A, int B) {
+        int size = A.size();
+        int maxSum = 0;
+        for(int i=0; i<B; i++) {
+            maxSum += A.get(i);
+        }
+        if(B == size) {
+            return maxSum;
+        }
+        
+        int localSum = maxSum;
+        int startPointer = B - 1;   
+        int endPointer = size - 1;  
+        
+        for(int i=startPointer; i>=0; i--) {
+            localSum -= A.get(i);
+            localSum += A.get(endPointer);
+            
+            maxSum = Math.max(localSum, maxSum);
+            endPointer--;
+        }
+        
+        
+        return maxSum;
+    }
+}
+
+380. Insert Delete GetRandom O(1) Medium. Tags: Arrays, Sorting, HashTable. 27 June, 2022
+
+Using HashMap and List
+There are reasons why we use HashMap and not HashSet. Because we want index of list of each element in HashMap. So that while removing, we can just get index from HashMap, and replace index element in list with last element and decrease size of list by 1.
+class RandomizedSet {
+    HashMap<Integer, Integer> map;
+    List<Integer> list;
+    public RandomizedSet() {
+        map = new HashMap<>();
+        list = new ArrayList<>();
+    }
+    
+    public boolean insert(int val) {
+        Integer index = map.get(val);
+        if(index != null){
+            return false;
+        }
+        list.add(val);
+        map.put(val, list.size()-1);
+        return true;
+    }
+    
+    public boolean remove(int val) {
+        Integer index = map.get(val);
+        if(index == null){
+            return false;
+        }
+        int lastValue =  list.get(list.size()-1);
+        list.set(index,lastValue);
+        list.remove(list.size()-1);
+        map.put(lastValue, index);
+        map.remove(val);
+        return true;
+    }
+    
+    public int getRandom() {
+        //[1,2,3,4,5]  index goes from 0 to 4. Random Number[0,5) will be any of 0,1,2,3,4
+        int randomNumber = ThreadLocalRandom.current().nextInt(0, list.size());
+        return list.get(randomNumber);
+    }
+}
+
+128. Longest Consecutive Sequence Medium Tags: Arrays, Union Find, HashTable. 28 June, 2022
+
+Using Sorting. O(nlogn) approach
+Using HashSet and Intelligent Sequence Building
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        int n = nums.length;
+        HashSet<Integer> set = new HashSet<>();
+        for(int num: nums){
+            if(!set.contains(num)){
+                set.add(num);
+            }
+        }
+        int max = 0;
+        for(int i=0;i<n;i++){
+            if(set.contains(nums[i]-1)){
+                continue;
+            }
+            //it means it is start of the set
+            int j = nums[i];
+            int len = 1;
+            while(true){
+                j = j+1;
+                if(!set.contains(j)){
+                    break;
+                }
+                len++;
+                set.remove(j);
+            }
+            if(len>max){
+                max = len;
+            }
+        }
+        return max;
+    }
+}
