@@ -1,0 +1,2500 @@
+Trees
+
+Tree Traversal: Process of visiting each node in the tree exactly once in some order. Visiting means reading/processing data in a node
+DFS Traversals
+Preorder
+Inorder
+Postorder
+144. Binary Tree Preorder Traversal Easy. 
+Preorder Traversal is <Root><Left Sub Tree><Right Sub Tree>. Time complexity is O(n). Space complexity is O(height). In worst case for skewed binary tree, space complexity is O(n). Average case, space complexity is O(logn).
+Inorder: <Left Sub Tree><Root ><Right Sub Tree>
+Postorder: <Left Sub Tree><Right Sub Tree> <Root>
+Conventionally Left Sub Tree is always visited before Right Sub Tree
+These(Preorder, Inorder, Postorder) are Depth first algorithms. We first visit all nodes in a subtree, then move to next subtree.
+Recursive Solution. Using class property variable nodeList
+class Solution {
+    private List<Integer> nodeList = new ArrayList<>();
+    public List<Integer> preorderTraversal(TreeNode root) {
+        if(root==null){
+            return nodeList;
+        }
+        nodeList.add(root.val);
+        preorderTraversal(root.left);   (why it is this way??)
+        preorderTraversal(root.right);
+        return nodeList;
+    }
+}
+Recursive Solution. Passing nodeList in method parameters.
+public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> nodeList = new ArrayList<>();
+        preorderTraversalUtil(root, nodeList);
+        return nodeList;
+    }
+    void preorderTraversalUtil(TreeNode root, List<Integer> nodeList){
+        if(root==null){
+            return;
+        }
+        nodeList.add(root.val);
+        preorderTraversalUtil(root.left, nodeList);
+        preorderTraversalUtil(root.right, nodeList);
+    }
+Iterative solution using Stack(LIFO).
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if(root==null){
+            return list;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+	while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            list.add(node.val);
+            if(node.right!=null){
+                stack.push(node.right);
+            }
+            if(node.left!=null){
+                stack.push(node.left);
+            }
+        }
+        return list;
+    }
+}
+94. Binary Tree Inorder Traversal Easy
+Recursive Solution
+public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> nodeList = new ArrayList<>();
+        if(root==null){
+            return nodeList;
+        }
+        inorderTraversalUtil(root, nodeList);
+        return nodeList;
+    }
+    private void inorderTraversalUtil(TreeNode root,List<Integer> nodeList){
+        if(root==null){
+            return;
+        }
+        inorderTraversalUtil(root.left, nodeList);
+        nodeList.add(root.val);
+        inorderTraversalUtil(root.right, nodeList);
+    }
+Iterative solution. Using Stack. Time complexity=O(n). Space complexity=O(n).
+1) Create an empty stack S.
+2) Initialize current node as root
+3) Push the current node to S and set current = current->left until current is NULL
+4) If current is NULL and stack is not empty then 
+     a) Pop the top item from stack.
+     b) Print the popped item, set current = popped_item->right 
+     c) Go to step 3.
+5) If current is NULL and stack is empty then we are done.
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if(root==null){
+            return list;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode current = root;
+        while(current != null || stack.isEmpty()==false){
+            while(current!=null){
+                stack.push(current);
+                current = current.left; 
+            }
+            current = stack.pop();
+            list.add(current.val);
+            current = current.right;
+        }
+        return list;
+    }
+}
+Morris Traversal
+145. Binary Tree Postorder Traversal Easy
+Using Recursion
+Using Stack
+Time complexity = O(2n). Space complexity = O(n).
+Note its 2n and not n. Because we do twice the traversal.
+
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if(root==null){
+            return list;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode curr = root;
+        while(curr!=null || stack.isEmpty()==false){
+            if(curr!=null){
+                stack.push(curr);
+                curr = curr.left;
+            }else{
+                TreeNode temp = stack.peek().right;
+                if(temp == null){
+                    temp = stack.pop();
+                    list.add(temp.val);
+                    while(stack.isEmpty()==false && temp == stack.peek().right){
+                        temp = stack.pop();
+                        list.add(temp.val);
+                    }
+                }else{
+                    curr = temp;
+                }
+            }
+        }
+        return list;
+    }
+}
+Level Order Traversal Questions
+Binary Tree Level Order Traversal
+Cousins of a Binary Tree
+637. Average of Levels in Binary Tree Easy
+Binary Tree Level Order Traversal 2(Start from leaf to root)
+103. Binary Tree Zigzag Level Order Traversal Medium
+Reverse Zig Zag level order traversal
+Left/Right view of BT
+Populating Next Right Pointers in Each Node(Perfect BT given with 2 children each)
+Populating Next Right Pointers in Each Node II(Can be any tree)
+Top view of BT
+Bottom view of BT
+Vertical Order traversal of Binary Tree Hard
+Vertical Sum of Binary Tree Easy
+102. Binary Tree Level Order Traversal Medium.
+Its similar to BFS of a graph. Solution using Recursion. In GFG there is a problem to just print elements in level order traversal. Here we have to add in List<List<Integer>> also.
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        int height = maxDepth(root);
+        List<List<Integer>> res = new ArrayList<>();        
+        for(int i=1;i<=height;i++){
+            List<Integer> list = new ArrayList<>();
+            bfs(root,i, list);
+            res.add(list);
+        }
+        return res;
+    }
+    public int maxDepth(TreeNode root) {
+        //it means number of nodes in BT and not edges.
+        if(root==null)return 0;
+        return 1+Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+    public void bfs(TreeNode root,int depth,List<Integer> list){
+        if(root==null)return;
+        if(depth ==1){
+            list.add(root.val);
+            return;
+        }
+        bfs(root.left, depth-1, list);
+        bfs(root.right, depth-1, list);
+    }
+}
+Basic BFS of a BT.
+void printLevelOrder()
+    {
+        int h = height(root);
+        for (int i = 1; i <= h; i++)
+            printCurrentLevel(root, i);
+    }
+
+void printCurrentLevel(Node root, int level)
+    {
+        if (root == null)
+            return;
+        if (level == 1)
+            System.out.print(root.data + " ");
+        else if (level > 1) {
+            printCurrentLevel(root.left, level - 1);
+            printCurrentLevel(root.right, level - 1);
+        }
+    }
+Time Complexity:
+Loop runs for h times. For each iteration, we traverse at max h times.
+Iteration1: 1 time
+Iteration2: 2 times………Iteration h: h times
+For skewed tree, h=n. So Time complexity = n*(O(1)+O(2)+……+O(n-1)+O(n))=O(n^2). For worst case.
+For average case, its O(logn*logn)=O(logn)
+Space complexity:
+For call stack, printCurrentLevel method is called height times(till level is 1. Notice when level is 1, then we exit from method). So space complexity is O(n) in worst case for skewed trees.
+
+(Not related to problem)Implemented DFS of Binary Tree by accident:
+public void getLevelOrder(TreeNode root){
+        if(root==null)return;
+        System.out.println(root.val);
+        getLevelOrder(root.left);
+        getLevelOrder(root.right);
+    }
+
+Solution using Queue(Most Important):
+For this case Time complexity is O(n). Space complexity is O(1) in best case and O(n/2)[number of nodes in queue at a particular time, here in a full BT, number of leaf nodes = n/2]=O(n) in worst case. Refer My Code School video.
+Output: [[3],[9,20],[15,7]]
+Note:
+// to remove and return front value:
+TreeNode node = queue.remove();
+//Same as queue.remove()
+TreeNode node = queue.poll();
+The remove() and poll() methods differ only in their behavior when the queue is empty: the remove() method throws an exception, while the poll() method returns null.
+// to just view front value without removing:
+TreeNode node = queue.peek();
+// to just view front value without removing:
+TreeNode node = queue.element();
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+		List<List<Integer>> res = new ArrayList<>();
+		if (root == null)
+			return res;
+		Queue<TreeNode> queue = new LinkedList<>();
+		queue.add(root);
+		while (!queue.isEmpty()) {
+			List<Integer> list = new ArrayList<>();
+			int cnt = queue.size();
+			for (int i = 0; i < cnt; i++) {
+				TreeNode node = queue.poll();
+				list.add(node.val);
+				if (node.left != null) {
+					queue.add(node.left);
+				}
+				if (node.right != null) {
+					queue.add(node.right);
+				}
+			}
+			res.add(list);
+		}
+		return res;
+	}
+}
+Solution by LeetCode user. He used DFS like strategy to implement BFS. (it implements pre-order traversal to realize level-order traversal. Each time we add root.val into the list, and then look at left and right child.). these are mostly implementation of BFS using DFS.:
+public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        levelHelper(res, root, 0);
+        return res;
+    }
+    
+    public void levelHelper(List<List<Integer>> res, TreeNode root, int height) {
+        if (root == null) return;
+        if (height >= res.size()) {
+            res.add(new LinkedList<Integer>());
+        }
+        res.get(height).add(root.val);
+        levelHelper(res, root.left, height+1);
+        levelHelper(res, root.right, height+1);
+    }
+See later: https://leetcode.com/problems/binary-tree-level-order-traversal/discuss/114449/A-general-approach-to-level-order-traversal-questions-in-Java
+
+993. Cousins in Binary Tree Easy. LeetCode Problem. Tags: BT. 22 May, 2022
+Note: All elements in tree are unique.
+Solution using Queue
+class Solution {
+    public boolean isCousins(TreeNode root, int x, int y) {
+		Queue<TreeNode> queue = new LinkedList<>();
+		queue.add(root);
+		while (!queue.isEmpty()) {
+            boolean foundX = false;
+            boolean foundY = false;
+			int n = queue.size();
+			for (int i = 0; i < n; i++) {
+				TreeNode node = queue.poll();
+                if(node.val==x){
+                    foundX = true;
+                }
+                if(node.val==y){
+                    foundY = true;
+                }
+                if(node.left!=null && node.right!=null){
+                    if(node.left.val==x && node.right.val==y){
+                        return false;
+                    }
+                    if(node.left.val==y && node.right.val==x){
+                        return false;
+                    }
+                }
+				if (node.left != null) {
+					queue.add(node.left);
+				}
+				if (node.right != null) {
+					queue.add(node.right);
+				}
+			}
+            if(foundX==true && foundY == true){
+                return true;
+            }
+            //if already found one of x or y, no need to traverse further.
+            if(foundX==true || foundY == true){
+                return false;
+            }       
+		}
+        return false;
+    }
+}
+Using dfs 
+Using dfs to implement bfs. Using parent pointer to get ans. Top voted LC Solution.
+//dfs
+class Solution {
+    TreeNode xParent = null;
+    TreeNode yParent = null;
+    int xDepth = -1, yDepth = -1;
+    
+    public boolean isCousins(TreeNode root, int x, int y) {
+        getDepthAndParent(root, x, y, 0, null);
+        return xDepth == yDepth && xParent != yParent? true: false;
+    }
+    //get both the depth and parent for x and y
+    public void getDepthAndParent(TreeNode root, int x, int y, int depth, TreeNode parent){
+        if(root == null){
+            return;
+        }
+        if(root.val == x){
+            xParent = parent;
+            xDepth = depth;
+        }else if(root.val == y){
+            yParent = parent;
+            yDepth = depth;
+        }       
+        getDepthAndParent(root.left, x, y, depth + 1, root);
+        getDepthAndParent(root.right, x, y, depth + 1, root);
+    }
+}
+637. Average of Levels in Binary Tree Easy LeetCode Problem. Tags: BT. 22 May, 2022
+Using Queue
+class Solution {
+    public List<Double> averageOfLevels(TreeNode root) {
+		List<Double> res = new ArrayList<>();
+		if (root == null)
+			return res;
+		Queue<TreeNode> queue = new LinkedList<>();
+		queue.add(root);
+		while (!queue.isEmpty()) {
+            double sum =0.0;
+            int count=0;
+			int n = queue.size();
+			for (int i = 0; i < n; i++) {
+				TreeNode node = queue.poll();
+                sum+=node.val;
+                count++;
+				if (node.left != null) {
+					queue.add(node.left);
+				}
+				if (node.right != null) {
+					queue.add(node.right);
+				}
+			}
+			res.add(sum/count);
+		}
+		return res;
+	}
+}
+Using dfs.
+This is dfs used to implement bfs. Note bold lines.
+class Node{
+    double sum;
+    int count;
+    public Node(double sum, int count){
+        this.sum = sum;
+        this.count = count;
+    }
+}
+class Solution {
+    public List<Double> averageOfLevels(TreeNode root) {
+		List<Node> list = new ArrayList<>();
+        dfs(root, 0, list);
+        List<Double> result = new LinkedList<>();
+        for(Node node: list){
+            result.add(node.sum/node.count);
+        }
+        return result;
+    }
+    void dfs(TreeNode root, int level,List<Node> list){
+        if(root==null){
+            return;
+        }
+        if(level==list.size()){
+            Node node = new Node((double)root.val, 1);
+            list.add(node);
+        }else{
+            // Node temp = list.get(level);
+            // temp.sum +=(double)root.val;
+            // temp.count++;
+            // list.set(level, temp);
+            list.get(level).sum +=(double)root.val;
+            list.get(level).count+=1;
+        }
+        dfs(root.left, level+1, list);
+        dfs(root.right, level+1, list);
+	}
+}
+107. Binary Tree Level Order Traversal II Medium LeetCode Problem. Tags: BT, Level Order Traversal. 23 May, 2022
+Example 1:
+
+Input: root = [3,9,20,null,null,15,7]
+Output: [[15,7],[9,20],[3]]
+Example 2:
+Input: root = [1]
+Output: [[1]]
+Example 3:
+Input: root = []
+Output: []
+
+Given the root of a binary tree, return the bottom-up level order traversal of its nodes' values. (i.e., from left to right, level by level from leaf to root).
+Using Queue
+class Solution {
+    public List<List<Integer>> levelOrderBottom(TreeNode root){
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        if (root == null){
+            return res;
+        }
+        Queue<TreeNode>queue = new LinkedList<>();
+        queue.add(root);
+        int height =0;
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            for(int i=0;i<n;i++){
+                TreeNode node = queue.poll();
+                if(height==res.size()){
+                    res.add(0, new ArrayList<Integer>());
+                }
+                res.get(res.size()-height-1).add(node.val);
+                if(node.left!=null){
+                    queue.add(node.left);
+                }
+                if(node.right!=null){
+                    queue.add(node.right);
+                }
+            }
+            height++; //very important. It represents the point where we moved to next level.
+        }
+        return res;
+    }
+}
+Modified BFS using DFS Approach(Usually Preorder Traversal)
+public List<List<Integer>> levelOrderBottom(TreeNode root){
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        levelHelper(res, root, 0);
+        return res;
+    }
+    
+    public void levelHelper(List<List<Integer>> res, TreeNode root, int height) {
+        if (root == null) return;
+        if (height == res.size()) {
+            res.add(0, new ArrayList<Integer>());
+        }
+        res.get(res.size()-height-1).add(root.val);
+        levelHelper(res, root.left, height+1);
+        levelHelper(res, root.right, height+1);
+    }
+103. Binary Tree Zigzag Level Order Traversal Medium LeetCode Problem. Tags: BT, Level Order Traversal. 23 May, 2022
+Using Queue.
+class Solution {
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        if(root==null){
+            return res;
+        }
+        int height =0;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            for(int i=0;i<n;i++){
+                TreeNode node = queue.poll();
+                if (height == res.size()){
+                    res.add(new ArrayList<Integer>());
+                }
+                if(height%2==0){
+                    res.get(height).add(node.val);
+                }else{
+                    res.get(height).add(0, node.val);
+                }
+                if(node.left!=null){
+                    queue.add(node.left);
+                }
+                if(node.right!=null){
+                    queue.add(node.right);
+                }
+            }
+            height++;
+        }
+        return res;
+    }
+}
+Solution using modified level order traversal code
+public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        int height = maxDepth(root);
+        List<List<Integer>> treeList = new ArrayList<>();        
+        for(int depth=1;depth<=height;depth++){
+            List<Integer> levelList = new ArrayList<>();
+            if(depth%2==1){
+                getLevelOrderOdd(root,depth, levelList);
+            }else{
+                getLevelOrderEven(root,depth, levelList);
+            }
+            treeList.add(levelList);
+        }
+        return treeList;
+    }
+    public void getLevelOrderOdd(TreeNode root,int depth,List<Integer> levelList){
+        if(root==null)return;
+        if(depth ==1){
+            levelList.add(root.val);
+            return;
+        }
+        getLevelOrderOdd(root.left, depth-1, levelList);
+        getLevelOrderOdd(root.right, depth-1, levelList);
+    }
+    public void getLevelOrderEven(TreeNode root,int depth,List<Integer> levelList){
+        if(root==null)return;
+        if(depth ==1){
+            levelList.add(root.val);
+            return;
+        }
+        getLevelOrderEven(root.right, depth-1, levelList);
+        getLevelOrderEven(root.left, depth-1, levelList);
+    }
+
+Solution using DFS approach for BFS
+class Solution {
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        levelHelper(res, root, 0);
+        return res;
+    }
+    
+    public void levelHelper(List<List<Integer>> res, TreeNode root, int height) {
+        if (root == null) return;
+        if (height == res.size()) {
+            res.add(new LinkedList<Integer>());
+        }
+        if(height%2==0){
+             res.get(height).add(root.val);
+        }else{
+             res.get(height).add(0, root.val);
+        }
+        levelHelper(res, root.left, height+1);
+        levelHelper(res, root.right, height+1);
+    }
+}
+Reverse Zigzag level order traversal. 
+Combination of zigzag and level order traversal. One flaw, it gives different answers when height is even vs odd.
+public List<List<Integer>> levelOrderBottom(TreeNode root){
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        levelHelper(res, root, 0);
+        return res;
+    }
+    
+    public void levelHelper(List<List<Integer>> res, TreeNode root, int height) {
+        if (root == null) return;
+        if (height == res.size()) {
+            res.add(0, new ArrayList<Integer>());
+        }
+        if(height%2==1){
+             res.get(res.size()-height-1).add(0, root.val);
+        }else{
+             res.get(res.size()-height-1).add(root.val);
+        }
+        levelHelper(res, root.left, height+1);
+        levelHelper(res, root.right, height+1);
+    }
+
+Left View of Binary Tree. Not on Leetcode. Solution similar to right side view.
+199. Binary Tree Right Side View Medium LeetCode Problem. Tags: BT, Level Order Traversal. 23 May, 2022
+
+Using Queue. Own Implementation. Just modify level order traversal by first adding elements of right sub tree in queue. Also only add first element of a level.
+class Solution{
+    public List<Integer> rightSideView(TreeNode root){
+        List<Integer> list = new ArrayList<>();
+        if(root==null){
+            return list;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            for(int i =0;i<n;i++){
+                //first element in every level would come in right side view
+                if(i==0){
+                    list.add(queue.peek().val);
+                }
+                TreeNode node = queue.remove();
+                //adding right element before left element in queue is very important.
+                if(node.right!=null){
+                    queue.add(node.right);
+                }
+                if(node.left!=null){
+                    queue.add(node.left);
+                }
+            }
+        }
+        return list;
+    }
+}
+Using Queue
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if(root==null){
+            return list;
+        }
+        int max = 0;
+        int height = 0;
+        Queue<TreeNode>queue = new LinkedList<>();
+        queue.add(root);
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            for(int i=0;i<n;i++){
+                TreeNode node = queue.poll();
+                if(height==max){
+                    list.add(node.val);
+                    max++;
+                }
+                if(node.right!=null){
+                    queue.add(node.right);
+                }
+                if(node.left!=null){
+                    queue.add(node.left);
+                }
+            }
+            height++;
+        }
+        return list;
+    }
+}
+
+Implement bfs using dfs.
+Optimized Solution for above implementation. Seen from GFG. However basic intuition is same to solve the problem.
+class Solution {
+    int maxLevel;
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        maxLevel = 0;
+        dfs(root,1, list);
+        return list;
+    }
+    private void dfs(TreeNode root,int level,List<Integer> list){
+        if(root==null)return;
+        if(level>maxLevel){
+            list.add(root.val);
+            maxLevel++;
+        }
+        dfs(root.right, level+1, list);    //in case of left view, call left child first.
+        dfs(root.left, level+1, list);
+    }
+}
+(Ignore)Own Implementation. Not optimized. Just Do level order traversal and print 1st element of each level. As first element is printed, mark a flag and move onto next level.
+class Solution {
+    int firstElementFlag;
+    public List<Integer> rightSideView(TreeNode root) {
+        int height = maxDepth(root);
+        List<Integer> nodeList = new ArrayList<>();
+        for(int level =1;level<=height;level++){
+            firstElementFlag = 0;
+            rightSideViewUtil(root,level, nodeList);
+        }
+        return nodeList;
+    }
+    private void rightSideViewUtil(TreeNode root,int level,List<Integer> nodeList){
+        if(root==null)return;
+        if(firstElementFlag == 1)return;
+        if(level==1){
+            nodeList.add(root.val);
+            firstElementFlag = 1;
+        }else{
+            rightSideViewUtil(root.right, level-1, nodeList);
+            rightSideViewUtil(root.left, level-1, nodeList);
+        }
+        
+    }
+    private int maxDepth(TreeNode root){
+        if(root==null){
+            return 0; 
+        }
+        return 1+Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+116. Populating Next Right Pointers in Each Node Medium LeetCode Problem. Tags: BT, Level Order Traversal. 23 May, 2022
+Concept similar to Right side view of BT
+Important constraint: You are given a perfect binary tree where all leaves are on the same level, and every parent has two children.
+Using Queue
+class Solution {
+    public Node connect(Node root) {
+        if(root==null){
+            return null;
+        }
+        int height = 0;
+        int max = 0;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            Node prev = null;
+            for(int i=0;i<n;i++){
+                Node node = queue.poll();
+                if(height==max){
+                    node.next = null;
+                    prev = node;
+                    max++;
+                }else if(height<max){
+                    node.next = prev;
+                    prev = node;
+                }
+                if(node.right!=null){
+                    queue.add(node.right);
+                }
+                if(node.left!=null){
+                    queue.add(node.left);
+                }
+            }
+            height++;
+        }
+        return root; 
+    }
+}
+Using dfs for bfs approach. Top voted LC Solution. See again and again
+public class Solution {
+    public Node connect(Node root) {
+        compute(root);
+        return root;
+    }
+    public void compute(Node root){
+        if(root==null || root.left==null) return;
+        
+        root.left.next=root.right;
+        if(root.next!=null && root.right!=null)   //bold one is redundant condition.
+            root.right.next=root.next.left;
+        
+        compute(root.left);
+        compute(root.right);
+    }
+}
+Populating Next Right Pointers in Each Node II(Can be any tree)
+Solve again later
+Top view and Bottom view of a Binary Tree Not on LeetCode. GFG Problem. Tags: BT, level Order Traversal. 22 May, 2022
+Using Queue(Anuj Bhaiya Video)
+class Pair{
+    Node treeNode;
+    int hd;
+    public Pair(Node treeNode, int hd){
+        this.treeNode = treeNode;
+        this.hd = hd;
+    }
+}
+class Solution{
+    static ArrayList<Integer> topView(Node root){
+        Queue<Pair>queue = new LinkedList<>();
+        queue.add(new Pair(root,0));
+        Map<Integer, Integer> map = new TreeMap<>();
+        //treemap gives keys in sorted order. //is it ordered map.
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            for(int i=0;i<n;i++){
+                Pair current = queue.poll();
+                if(!map.containsKey(current.hd)){
+                    map.put(current.hd,current.treeNode.data);
+                }
+                if(current.treeNode.left!=null){
+                    queue.add(new Pair(current.treeNode.left, current.hd-1));
+                }
+                if(current.treeNode.right!=null){
+                    queue.add(new Pair(current.treeNode.right, current.hd+1));
+                }
+            }
+        }
+        
+        // ArrayList<Integer> result = new ArrayList<>();
+        // for (Map.Entry<Integer, Integer> element :map.entrySet()){
+        //     result.add(element.getValue());
+        // }
+        return new ArrayList<>(map.values());
+    }
+}
+
+
+Bottom View of Binary Tree Medium Not on LeetCode. GFG Problem. Tags: BT, Level Order Traversal. 22 May, 2022
+Using Queue(Anuj Bhaiya Video)
+Same as above solution. Just keep on putting values in map. Do not stop by putting it once. Values at the ned will represent bottom view of BT. How beautiful it is!
+class Pair{
+    Node treeNode;
+    int hd;
+    public Pair(Node treeNode, int hd){
+        this.treeNode = treeNode;
+        this.hd = hd;
+    }
+}
+class Solution{
+    public ArrayList <Integer> bottomView(Node root){
+        Queue<Pair>queue = new LinkedList<>();
+        queue.add(new Pair(root,0));
+        Map<Integer, Integer> map = new TreeMap<>();
+        //treemap gives keys in sorted order. //is it ordered map.
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            for(int i=0;i<n;i++){
+                Pair current = queue.poll();
+                map.put(current.hd,current.treeNode.data);
+                if(current.treeNode.left!=null){
+                    queue.add(new Pair(current.treeNode.left, current.hd-1));
+                }
+                if(current.treeNode.right!=null){
+                    queue.add(new Pair(current.treeNode.right, current.hd+1));
+                }
+            }
+        }
+        return new ArrayList<>(map.values());
+    }
+}
+Vertical Order traversal of Binary Tree Hard On LeetCode. But solved on Interview Bit. Tags: BT, Level Order Traversal. 22 May, 2022
+Using Queue.
+Horizontal Distance concept checked in the Question. Question on LC is wrong. 
+class Pair{
+    TreeNode treeNode;
+    int hd;
+    public Pair(TreeNode treeNode, int hd){
+        this.treeNode = treeNode;
+        this.hd = hd;
+    }
+}
+public class Solution {
+    public ArrayList<ArrayList<Integer>> verticalOrderTraversal(TreeNode root) {
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        if(root==null){
+            return result;
+        }
+        Queue<Pair>queue = new LinkedList<>();
+        queue.add(new Pair(root,0));
+        Map<Integer, ArrayList<Integer>> map = new TreeMap<>();
+        //treemap gives keys in sorted order. //is it ordered map.
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            for(int i=0;i<n;i++){
+                Pair current = queue.poll();
+                if(!map.containsKey(current.hd)){
+                    map.put(current.hd,new ArrayList<>());
+                }
+                map.get(current.hd).add(current.treeNode.val);
+                if(current.treeNode.left!=null){
+                    queue.add(new Pair(current.treeNode.left, current.hd-1));
+                }
+                if(current.treeNode.right!=null){
+                    queue.add(new Pair(current.treeNode.right, current.hd+1));
+                }
+            }
+        }
+        
+        for (Map.Entry<Integer, ArrayList<Integer>> element :map.entrySet()){
+            result.add(element.getValue());
+        }
+        return result;
+    }
+}
+
+Vertical Sum of Binary Tree GFG Problem, On InterviewBit. Tags: BT, Level Order Traversal. 23 May, 2022
+Using Queue. Horizontal Distance concept checked.
+class Pair{
+    Node node;
+    int hd;
+    public Pair(Node node, int hd){
+        this.node = node;
+        this.hd = hd;
+    }
+}
+class Solution{
+    public ArrayList <Integer> verticalSum(Node root) {
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(root,0));
+        Map<Integer, Integer>map = new TreeMap<>();
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            for(int i=0;i<n;i++){
+                Pair current = queue.poll();
+                map.put(current.hd, map.getOrDefault(current.hd,0)+current.node.data);
+                if(current.node.left!=null){
+                    queue.add(new Pair(current.node.left, current.hd-1));
+                }
+                if(current.node.right!=null){
+                    queue.add(new Pair(current.node.right, current.hd+1));
+                }
+            }
+        }
+        return new ArrayList<>(map.values());
+    }
+}
+
+2 Trees Questions
+Symmetric Tree/(GFG)Check if two trees are Mirror of each other.
+Merge 2 binary trees
+Same Trees/ Identical Binary Tree?
+Subtree of Another Tree 
+Find Duplicate Subtrees
+Invert Binary Tree/(GFG)Mirror of Binary tree
+
+
+101. Symmetric Tree Easy LeetCode Problem. Tags: BT. 24 May, 2022
+Recursive Solution
+Approach seen from GFG. Optimized by seeing top leetcode discuss comment.
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        return isSymmetricUtil(root.left, root.right);
+    }
+    public boolean isSymmetricUtil(TreeNode root1, TreeNode root2){
+        if(root1==null&&root2==null)return true;
+        if(root1==null||root2==null)return false;
+        if(root1.val!=root2.val){
+            return false;
+        }
+        return  isSymmetricUtil(root1.left, root2.right) &&  isSymmetricUtil(root1.right, root2.left);
+    }
+}
+Using Queue
+Iterative approach. Use a queue. Seen from GFG
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root.left);
+        queue.add(root.right);
+        while (queue.isEmpty()==false)
+        {
+            TreeNode node1 =queue.remove();
+            TreeNode node2 = queue.remove();
+            if (node1==null && node2==null)
+                continue;
+            if (node1==null || node2==null)
+                return false;
+ 
+            if (node1.val != node2.val)
+                return false;
+            queue.add(node1.left);
+            queue.add(node2.right);
+            queue.add(node1.right);
+            queue.add(node2.left);
+        }
+        return true;
+    }
+}
+
+617. Merge Two Binary Trees Easy LeetCode Problem. Tags: BT. 24 May, 2022
+Using Recursion. Do it in place. Modify the first tree and return its root.
+class Solution {
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        if(root1==null && root2==null){
+            return null;
+        }
+        if(root1==null){
+            return root2;
+        }
+        if(root2==null){
+            return root1;
+        }
+        root1.val = root1.val + root2.val;
+        root1.left = mergeTrees(root1.left, root2.left);
+        root1.right = mergeTrees(root1.right, root2.right);
+        return root1;
+    }
+}
+Follow up question: 1932. Merge BSTs to Create Single BST Hard
+100. Same Tree Easy LeetCode Problem. Tags: BT. 21 May, 2022. Blind 75 Problem
+Using Recursion.
+Its DFS(Preorder traversal). First check if value of root nodes match. If not return false. If yes, do the same process for left and right subtrees. Check is left subtree of both are same tree and right subtree of both are same tree.
+Time complexity : O(N), where N is a number of nodes in the tree, since one visits each node exactly once. Space complexity O(log(N)) in the best case of completely balanced tree and O(N) in the worst case of completely unbalanced tree, to keep a recursion stack.
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q){
+        if(p==null&&q==null){
+            return true;
+        }
+        if(p==null||q==null){
+            return false;
+        }
+        if(p.val!=q.val){
+            return false;
+        }
+        
+        return isSameTree(p.left, q.left)&&isSameTree(p.right, q.right);
+    }
+}
+Iterative Preorder traversal(DFS)using Stack
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        List<Integer> list = new ArrayList<>();
+        if(p==null&&q==null){
+            return true;
+        }
+        if(p==null||q==null){
+            return false;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(p);
+        stack.push(q);
+        while (!stack.isEmpty()){
+            TreeNode node1 = stack.pop();
+            TreeNode node2 = stack.pop();
+            if(node1.val!=node2.val){
+                return false;
+            }
+            if(node1.right!=null && node2.right!=null){
+                stack.push(node1.right);
+                stack.push(node2.right);
+            }else if(node1.right!=null || node2.right!=null){
+                return false;
+            }
+            
+            if(node1.left!=null && node2.left!=null){
+                stack.push(node1.left);
+                stack.push(node2.left);
+            }else if(node1.left!=null || node2.left!=null){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+BFS(Level Order Traversal)and simultaneously compare elements
+572. Subtree of Another Tree EasyLeetCode Problem. Tags: BT. 21 May, 2022. Blind 75 Problem
+Example 1:
+Input: root = [3,4,5,1,2], subRoot = [4,1,2]
+Output: true
+Example 2:
+
+Input: root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]
+Output: false
+
+Preorder traversal(DFS)using Recursion.
+Time complexity: O(m*n) where m is number of nodes of the first tree, and n is number of nodes of the second tree.
+
+class Solution {
+    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+        if(root==null){
+            return false;
+        }
+        if(isSameTree(root,subRoot)){
+            return true;
+        }
+        return isSubtree(root.left, subRoot)||isSubtree(root.right, subRoot);
+    }
+}
+Iterative DFS(Preorder Traversal) using Stack:
+652. Find Duplicate Subtrees Medium LeetCode Problem. Tags: BT. 21 May, 2022
+Example 1:
+
+Input: root = [1,2,3,4,null,2,4,null,null,4]
+Output: [[2,4],[4]]
+Example 2:
+
+Input: root = [2,1,1]
+Output: [[1]]
+Example 3:
+
+Input: root = [2,2,2,3,null,3,null]
+Output: [[2,3],[3]]
+Recursive solution Using dfs(Post order traversal)
+Maintain a HashMap of <String,Integer>. Key is Preorder traversal of a node in String representation. We need unique key in HashMap. For that, we need values from left and right subtree first, only then we can make a String key. Ie why Post order traversal.
+2 tricky test cases
+Input:[0,0,0,0,null,null,0,null,null,null,0]
+Output:[[0],[0,null,0]]
+Expected:[[0]]
+
+
+Input:[2,1,11,11,null,1]
+Output:[[11,1]]
+Expected:[]
+
+class Solution {
+    Map<String, Integer> map;
+    public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
+        map = new HashMap<>();
+        List<TreeNode> list = new ArrayList<>();
+        dfs(root, list);
+        return list;
+    }
+    String dfs(TreeNode root,List<TreeNode> list){
+        if(root==null){
+            return "x";      //for tricky test case 1
+        }
+        String left = dfs(root.left, list);
+        String right = dfs(root.right, list);
+        String ans = Integer.toString(root.val)+"x"+left+"x"+right;    //for tricky test case 2
+        map.put(ans, map.getOrDefault(ans,0)+1);
+        if(map.get(ans)==2){
+            list.add(root);
+        }
+        return ans;
+    }
+}
+
+The way to traverse the whole tree is postorder. The way to construct serial is preorder.
+For those who thinks this should be preorder instead, it's actually postorder indeed. Even the cur.val is in the beginning of string serial, it doesn't make the algorithm preorder. The order of value in the string serial doesn't really matter, it's the order that we process subtrees or current tree node first that matters. As the string serial is adding to the HashMap and to the result list (this is when we done processing the current tree node, adding cur.val to serial is not) after we processing things for the left and right subtrees, this is still postorder.
+226. Invert Binary Tree Easy.Tags: BT. 10 May,2022
+Example 1:
+
+Input: root = [4,2,7,1,3,6,9]
+Output: [4,7,2,9,6,3,1]
+Example 2:
+
+Input: root = [2,1,3]
+Output: [2,3,1]
+Example 3:
+Input: root = []
+Output: []
+
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        if(root==null){
+            return root;
+        }
+        TreeNode node = root.left;
+        root.left = invertTree(root.right);
+        root.right= invertTree(node);
+        return root;
+    }
+}
+Similar GFG Question. Mirror Tree Easy Given a Binary Tree, convert it into its mirror.
+class Solution {
+    void mirror(Node root) {
+        if(root==null){
+            return;
+        }
+        Node temp = root.left;
+        root.left = root.right;
+        root.right= temp;
+        mirror(root.left);
+        mirror(root.right);
+    }
+}
+Height Problems
+Height of Binary Tree
+Min Depth of Binary Tree
+Check if BT is balanced
+Diameter of Binary tree
+Minimum Time To Burn A Binary Tree Starting From The Leaf Node
+
+110. Balanced Binary Tree EasyTags: Binary Tree. 3 July, 2022
+Example 1:
+
+Input: root = [3,9,20,null,null,15,7]
+Output: true
+Example 2:
+
+Input: root = [1,2,2,3,3,null,null,4,4]
+Output: false
+Example 3:
+Input: root = []
+Output: true
+
+Approach by NeetCode
+Basic DFS. Just use an int[] array or Pair object as return type.
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return dfs(root)[0]==1?true:false;
+    }
+    int[] dfs(TreeNode root){
+        if(root==null){
+            return new int[]{1, 0};
+        }
+        int[] left = dfs(root.left);
+        int[] right = dfs(root.right);
+        int balanced = (left[0]==1 && right[0]==1 && Math.abs(left[1] - right[1])<=1)?1:0;
+        return new int[]{balanced, 1 + Math.max(left[1], right[1])};
+    }
+}
+Calculating Height at each call stack.
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        if(root==null)return true;
+        int height = maxDepth(root.left) - maxDepth(root.right);
+        if(Math.abs(height)>1){
+            return false;
+        }
+        if(isBalanced(root.left)==false){
+            return false;
+        }
+        if(isBalanced(root.right)==false){
+            return false;
+        }
+        return true;
+    }
+    int maxDepth(TreeNode root){
+        if(root==null)return 0;
+        return 1+Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+}
+Using Height as an object in method parameters. Any change in object is reflected in called method.
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return isBalancedUtil(root,new Height());
+    }
+    private boolean isBalancedUtil(TreeNode root, Height height){
+        if(root==null){
+            height.height = 0;
+            return true;
+        }
+        Height lHeight = new Height();
+        Height rHeight = new Height();
+        boolean isLeftBalanced = isBalancedUtil(root.left, lHeight);
+        if(isLeftBalanced == false)return false;
+        boolean isRightBalanced = isBalancedUtil(root.right, rHeight);
+        if(isRightBalanced == false)return false;
+        
+        height.height = Math.max(lHeight.height, rHeight.height)+1;
+        if(Math.abs(lHeight.height-rHeight.height)>1)return false;
+        return true;
+    }
+}
+Using DFS. Top voted Leetcode solution
+boolean ans = true;
+public boolean isBalanced(TreeNode root) {
+    if(root == null) return ans;
+    dfs(root, 0);
+    return ans;
+}
+
+
+private int dfs(TreeNode root, int depth){
+    if(root == null) return depth;
+    
+    int left = dfs(root.left, depth + 1);
+    int right = dfs(root.right, depth + 1);
+    if(Math.abs(left - right) > 1) ans = false;
+    
+    return Math.max(left, right);
+}
+
+
+Further Optimized Solution. Top voted Leetcode solution
+
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return height(root) != -1;
+    }
+    
+    private int height(TreeNode root){
+        if(root == null){
+            return 0;
+        }
+        int leftHeight = height(root.left);
+        if(leftHeight == -1){
+            return -1;
+        }
+        int rightHeight = height(root.right);
+        if(rightHeight == -1){
+            return -1;
+        }
+        if(Math.abs(leftHeight - rightHeight) > 1){
+            return -1;
+        }
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+}
+104. Maximum Depth of Binary Tree Easy. Also called height of BT.
+public int maxDepth(TreeNode root) {
+        if(root==null)return 0;
+        return 1+Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+Related Question. 111. Minimum Depth of Binary Tree Easy
+ 
+Example 1:
+
+Input: root = [3,9,20,null,null,15,7]
+Output: 2
+Example 2:
+Input: root = [2,null,3,null,4,null,5,null,6]
+Output: 5
+ 
+
+public int minDepth(TreeNode root) {
+        if(root==null)return 0;
+        if(root.left==null && root.right==null)return 1;
+        if(root.left==null)return 1 + minDepth(root.right);
+        if(root.right==null)return 1+minDepth(root.left);
+        return 1+ Math.min(minDepth(root.left), minDepth(root.right));
+    }
+543. Diameter of Binary Tree Easy. Here Diameter means number of edges and not nodes. If it means number of nodes, then add 1 to leftSubTreeHeight + rightSubTreeHeight. Tags: BT, DP.
+Approach given in GFG:
+public int diameterOfBinaryTree(TreeNode root) {
+        if(root == null)return 0;
+        if(root.left==null && root.right==null)return 0;
+        int leftSubTreeHeight = maxDepth(root.left);
+        int rightSubTreeHeight = maxDepth(root.right);
+        return Math.max(leftSubTreeHeight + rightSubTreeHeight, Math.max(diameterOfBinaryTree(root.left),diameterOfBinaryTree(root.right)));
+    }
+    public int maxDepth(TreeNode root) {
+        if(root==null)return 0;
+        return 1+Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+Top Voted approach by Leetcode user. Using class variable max.
+public class Solution {
+    int max = 0;
+    
+    public int diameterOfBinaryTree(TreeNode root) {
+        maxDepth(root);
+        return max;
+    }
+    
+    private int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+        
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        
+        max = Math.max(max, left + right);
+        
+        return Math.max(left, right) + 1;
+    }
+}
+DP approach
+class Solution {
+    public int diameterOfBinaryTree(TreeNode root){
+        int[] array = {Integer.MIN_VALUE};
+        helper(root, array);
+        return array[0];
+    }
+    public int helper(TreeNode root, int[] array){
+        //base statement
+        if(root == null)return 0;
+        
+        //hypothesis
+        int left = helper(root.left, array);
+        int right = helper(root.right, array);
+        
+        //induction step
+        int temp = Math.max(left,right)+1;
+        int ans = left+right;
+        array[0] = Math.max(array[0], ans);
+        return temp;
+    }
+
+}
+
+Minimum Time To Burn A Binary Tree Starting From The Leaf Node. Not on LC. GFG Problem. Tags: BT, Hashing, Level Order Traversal.23 May, 2022 
+Did not understand solution. See again. 2 solutions: Using BFS, Using dfs and height wala concept.
+
+
+545. Boundary of Binary Tree (Medium). (LeetCode Premium)(Boundary Traversal of binary tree)GFG Problem. Tags: BT, DFS. 24 May,2022
+Using Simple DFS. Divide the problem into small problems. Very Peculiar recursion problem. Different from other problems.
+class Solution{
+    ArrayList<Integer> list;
+	ArrayList <Integer> boundary(Node root){
+	    list = new ArrayList<>();
+	    if(root==null){
+	        return list;
+	    }
+	    list.add(root.data);
+	    leftTraverse(root.left);   //do not include leftmost leaf node
+	    leafTraverse(root.left);      //include all leaf nodes
+	    //	leafTraverse(root);  fails for test case Input: 1, Give Output: 1 1
+	    leafTraverse(root.right);    
+	    rightTraverse(root.right);    //except rightmost leaf node, include all right view nodes in reverse order.
+	    return list;
+	}
+	void leftTraverse(Node root){
+	    if((root==null) || (root.left==null && root.right==null)){
+	        return;
+	    }
+	    list.add(root.data);
+	    if(root.left!=null){
+	        leftTraverse(root.left);
+	    }else if(root.right!=null){
+	        leftTraverse(root.right);
+	    }
+	}
+	void leafTraverse(Node root){
+	    if(root==null){
+	        return;
+	    }
+	    if(root.left==null && root.right == null){
+	        list.add(root.data);
+	        return;
+	    }
+	    leafTraverse(root.left);
+	    leafTraverse(root.right);
+	}
+	void rightTraverse(Node root){
+	    if((root==null) || (root.left == null && root.right==null)){
+	        return;
+	    }
+	    if(root.right!=null){
+	        rightTraverse(root.right);
+	    }else if(root.left!=null){
+	        rightTraverse(root.left);
+	    }
+	    list.add(root.data);   //for reverse printing
+	}
+}
+Binary Tree problems involving String
+Construct String from Binary Tree
+Construct Binary Tree from String representation(Not done)
+Serialize and Deserialize Binary Tree
+(Not String but related to 2.)Construct Binary Tree from Preorder and Inorder Traversal
+Binary Tree Paths Easy
+606. Construct String from Binary Tree Easy LeetCode Problem. Tags: BT. 21 May, 2022
+Question on above concept only.
+public String tree2str(TreeNode root) {
+        if(root==null){
+            return "";
+        }
+        String left = tree2str(root.left);
+        String right =tree2str(root.right);
+        String result = Integer.toString(root.val);
+        if(left=="" && right==""){
+            return result;
+        }
+        if(left==""){
+            return result+"()"+"("+right+")";
+        }
+        if(right==""){
+            return result + "("+left+")";
+        }
+        return result + "("+left+")" + "("+right+")";
+    }
+Solution using StringBuilder. 
+Works faster than concatenation operation which is O(n) but sb.append() is O(1)
+class Solution {
+    public String tree2str(TreeNode root){
+        StringBuilder sb = new StringBuilder();
+        helper(root,sb);
+        return sb.toString();
+    }
+    public void helper(TreeNode root, StringBuilder sb) {
+        sb.append(root.val);
+        if(root.left==null && root.right == null){
+            return;
+        }
+        if(root.left==null){
+            sb.append("()").append("(");
+            helper(root.right,sb);
+            sb.append(")");
+            return;
+        }
+        if(root.right==null){
+            sb.append("(");
+            helper(root.left,sb);
+            sb.append(")");
+            return;
+        }
+        sb.append("(");
+        helper(root.left,sb);
+        sb.append(")");
+        sb.append("(");
+        helper(root.right,sb);
+        sb.append(")");
+        return;
+    }
+}
+
+105. Construct Binary Tree from Preorder and Inorder Traversal Medium).LeetCode Problem. Tags: Binary Tree
+Note for a given preinorder and inorder there is a unique BT.
+For each root node, search for its index in inorder array. Then values to left of inorder array are in root’s left sub tree and to its right are in its right subtree. Time complexity = O(n2). Space complexity = O(1). For Left skewed tree, For each element in preorder, element in inorder is at the end. So for each i=0…n-1, there are n comparisons, so total n2.
+class Solution {
+    int preIndex;
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int n= preorder.length;
+        preIndex = 0;
+        return buildTreeUtil(preorder, inorder, 0, n-1);
+    }
+    TreeNode buildTreeUtil(int[] preorder, int[] inorder, int inStart, int inEnd){
+        if(inStart>inEnd){
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[preIndex]);
+        preIndex++;
+        if(inStart==inEnd){
+            return root;
+        }
+        int inIndex = linearSearch(inorder, inStart, inEnd, root.val);
+        root.left = buildTreeUtil(preorder, inorder, inStart, inIndex-1);
+        root.right = buildTreeUtil(preorder, inorder, inIndex+1, inEnd);
+        return root;
+    }
+    int linearSearch(int[] inorder, int inStart, int inEnd, int value){
+        for(int i=inStart; i<=inEnd;i++){
+            if(inorder[i]==value){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+Put values and corresponding index of inorder array in HashMap. Time complexity =O(n). Space complexity=O(n).
+class Solution {
+    int preIndex;
+    HashMap<Integer, Integer> map;
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int n= preorder.length;
+        preIndex = 0;
+        map = new HashMap<>();
+        for(int i=0;i<n;i++){
+            map.put(inorder[i], i);
+        }
+        return buildTreeUtil(preorder, inorder, 0, n-1);
+    }
+    TreeNode buildTreeUtil(int[] preorder, int[] inorder, int inStart, int inEnd){
+        if(inStart>inEnd){
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[preIndex]);
+        preIndex++;
+        if(inStart==inEnd){
+            return root;
+        }
+        // int inIndex = linearSearch(inorder, inStart, inEnd, root.val);
+        int inIndex = map.get(root.val);
+        root.left = buildTreeUtil(preorder, inorder, inStart, inIndex-1);
+        root.right = buildTreeUtil(preorder, inorder, inIndex+1, inEnd);
+        return root;
+    }
+    int linearSearch(int[] inorder, int inStart, int inEnd, int value){
+        for(int i=inStart; i<=inEnd;i++){
+            if(inorder[i]==value){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+Using Stack, Do It later
+257. Binary Tree Paths Easy LeetCode Problem. Tags: Binary Tree, Backtracking. 10 May 2022.
+Using String class. Yet an interviewer might ask you for further optimization when he or she saw a string concatenation. A string concatenation is just too costly. A StringBuilder can be used although a bit tricky since it is not immutable like string is.
+In Java, String concatenation operation is O(n)???
+class Solution {
+    List<String> result;
+    public List<String> binaryTreePaths(TreeNode root) {
+        result = new ArrayList<>();
+        traverse(root, "");
+        return result;
+    }
+    void traverse(TreeNode root, String path){
+        if(root==null){
+            return;
+        }
+        path += Integer.toString(root.val);
+        if(root.left!=null || root.right!=null){
+            path = path +"->";
+        }else{
+            result.add(path);
+            return;
+        }
+        traverse(root.left,path);
+        traverse(root.right, path);
+    }
+}
+Using StringBuilder class
+class Solution {
+    List<String> result;
+    public List<String> binaryTreePaths(TreeNode root) {
+        result = new ArrayList<>();
+        // StringBuilder path =new StringBuilder("Hello ");
+        // sb.append("Java");
+        traverse(root, new StringBuilder(""));
+        return result;
+    }
+    void traverse(TreeNode root, StringBuilder path){
+        if(root==null){
+            return;
+        }
+        String str = Integer.toString(root.val);
+        path.append(str);
+        if(root.left!=null || root.right!=null){
+            path = path.append("->");
+        }else{
+            result.add(path.toString());
+            path.setLength(path.length() - str.length());
+            return;
+        }
+        traverse(root.left,path);
+        traverse(root.right, path);
+        path.setLength(path.length() - str.length()-2);
+    }
+}
+Minor optimization using String Builder class. Read comments."StringBuilder" is a mutable object, it will hold its value after returning
+class Solution {
+    List<String> result;
+    public List<String> binaryTreePaths(TreeNode root) {
+        result = new ArrayList<>();
+        traverse(root, new StringBuilder(""));
+        return result;
+    }
+    void traverse(TreeNode root, StringBuilder path){
+        if(root==null){
+            return;
+        }
+        // String str = Integer.toString(root.val);
+        //can directly pass int to SB argument, No need to convert to String
+        //I was removing length of newly added root.val from modified SB. Just store length of 
+        //orignal SB and after modifications in SB, reset the length to original length.
+        int length = path.length();
+        path.append(root.val);
+        if(root.left==null && root.right==null){
+            result.add(path.toString());
+        }else{
+            path = path.append("->");
+            traverse(root.left,path);
+            traverse(root.right, path);
+        }
+        path.setLength(length);
+    }
+}
+
+297. Serialize and Deserialize Binary Tree Hard LeetCode Problem. Tags: Binary Tree, Backtracking. 28 June, 2022.
+ 
+Example 1:
+
+Input: root = [1,2,3,null,null,4,5]
+Output: [1,2,3,null,null,4,5]
+Example 2:
+Input: root = []
+Output: []
+ 
+In question, example is given of Level Order traversal but can do any traversal. I did using Preorder traversal. Try with others also.
+Using Preorder Traversal
+Note: It is very important to do String[] ar = data.split(",");
+Otherwise if we serialize without a comma, we would not get to know if lets say there is 13, so we would not know if 3 is of next traversal or if current node’s val is 13.
+Also it is very important to have index[] array. In CPP may be there was int&I but in java, to allow value of I to be changed while on function calls, just pass reference to i. So any change in index[] array will be reflected across all function calls.
+Because passing an int as a parameter will just be a copy and won't change the value of d in the recursive calls. To get around that, wrap the int in an array. The modified elements in arrays and collections in java method parameters are persisted between calls.
+public class Codec {
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        serializeUtil(root,sb);
+        sb.deleteCharAt(sb.length()-1);
+        return sb.toString();
+    }
+    void serializeUtil(TreeNode root, StringBuilder sb){
+        if(root==null){
+            sb.append('N').append(',');
+            return;
+        }
+        sb.append(Integer.toString(root.val)).append(',');
+        serializeUtil(root.left, sb);
+        serializeUtil(root.right, sb);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        String[] ar = data.split(",");
+        int[] index = {0};
+        return deserializeUtil(ar, index);
+    }
+    TreeNode deserializeUtil(String[] ar, int[] index){
+        if(ar[index[0]].equals("N")){
+            return null;
+        }
+        TreeNode root = new TreeNode();
+        root.val = Integer.parseInt(ar[index[0]]);
+        index[0]++;
+        root.left = deserializeUtil(ar, index);
+        index[0]++;
+        root.right = deserializeUtil(ar, index);
+        return root;
+    }
+}
+Using Preorder Traversal. 
+Different implementation
+Using Queue for Deserialization using Pre order traversal
+public class Codec {
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        List<String> list = new ArrayList<>();
+        serializeUtil(root,list);
+        return String.join(",",list);
+    }
+    void serializeUtil(TreeNode root,List<String> list){
+        if(root==null){
+            list.add("N");
+            return;
+        }
+        list.add(Integer.toString(root.val));    //can use String.valueOf()
+        serializeUtil(root.left, list);
+        serializeUtil(root.right, list);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        Deque<String> nodes = new LinkedList<>();
+        nodes.addAll(Arrays.asList(data.split(",")));
+        return buildTree(nodes);
+    }
+    
+    private TreeNode buildTree(Deque<String> nodes) {
+        String val = nodes.remove();
+        if (val.equals("N")) return null;
+        else {
+            TreeNode node = new TreeNode(Integer.valueOf(val));
+            node.left = buildTree(nodes);
+            node.right = buildTree(nodes);
+            return node;
+        }
+    }
+}
+Using Level Order Traversal
+public class Codec {
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root==null){
+            return "";
+        }
+        List<String> list = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while(queue.isEmpty()==false){
+            TreeNode node = queue.poll();
+            if(node==null){
+                list.add("N");
+            }else{
+                list.add(String.valueOf(node.val));
+                queue.offer(node.left);
+                queue.offer(node.right);
+            }
+        }
+        return String.join(",", list);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data.length() == 0){
+            return null;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        String[] ar = data.split(",");
+        TreeNode root =  new TreeNode(Integer.valueOf(ar[0]));
+        queue.offer(root);
+        int i=1;
+        while(queue.isEmpty()==false){
+            TreeNode node = queue.poll();
+            if(ar[i].equals("N")){
+                node.left = null;
+                i++;
+            }else{
+                node.left = new TreeNode(Integer.valueOf(ar[i]));
+                queue.offer(node.left);
+                i++;
+            }
+            
+            if(ar[i].equals("N")){
+                node.right = null;
+                i++;
+            }else{
+                node.right = new TreeNode(Integer.valueOf(ar[i]));
+                queue.offer(node.right);
+                i++;
+            }
+        }
+        return root;
+    }
+}
+Using Iterative dfs
+
+Sum Problems in Trees
+Path Sum
+Path Sum II
+Path Sum 3
+Binary Tree Maximum Path Sum
+Maximum Path Sum between 2 Leaf NodesHard
+Count Nodes Equal to Average of Subtree
+Sum Root to Leaf Numbers
+Count good nodes in Binary Tree
+Check if Binary Tree is sum tree or not
+Convert binary tree to sum tree
+
+
+112. Path Sum Easy.LeetCode Problem. Tags: Binary Tree
+class Solution {
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        return traverse(root, targetSum, 0);
+    }
+    public boolean traverse(TreeNode root, int targetSum, int sum) {
+        if(root==null){
+            return false;
+        }
+        sum+=root.val;
+        if(root.left==null && root.right==null){
+            if(sum==targetSum){
+                return true;
+            }else{
+                return false;
+            }
+        }        
+        return traverse(root.left, targetSum, sum) || traverse(root.right, targetSum, sum);
+    }
+}
+Further optimization. Avoid targetSum variable. Sum means difference between target sum and current sum from root till that node.
+public class Solution {
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if(root == null) return false;
+    
+        if(root.left == null && root.right == null && sum - root.val == 0) return true;
+    
+        return hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val);
+    }
+}
+113. Path Sum II Medium.LeetCode Problem. Tags: Binary Tree, Backtracking
+Recursive solution. Code can be refactored like removing sum argument, putting result in arguments instead of global variable, combining if else conditions. But focus on logic
+
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        result = new ArrayList<>();
+        helper(root, targetSum,0, new ArrayList<>());
+        return result;
+    }
+    void helper(TreeNode root, int targetSum, int sum, List<Integer> list){
+        if(root==null){
+            return;
+        }
+        sum+=root.val;
+        list.add(root.val);
+        if(root.left==null && root.right==null){
+            if(sum==targetSum){
+                result.add(new ArrayList<>(list));
+                // result.add(List.copyOf(list));
+                //very important step. Because result is referrring to list, any changes made in list will reflect in result. So create a copy of list and add it in result. 2 ways mentioned of creating copy of list.
+            }
+            list.remove(list.size()-1);  //backtracking step.
+            return;
+        }
+        helper(root.left, targetSum, sum, list);
+        helper(root.right, targetSum, sum, list);
+        list.remove(list.size()-1);  //backtracking step
+    }
+}
+437. Path Sum III Medium. Try it later sometime.
+https://leetcode.com/problems/path-sum-iii/
+
+124. Binary Tree Maximum Path Sum Hard.LeetCode Problem. Tags: Binary Tree,DP. 9 May 2022
+Explained by Aditya Verma.
+Using Result class so that result variable is acting like pass by reference
+class Result{
+    int result;
+    public Result(int result){
+        this.result = result;
+    }
+}
+class Solution {
+    public int maxPathSum(TreeNode root) {
+        Result obj =new Result(Integer.MIN_VALUE);
+        solve(root, obj);
+        return obj.result;
+    }
+    int solve(TreeNode root, Result obj){
+        //base condition
+        if(root==null){
+            return 0;
+        }
+        //hypothesis step. Do not question.
+        int left = solve(root.left, obj);
+        int right = solve(root.right, obj);
+        
+        //induction step
+        int temp = Math.max(Math.max(left, right)+root.val, root.val);
+        int ans = Math.max(temp, left+right+root.val);
+        obj.result = Math.max(obj.result, ans);
+        return temp;
+    }
+}
+Using array as arguments and passing result’s value in arrays’s first element.
+class Solution {
+    public int maxPathSum(TreeNode root) {
+        // List<Integer> list =  new ArrayList<>(Integer.MIN_VALUE);
+        int[] array = {Integer.MIN_VALUE};
+        solve(root, array);
+        return array[0];
+    }
+    int solve(TreeNode root, int[] array){
+        //base condition
+        if(root==null){
+            return 0;
+        }
+        //hypothesis step. Do not question.
+        int left = solve(root.left, array);
+        int right = solve(root.right, array);
+        
+        //induction step
+        int temp = Math.max(Math.max(left, right)+root.val, root.val);
+        //temp is ans which we have to pass to its calling function. 
+        int ans = Math.max(temp, left+right+root.val);
+        //ans is ans if max path sum includes left sub tree, right sub tree and root node
+        array[0] = Math.max(array[0], ans);
+        //array[0] is result which means maximum path sum from any node to any node we recorded till the place we have traversed.
+        return temp;
+    }
+}
+
+Maximum Path Sum between 2 Leaf Nodes Hard.GFG Problem. Not on LeetCode Tags: Binary Tree,DP. 9 May 2022. 
+Wrong explanation by Aditya Verma.
+class Solution
+{
+    public int maxPathSum(Node root){ 
+        int[] array = {Integer.MIN_VALUE};
+        int temp = solve(root, array);
+        //root is also considered leaf node in this quesion.
+        //Note: Here Leaf node is a node which is connected to exactly one different node.
+        //in constraints of question, given that min number of nodes = 2.So root.left==null&&root.right==null
+        //case does not arise.
+        if(root.left==null || root.right== null){
+            return Math.max(temp, array[0]);
+        }
+        return array[0];
+    }
+    int solve(Node root, int[] array){
+        //base condition
+        if(root==null){
+            return 0;
+        }
+        
+        //hypothesis step. Do not question.
+        int left = solve(root.left, array);
+        int right = solve(root.right, array);
+        
+        //induction step
+        if(root.left==null && root.right==null){
+            return root.data;            //this is actually temp. Here max(left,right)=max(0,0)
+        }else if(root.right==null){
+            return  left + root.data;    //this is actually temp
+        }else if(root.left==null){
+            return  right + root.data;   //this is actually temp
+        } 
+        //if(root.left!=null && root.right!=null)
+        int temp = Math.max(left, right)+root.data;
+        //temp is ans which we have to pass to its calling function. 
+        int ans = left+right+root.data;
+        //In this question, do not include temp in ans.
+        //ans is ans if max path sum includes left sub tree, right sub tree and root node
+        array[0] = Math.max(array[0],ans);
+        //array[0] is result which means maximum path sum from any node to any node we recorded till the place we have traversed.
+        return temp;
+    }
+}	
+2265. Count Nodes Equal to Average of Subtree,Medium.LeetCode Problem. Tags: Binary Tree,DP. 9 May 2022. 8 May, 2022 LeetCode contest problem
+
+class Solution {
+    int answer;
+    public int averageOfSubtree(TreeNode root){
+        answer =0;
+        helper(root);
+        return answer;
+    }
+    public Number helper(TreeNode root) {
+        if(root==null){
+            return new Number(0,0);
+        }
+        Number left = helper(root.left);
+        Number right =helper(root.right);
+        Number temp = new Number(0,0);
+        temp.sum = left.sum + right.sum + root.val;
+        temp.count = left.count + right.count + 1;
+        if(temp.sum/temp.count==root.val){
+            answer++;
+        }
+        return temp;
+    }
+}
+class Number{
+    int sum;
+    int count;
+    public Number(int sum, int count){
+        this.sum =sum;
+        this.count = count;
+    }
+}
+129. Sum Root to Leaf Numbers Medium.LeetCode Problem. Tags: Binary Tree. 10 May 2022.
+Tests pass by value and pass by reference concept.
+class Solution {
+    int result;
+    public int sumNumbers(TreeNode root) {
+        result =0;
+        traverse(root, 0);
+        return result;
+    }
+    void traverse(TreeNode root, int sum){
+        if(root==null){
+            return;
+        }
+        sum=sum*10+ root.val;
+        if(root.left==null && root.right==null){
+            result+=sum;
+            return;
+        }
+        traverse(root.left, sum);
+        traverse(root.right, sum);
+    }
+}
+1448. Count Good Nodes in Binary Tree Medium LeetCode Problem. Tags: Binary Tree. 10 May 2022.
+class Solution {
+    int result;
+    public int goodNodes(TreeNode root) {
+        result =0;
+        dfs(root, root.val);
+        return result;
+    }
+    void dfs(TreeNode root, int max){
+        if(root==null){
+            return;
+        }
+        if(max<=root.val){
+            result++;
+            max = root.val;
+        }
+        dfs(root.left, max);
+        dfs(root.right, max);
+    }
+}
+
+Optimized solution without using result as class variable. Just return it from method call.
+class Solution {
+    public int goodNodes(TreeNode root) {
+        return dfs(root, root.val);
+    }
+    int dfs(TreeNode root, int max){
+        if(root==null){
+            return 0;
+        }
+        int result = 0;
+        if(max<=root.val){
+            result=1;
+            max = root.val;
+        }
+        result = result + dfs(root.left, max);
+        result = result + dfs(root.right, max);
+        return result;
+    }
+}
+938. Range Sum of BST Easy
+Check is Binary Tree is Sum Tree or not. Not on LC. GFG Problem. Tags: BT, DFS. 24 May,2022
+Using recursive Post Order Traversal
+class Solution{
+	boolean isSumTree(Node root){
+        if(root==null || (root.left==null && root.right==null)){
+            return true;
+        }
+        boolean a = isSumTree(root.left);
+        boolean b = isSumTree(root.right);
+        if(a&&b){
+            int left = (root.left==null?0:root.left.data);
+            int right = (root.right==null?0:root.right.data);
+            int sum = left + right;
+            if(sum == root.data){
+                root.data+=sum;
+                return true;
+            }
+        }
+        return false;
+	}
+}
+Convert Binary Tree into Sum Tree. Not on LC. GFG Problem. Tags: BT, DFS. 24 May,2022
+Recursive solution using Post Order Traversal
+class Solution{
+    public void toSumTree(Node root){
+        dfs(root);
+    }
+    int dfs(Node root){
+        if(root==null){
+            return 0;
+        }
+        if(root.left==null && root.right==null){
+            int temp = root.data;
+            root.data = 0;
+            return temp;
+        }
+        int leftSum = dfs(root.left);
+        int rightSum = dfs(root.right);
+        int current = root.data;
+        root.data = leftSum + rightSum;
+        return current + root.data;
+    }
+}
+236. Lowest Common Ancestor of a Binary Tree Medium.LeetCode Problem. Tags: Binary Tree
+https://www.youtube.com/watch?v=_-QHfMDde90
+
+
+Brute force
+Print paths from root to node. Means add these elements to array.
+Compare two arrays and see which element is the last equal element, that is the LCA.
+Another solution is to run DFS for both p and q values and create paths from root to p and q. These paths can be stored in lists. Since we need lowest common ancestor, we can check from the front for the last such node which is common in both the lists.
+Running time:
+DFS will lead to O(N) since this is a binary tree and not a binary search tree.
+Two DFS operations will lead to O(N)
+Comparison work of the lists - using a while loop - to find common element will take O(N)
+So total running time - O(N)
+Space
+Lists to store paths can lead to O(N)
+
+Optimized Approach.Time complexity = O(n). Space complexity =O(1). Basically we are doing DFS/ Preorder traversal.
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root==null || root==p || root==q){
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if(left == null && right == null){
+            return null;
+        }else if(left==null){
+            return right;
+        }else if(right == null){
+            return left;
+        }else{
+            return root;
+        }
+    }
+}
+Further Optimization. We traverse entire tree even if we found LCA. We can stop that by placing a condition for that at start. Make global variable TreeNode lca;
+
+114. Flatten Binary Tree to Linked List Medium. LeetCode Problem. Tags: BT. 21 May, 2022
+https://www.youtube.com/watch?v=rKnD7rLT0lI
+
+My Own implementation
+class Solution {
+    public void flatten(TreeNode root) {
+        if(root==null){
+            return;
+        }
+        dfs(root);
+    }
+    TreeNode dfs(TreeNode root){
+        if(root.left==null && root.right==null){
+            return root;
+        }
+        if(root.left==null){
+            return dfs(root.right);
+        }
+        if(root.right==null){
+            root.right = root.left;
+            root.left=null;
+            return dfs(root.right);
+        }
+        TreeNode temp = root.right;    //store root.right because we will modify it.
+        root.right = root.left;
+        root.left=null;   //set root.left =null 
+        TreeNode tail = dfs(root.right);  //because here root.right contains what was earlier root.left
+        tail.right = temp;
+        return dfs(root.right);
+    }
+}
+More logically coherent and optimized solution
+class Solution {
+    public void flatten(TreeNode root) {
+        dfs(root);
+    }
+    TreeNode dfs(TreeNode root){
+        if(root==null){
+            return null;
+        }
+        if(root.left==null && root.right==null){
+            return root;
+        }
+        if(root.left==null){
+            return dfs(root.right);
+        }
+        if(root.right==null){
+            root.right = root.left;
+            root.left=null;
+            return dfs(root.right);
+        }
+        TreeNode tail = dfs(root.left); 
+        tail.right = root.right;   
+        root.right = root.left;
+        root.left=null; 
+        return dfs(root.right);
+    }
+}
+Binary Tree to DLL Hard Not on LC. GFG Problem. Tags: BT. 23 May, 2022
+Using Recursion.
+Maintain a reference to last visited node in inorder traversal. Its prev. 
+class Solution{
+    Node prev;
+    Node head;
+    Node bToDLL(Node root){
+        head = null;
+        prev = null;
+        inorder(root);
+        return head;
+    }
+    void inorder(Node root){
+        if(root==null){
+            return;
+        }
+        inorder(root.left);
+        if(prev==null){
+            head = root;
+        }else{
+            root.left = prev;
+            prev.right = root;
+        }
+        prev = root;
+        inorder(root.right);
+    }
+}
+Same logic. Alternative implementation
+class Solution{
+    Node head;
+    Node bToDLL(Node root){
+        head = null;
+        inorder(root, null);
+        return head;
+    }
+    Node inorder(Node root, Node prev){
+        if(root==null){
+            return prev;
+        }
+        prev = inorder(root.left, prev);
+        if(prev==null){
+            head = root;
+        }else{
+            root.left = prev; 
+            prev.right = root;
+        }
+        prev = root;
+        prev = inorder(root.right, prev);
+        return prev;
+    }
+}
+Diagonal Traversal of Binary Tree Medium. Not on LC. GFG Problem. Tags: BT, Hashing, Level Order Traversal.23 May, 2022 
+Looks like horizontal distance concept will apply but it doesnot.
+root and root->right values will be prioritized over all root->left values.
+Using Queue
+As per demand of question in GFG. 
+
+
+Using Queue
+If we want result of each list in map in level order fashion
+class Pair{
+    int slope;
+    Node node;
+    public Pair(int slope, Node node){
+        this.node = node;
+        this.slope = slope;
+    }
+}
+class Tree{
+     public ArrayList<Integer> diagonal(Node root){
+         Queue<Pair> queue = new LinkedList<>();
+         Map<Integer, ArrayList<Integer>>map = new TreeMap<>();
+         //key is slope, value is list of node values
+         queue.add(new Pair(0, root));
+         while(queue.isEmpty()==false){
+             int n = queue.size();
+             for(int i=0;i<n;i++){
+                 Pair current = queue.poll();
+                 if(!map.containsKey(current.slope)){
+                     map.put(current.slope, new ArrayList<>());
+                 }
+                 map.get(current.slope).add(current.node.data);
+                 if(current.node.left!=null){
+                     queue.add(new Pair(current.slope+1, current.node.left));
+                 }
+                 if(current.node.right!=null){
+                     queue.add(new Pair(current.slope, current.node.right));
+                 }
+             }
+         }
+         ArrayList<Integer> result = new ArrayList<>();
+         for(Map.Entry<Integer, ArrayList<Integer>> element: map.entrySet()){
+             result.addAll(element.getValue());
+         }
+         return result;
+      }
+}
+Path to Given Node Easy Not on LC. InterviewBit Problem. Tags: BT, dfs.24 May, 2022
+Recursive Solution using dfs
+public class Solution {
+    boolean foundB;
+    public ArrayList<Integer> solve(TreeNode root, int B) {
+        foundB = false;
+        ArrayList<Integer> list = new ArrayList<>();
+        dfs(root,B, list);
+        return list;
+    }
+    void dfs(TreeNode root, int B, ArrayList<Integer> list){
+        if(root==null || foundB == true){
+            return;
+        }
+        dfs(root.left, B, list);
+        dfs(root.right, B, list);
+        if(root.val==B){
+            foundB = true;
+        }
+        if(foundB == true){
+            list.add(0, root.val);
+        }
+    }
+}
+
+
+
+Optimized Implementation
+public class Solution {
+    ArrayList<Integer> list;
+    public ArrayList<Integer> solve(TreeNode root, int B) {
+        list = new ArrayList<>();
+        dfs(root,B);
+        return list;
+    }
+    boolean dfs(TreeNode root, int B){
+        if(root==null){
+            return false;
+        }
+        if(root.val==B){
+            list.add(0, root.val);
+            return true;
+        }
+        if(dfs(root.left, B) || dfs(root.right, B)){
+            list.add(0, root.val);
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+515. Find Largest Value in Each Tree Row Medium
+662. Maximum Width of Binary Tree Medium
+  0097138161
+
+
+N-ary Tree Problems
+589. N-ary Tree Preorder Traversal Easy
+590. N-ary Tree Postorder Traversal Easy
+429. N-ary Tree Level Order Traversal Medium
+559. Maximum Depth of N-ary Tree Easy
+
+589. N-ary Tree Preorder Traversal Easy LC Problems. Tags: N-ary Tree, dfs.28 June, 2022
+ 
+Example 1:
+
+Input: root = [1,null,3,2,4,null,5,6]
+Output: [1,3,5,6,2,4]
+Example 2:
+
+Input: root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+Output: [1,2,3,6,7,11,14,4,8,12,5,9,13,10]
+
+Using Preorder Traversal
+class Solution {
+    public List<Integer> preorder(Node root) {
+        List<Integer> list = new ArrayList<>();
+        dfs(root, list);
+        return list;
+    }
+    void dfs(Node root, List<Integer> list){
+        if(root==null){
+            return;
+        }
+        list.add(root.val);
+        List<Node> children = root.children;
+        for(Node child: children){
+            dfs(child, list);
+        }
+    }
+}
+590. N-ary Tree Postorder Traversal Easy LC Problems. Tags: N-ary Tree, dfs.28 June, 2022
+ 
+Example 1:
+
+Input: root = [1,null,3,2,4,null,5,6]
+Output: [5,6,3,2,4,1]
+Example 2:
+
+Input: root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+Output: [2,6,14,11,7,3,12,8,4,13,9,10,5,1]
+
+Using Postorder Traversal
+Inorder traversal doesnot make sense for N-ary Tree
+class Solution {
+    public List<Integer> postorder(Node root) {
+        List<Integer> list = new ArrayList<>();
+        dfs(root, list);
+        return list;
+    }
+    void dfs(Node root, List<Integer> list){
+        if(root==null){
+            return;
+        }
+        List<Node> children = root.children;
+        for(Node child: children){
+            dfs(child, list);
+        }
+        list.add(root.val);
+    }
+}
+
+
+
+429. N-ary Tree Level Order Traversal Medium LC Problems. Tags: N-ary Tree, bfs.28 June, 2022
+Example 1:
+
+Input: root = [1,null,3,2,4,null,5,6]
+Output: [[1],[3,2,4],[5,6]]
+Example 2:
+
+Input: root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+Output: [[1],[2,3,4,5],[6,7,8,9,10],[11,12,13],[14]]
+
+Using Queue.
+Using modification of bfs for dfs method
+class Solution {
+    public List<List<Integer>> levelOrder(Node root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if(root==null){
+            return result;
+        }
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+        int height = 0;
+        while(queue.isEmpty()==false){
+            int n = queue.size();
+            for(int i=0;i<n;i++){
+                Node node = queue.poll();
+                if(height==result.size()){
+                    result.add(new ArrayList<Integer>());
+                }
+                result.get(height).add(node.val);
+                List<Node> children = node.children;
+                for(Node child: children){
+                    queue.offer(child);
+                }
+            }
+            height++;
+        }
+        return result;
+    }
+}
+Using Queue. Different Implementation
+class Solution {
+    public List<List<Integer>> levelOrder(Node root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if(root==null){
+            return result;
+        }
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+        while(queue.isEmpty()==false){
+            List<Integer> list = new ArrayList<>();
+            int n = queue.size();
+            for(int i=0;i<n;i++){
+                Node node = queue.poll();
+                list.add(node.val);
+                List<Node> children = node.children;
+                for(Node child: children){
+                    queue.offer(child);
+                }
+            }
+            result.add(list);
+        }
+        return result;
+    }
+}
+559. Maximum Depth of N-ary Tree Easy LC Problems. Tags: N-ary Tree, dfs.28 June, 2022
+ 
+Example 1:
+
+Input: root = [1,null,3,2,4,null,5,6]
+Output: 3
+Example 2:
+
+Input: root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+Output: 5
+ 
+class Solution {
+    public int maxDepth(Node root) {
+        if(root==null){
+            return 0;
+        }
+        List<Node> children = root.children;
+        int max = 0;
+        for(Node child: children){
+            max = Math.max(max, maxDepth(child));
+        }
+        return 1+ max;
+    }
+}
