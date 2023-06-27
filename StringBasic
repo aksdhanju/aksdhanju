@@ -1,0 +1,2110 @@
+Sorting and Searching on Strings
+Traversal on Strings
+Reversal and Rotation on String
+
+Character Counting on Strings
+Substring and Subsequences
+Arithmetic Operation on Strings
+Binary String
+Lexicographic Pattern of String
+Palindromic String
+Pattern Searching in String
+Occurrence based problems on Strings
+Spacing based Problem on String
+String Anagrams
+Conversion of String
+Balanced Parenthesis and Bracket evaluation
+Splitting String
+Other interseting problem on String
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sorting and Searching on Strings
+Program to sort string in descending order. GFG Question.
+
+
+Program to sort string in descending order. GFG Question.5 july, 2022
+Note: Collections.sort doesnot work on String class. Convert String to char array and sort it into descending order.
+Examples: 
+ 
+Input : alkasingh
+Output : snlkihgaa 
+
+Input : nupursingh
+Output : uusrpnnihg 
+
+Input : geeksforgeeks
+Output : ssrokkggfeeee
+
+=
+Using CustomComparator
+class Solution 
+{ 
+    String ReverseSort(String s) { 
+        int n = s.length();
+        Character[] ar = new Character[n];
+        for(int i=0;i<n;i++){
+            ar[i]=s.charAt(i);
+        }
+        Arrays.sort(ar, new CustomComparator());   
+//Arrays.sort with custom comparator only applicable on Character[] array not char[] array
+        StringBuilder sb = new StringBuilder();
+        for(Character c: ar){
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+} 
+class CustomComparator implements Comparator<Character>{
+    public int compare(Character c1, Character c2){
+//3 methods
+//method1
+        // int n1 = c1-'0';
+        // int n2 = c2 - '0';
+        // return n2-n1;
+//method2
+       // return c2.compareTo(c1);
+//method3
+        // return Character.compare(c2,c1);
+    }
+}
+
+
+Traversal on Strings
+Reversal and Rotation on String
+
+Character Counting on Strings(IMP)
+Sort a string according to the frequency of characters Difficulty Level : Medium
+Sort a string according to the frequency of characters Difficulty Level : Medium GFG Problem. Tags: Strings, HashMap. 5 July, 2022
+Given a string str, the task is to sort the string according to the frequency of each character, in ascending order. If two elements have the same frequency, then they are sorted in lexicographical order.
+Examples: 
+Input: str = “geeksforgeeks” 
+Output: forggkksseeee 
+Explanation: 
+Frequency of characters: g2 e4 k2 s2 f1 o1 r1 
+Sorted characters according to frequency: f1 o1 r1 g2 k2 s2 e4 
+f, o, r occurs one time so they are ordered lexicographically and so are g, k and s. 
+Hence the final output is forggkksseeee.
+Input: str = “abc” 
+Output: abc
+
+
+Using Basic Frequency Counting.
+Used array with each element as Pair object for this purpose.
+class Solution {
+    public String frequencySort(String s) {
+        // String s = "geeksforgeeks";
+        String res = sort(s);
+        System.out.println(res);
+        return res;
+    }
+    public String sort(String s){
+	    int n = s.length();
+	    Pair[] ar = new Pair[26];
+        for(int i=0;i<26;i++){
+            ar[i] = new Pair(0, (char)('a'+i));
+        }
+        for(int i=0;i<s.length();i++){
+            char ch = s.charAt(i);
+            ar[ch-'a'].freq++;
+        }
+        Arrays.sort(ar, new CustomComparator());
+        
+        StringBuilder sb = new StringBuilder();
+        for(Pair pair: ar){
+            if(pair.freq==0){
+                continue;
+            }
+            if(pair.freq==1){
+                sb.append(pair.c);
+            }else{
+                sb.append(pair.freq).append(pair.c);
+            }
+        }
+        return sb.toString();
+	}
+}
+class CustomComparator implements Comparator<Pair>{
+    public int compare(Pair p1, Pair p2){
+        if(p1.freq == p2.freq){
+            return p1.c - p2.c;
+        }
+        return p1.freq-p2.freq;
+    }
+}
+public class Pair{
+    int freq;
+    char c;
+    public Pair(int freq, char c){
+        this.freq = freq;
+        this.c = c;
+    }
+}
+Your input
+"geeksforgeeks"
+stdout
+for2g2k2s4e
+
+
+Output
+"for2g2k2s4e"
+
+
+Using ArrayList
+class Solution {
+    public String frequencySort(String s) {
+        // String s = "geeksforgeeks";
+        String res = sort(s);
+        System.out.println(res);
+        return res;
+    }
+    public String sort(String s){
+	    int n = s.length();
+        List<Pair> list = new ArrayList<>();
+        for(int i=0;i<26;i++){
+            list.add(new Pair(0, (char)('a'+i)));
+        }
+        for(int i=0;i<s.length();i++){
+            char ch = s.charAt(i);
+            list.get(ch-'a').freq++;
+        }
+        Collections.sort(list, new CustomComparator());
+        
+        StringBuilder sb = new StringBuilder();
+        for(Pair pair: list){
+            if(pair.freq==0){
+                continue;
+            }
+            if(pair.freq==1){
+                sb.append(pair.c);
+            }else{
+                sb.append(pair.freq).append(pair.c);
+            }
+        }
+        return sb.toString();
+	}
+}
+class CustomComparator implements Comparator<Pair>{
+    public int compare(Pair p1, Pair p2){
+        if(p1.freq == p2.freq){
+            return p1.c - p2.c;
+        }
+        return p1.freq-p2.freq;
+    }
+}
+public class Pair{
+    int freq;
+    char c;
+    public Pair(int freq, char c){
+        this.freq = freq;
+        this.c = c;
+    }
+}
+
+
+
+Substring and Subsequences
+Arithmetic Operation on Strings
+Binary String
+Lexicographic Pattern of String
+Palindromic String
+Pattern Searching in String
+Occurrence based problems on Strings
+Spacing based Problem on String
+String Anagrams
+Conversion of String
+Balanced Parenthesis and Bracket evaluation
+Splitting String
+Other interseting problem on String
+
+
+
+
+
+
+344. Reverse String Easy
+
+
+Using 2 pointers
+public void reverseString(char[] s) {
+        int size = s.length;
+        for(int i=0;i<size/2;i++){
+            swap(s, i, size-1-i);
+        }
+    }
+    private void swap(char[]s, int start, int end){
+        char temp = s[start];
+        s[start] = s[end];
+        s[end] = temp;
+    }	
+Using String Builder class
+public void reverseString(char[] s) {
+        String str = new String(s);
+        str = new StringBuilder(str).reverse().toString();
+        for(int i =0;i<s.length;i++){
+            s[i]=str.charAt(i);
+        }
+    }
+Using While Loop
+Using Stack DS
+public class Solution {
+    public String reverseString(String s) {
+        Stack<Character> stack = new Stack<>();
+        for(int i=0;i<s.length();i++){
+            stack.push(s.charAt(i));
+        }
+        StringBuilder sb = new StringBuilder();
+        while(stack.isEmpty()==false){
+            sb.append(stack.pop());
+        }
+        return sb.toString();
+    }
+}
+
+
+Reverse the String Easy. InterviewBit Problem. Tags: Strings. 3 June, 2022 Asked In: Qualcomm Amazon Microsoft
+It is actually reverse words in a given String.
+Example: “Kill the HummingBird”. Ouput: “HummingBird the Kill”.
+Input: “   hello      world”. Output: “world hello”
+Using Basic String Manipulation
+
+
+public class Solution {
+    public String solve(String s) {
+        s=s.trim();
+        String[] words = s.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for(int i=words.length-1;i>=0;i--){
+            // words[i] = words[i].replaceAll("\\s","");    // 1 single space is represented as \\s in ASCII?
+            words[i]=words[i].trim();
+            if(!words[i].equals("")){
+                sb.append(words[i]).append(" ");
+            }
+        }
+        sb.deleteCharAt(sb.length()-1);
+        return sb.toString();
+    }
+}
+
+
+8. String to Integer (atoi) Medium
+Implementation based question
+public static int myAtoi(String s) {
+		s = s.stripLeading();
+        if(s.length()==0){
+            return 0;
+        }
+		int sign = 1;
+		if(s.charAt(0)=='-')sign = -1;	
+		long ans = 0;
+		int i = s.charAt(0) == '+' || s.charAt(0) == '-'? 1:0;
+		while (i<s.length()) {
+			if(!Character.isDigit(s.charAt(i))) {
+				break;
+			}
+			ans = 10 * ans + s.charAt(i) - '0';
+			if(sign == -1 && -1*ans < Integer.MIN_VALUE) { 
+				return Integer.MIN_VALUE;
+			}
+			if(sign == 1 && ans>Integer.MAX_VALUE) {
+				return Integer.MAX_VALUE;
+			}
+			i++;
+		}
+		return (int)(sign*ans);
+	}
+
+
+
+
+Concept of overflow:
+Integer.MAX_VALUE(~214 crore) + 1 = Integer.MIN_VALUE(-214 crore)
+int range in Java: -2,147,483,648 (-2^31) to 2,147,483,647 (2^31-1)
+long range in Java: -9,223,372,036,854,775,808 (-2^63) to 9,223,372,036,854,775,807 (2^63 – 1)
+Approach 2: Deterministic Finite Automaton (DFA) see later on Leet Code solution tab.
+
+
+
+7. Reverse Integer Medium
+Convert integer to String using: (int i = 10;)
+String.valueOf() method. 
+Integer.toString(i)
+New StringBuilder().append(i).toString()
+Concatenate with empty String. String str = “” + i
+Convert String to int using:
+Integer.parseInt() method
+Integer.valueOf() method
+If we use long type to store result variable
+public int reverse(int x) {
+        int sign =1;
+        if(x<0){
+            sign =-1;
+        }
+        long result =0;
+        x = Math.abs(x);
+        while(x>0){
+            result = 10*result + x%10;
+            if(result>Integer.MAX_VALUE){
+                return 0;
+            }
+            x=x/10;
+        }
+        return (int)(sign*result);
+    }
+Using string Builder 
+public int reverse(int x) {
+		String reversed = new StringBuilder().append(abs(x)).reverse().toString();
+			//Integer.parseInt() takes String as an argument and returns primitive int
+        long result =0;
+        result = Long.parseLong(reversed);
+        if(result>Integer.MAX_VALUE){
+            return 0;
+        }
+		return (int)((x < 0) ? result * -1 : result);
+	}
+    private long abs(int x){
+        if(x<0){
+            return (long)-1*x;
+        }
+        return (long)x;
+    }
+Clean implementation of the above solution
+public int reverse(int x) {
+		String reversed = new StringBuilder().append(Math.abs(x)).reverse().toString();
+		try {
+			//Integer.parseInt() takes String as an argument and returns primitive int
+			return (x < 0) ? Integer.parseInt(reversed) * -1 : Integer.parseInt(reversed);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+If we use int type to store result variable(as mentioned in the question)(solution same as atoi question. No need to go into it deep unless preparing for Google interview)
+
+
+
+387. First Unique Character in a String Easy
+Simple HashMap based solution. Since there can at max be only 256 keys, we can use 256 sized array also for the same purpose.
+public int firstUniqChar(String s) {
+        HashMap<Character, Integer> characterMap = new HashMap<>();
+        int i =0;
+        while(i<s.length()){
+            char c = s.charAt(i);
+            if(!characterMap.containsKey(c)){
+                characterMap.put(c, 1);
+            }else {
+            	int value = characterMap.get(c);
+            	characterMap.replace(c, value, value + 1);
+            }
+            i++;
+        }
+        i=0;
+        while(i<s.length()) {
+        	char c = s.charAt(i);
+        	if(characterMap.get(c).equals(1)) {
+        		return i;
+        	}
+        	i++;
+        }
+        return -1;
+    }
+
+Clean solution(minor difference)
+public int firstUniqChar(String s) {
+        HashMap<Character, Integer> count = new HashMap<Character, Integer>();
+        int n = s.length();
+        // build hash map : character and how often it appears
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            count.put(c, count.getOrDefault(c, 0) + 1);
+        }
+        
+        // find the index
+        for (int i = 0; i < n; i++) {
+            if (count.get(s.charAt(i)) == 1) 
+                return i;
+        }
+        return -1;
+    }
+Using 256 element array. 2 traversals of String required. The array doesn't waste so much space and perhaps a Map (a very efficient construct) is too much for such a simple task. No need of ar[char-‘a’] is char is ASCII character(256 in total). Just do ar[char]
+Note: you can use a char as index (but you would leave all array elements 0...'a'-1 empty):
+
+class Solution {
+    public int firstUniqChar(String s) {
+        int []ar = new int[256];
+        Arrays.fill(ar,0);
+        for(int i=0;i<s.length();i++){
+            ar[s.charAt(i)]++;
+        }
+        for(int i=0;i<s.length();i++){
+            if(ar[s.charAt(i)]==1){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+Using 256 element array. 1 Traversal of String required. Time complexity=O(n). Space complexity=O(n)
+class Solution {
+    public int firstUniqChar(String s) {
+        int []ar = new int[256];
+        Arrays.fill(ar,-1);
+        for(int i=0;i<s.length();i++){
+            if(ar[s.charAt(i)]==-1){
+                ar[s.charAt(i)]=i;
+            }else{
+                ar[s.charAt(i)]=-2;
+            }
+        }
+        int minIndex=Integer.MAX_VALUE;
+        for(int i=0;i<256;i++){
+            if(ar[i]>=0){
+                minIndex = Math.min(minIndex, ar[i]);
+            }
+        }
+        if(minIndex==Integer.MAX_VALUE){
+            return -1;
+        }
+        return minIndex;
+    }
+}
+
+Using replace()method of String class. Giving TLE on LeetCode. Not using Array or HashMap
+class Solution {
+    public int firstUniqChar(String s) {
+        int n = s.length();
+        for(int i=0;i<n;i++){
+            int count = n - s.replace(Character.toString(s.charAt(i)),"").length();
+            if(count==1){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+
+242. Valid Anagram Easy. LC Problem. Tags: Strings. (Last solved date)19 May, 2022
+Example 1:
+Input: s = "anagram", t = "nagaram"
+Output: true
+Example 2:
+Input: s = "rat", t = "car"
+Output: false
+
+Convert to char array, sort, convert back to String, compare
+public boolean isAnagram(String s, String t) {
+        char[] sArray = s.toCharArray();
+        Arrays.sort(sArray);
+        char[] tArray = t.toCharArray();
+        Arrays.sort(tArray);
+        s = new String(sArray);
+        t = new String(tArray);
+        if(s.equals(t))return true;
+        return false;
+    }
+Use HashMap
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        int m = s.length();
+        int n= t.length();
+        if(m!=n){
+            return false;
+        }
+        HashMap<Character, Integer>map = new HashMap<>();
+        for(int i=0;i<n;i++){
+            map.put(t.charAt(i), map.getOrDefault(t.charAt(i),0)+1);
+        }
+        int j=0;
+        while(j<n){
+            if(!map.containsKey(s.charAt(j))){
+                return false;
+            }
+            map.put(s.charAt(j), map.get(s.charAt(j))-1);
+            if(map.get(s.charAt(j))==0){
+                map.remove(s.charAt(j));
+            }
+            j++;
+        }
+        return true;
+    }
+}
+More efficient HashMap solution. 
+If its given char are a-z(lower case), then can use 26 sized array instead of HashMap
+public class Solution {
+    public boolean isAnagram(String s, String t) {
+        if(s.length()!=t.length()){
+            return false;
+        }
+        int[] count = new int[26];
+        for(int i=0;i<s.length();i++){
+            count[s.charAt(i)-'a']++;
+            count[t.charAt(i)-'a']--;
+        }
+        for(int i:count){
+            if(i!=0){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+49. Group Anagrams Medium LC Problem. Tags: Strings. (Last solved date)19 May, 2022
+Example 1:
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+Example 2:
+Input: strs = [""]
+Output: [[""]]
+Example 3:
+Input: strs = ["a"]
+Output: [["a"]]
+
+Using Sorting
+Use sorted char array as key of hashmap and value as List<String>. 
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        HashMap<String, List<String>>map = new HashMap<>();
+        for(String s: strs){
+            char[] array = s.toCharArray();
+            Arrays.sort(array);
+            String keyStr = String.valueOf(array);
+            if(!map.containsKey(keyStr)){
+                map.put(keyStr, new ArrayList<>());
+            }
+            map.get(keyStr).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+}
+Using HashMap based solution
+Convert each String to charArray(not necessary). Create a char array freq of 26 char for each string. Update freq with frequency of each char in string s. convert freq char array to string. This would be key of hashMap. Example for tea. keyStr=1t1e1a. Value would be [“tea”,”eat”,”ate”]
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        HashMap<String, List<String>>map = new HashMap<>();
+        for(String s: strs){
+            char[] freq = new char[26];
+            for(char c: s.toCharArray()){
+                freq[c-'a']++;
+            }
+            String keyStr = String.valueOf(freq);
+            if(!map.containsKey(keyStr)){
+                map.put(keyStr, new ArrayList<>());
+            }
+            // List<String> list = map.get(keyStr);
+            // list.add(s);
+            // map.put(keyStr,list);
+            map.get(keyStr).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+}
+
+125. Valid Palindrome Easy
+Just use replaceAll method of String class. Use 2 pointers
+public boolean isPalindrome(String s){
+        s = s.replaceAll("[^a-zA-Z0-9]","");
+        s = s.toLowerCase();
+        int start = 0, end = s.length()-1;
+        while(start<end) {
+        	if(s.charAt(start)!=s.charAt(end)) {
+        		return false;
+        	}
+        	start++;
+    	end--;
+        }
+        return true;
+    }
+Another way. Do not use replaceAll method
+public boolean isPalindrome(String s) {
+        if (s.isEmpty()) {
+        	return true;
+        }
+        int head = 0, tail = s.length() - 1;
+        char cHead, cTail;
+        while(head <= tail) {
+        	cHead = s.charAt(head);
+        	cTail = s.charAt(tail);
+        	if (!Character.isLetterOrDigit(cHead)) {
+        		head++;
+        	} else if(!Character.isLetterOrDigit(cTail)) {
+        		tail--;
+        	} else {
+        		if (Character.toLowerCase(cHead) != Character.toLowerCase(cTail)) {
+        			return false;
+        		}
+        		head++;
+        		tail--;
+        	}
+        }
+        
+        return true;
+    }
+Another way. Reverse the String. If it equals original, it is a palindrome
+public boolean isPalindrome(String s) {
+        String actual = s.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
+        String rev = new StringBuffer(actual).reverse().toString();
+        return actual.equals(rev);
+    }
+
+14. Longest Common Prefix Easy
+Using word by word matching. Time complexity is O(n*m). Here n is length of array of Strings. Here m is length of largest String in array. Space complexity is O(m) where m is length of largest String.
+public String longestCommonPrefix(String[] strs){
+		String prefix = strs[0];
+		for (int i = 1; i < strs.length; i++) {
+			if(prefix.equals(""))return "";
+			prefix = commonPrefixUtil(prefix, strs[i]);
+		}
+		return prefix;
+	}
+
+	private String commonPrefixUtil(String str1, String str2) {
+		String result = "";
+		int i = 0, j = 0, n1 = str1.length(), n2 = str2.length();
+		while (i < n1 && j < n2) {
+			if(str1.charAt(i)!=str2.charAt(j)) {
+				return result;
+			}
+			result += str1.charAt(i);
+			i++;
+			j++;
+		}
+			return result;
+	}
+
+Using character by character matching. Time complexity is O(n*m). Here n = length of strs array. Here m = length of smallest string in strs array. It is more efficient since if first character do not match, we end the loop. Space complexity is O(m). Here m = length of smallest string in strs array.
+
+public String longestCommonPrefix(String[] strs){
+		// char by char matching
+		int n = strs.length;
+		int min = Integer.MAX_VALUE;
+		String minString = "";
+		for (int i = 0; i < n; i++) {
+			if (strs[i].length() < min) {
+				min = strs[i].length();
+				minString = strs[i];
+			}
+		}
+
+		// Now for minString as base, compare each character of all elements
+		String result = "";
+		int m = minString.length();
+		for (int j = 0; j < m; j++) {
+			char c = minString.charAt(j);
+			for (int i = 0; i < n; i++) {
+				if(strs[i].charAt(j)!=c) {
+					return result;
+				}
+			}
+			result += c;
+		}
+		return result;
+	}
+
+Divide and Conquer algorithm
+https://www.geeksforgeeks.org/longest-common-prefix-using-divide-and-conquer-algorithm/
+
+Using Binary Search
+
+38. Count and Say MediumLeetCode Problem. Tags: Arrays. 20 May, 2022
+Building solution like bottom up
+class Solution {
+    public String countAndSay(int n) {
+        String s = "1";
+        for(int i=1;i<n;i++){
+            s= helper(s);
+        }
+        return s;
+    }
+    String helper(String s){
+        StringBuilder sb = new StringBuilder();
+        int count=1;
+        int n = s.length();
+        int j=0;
+        while(j<n-1){
+            if(s.charAt(j)==s.charAt(j+1)){
+                count++;
+            }else{
+                sb.append(count);
+                sb.append(s.charAt(j));
+                count=1;
+            }
+            j++;
+        }
+        sb.append(count);
+        sb.append(s.charAt(j));  //can do sb.append(count+""+s.charAt(j));
+        return sb.toString();
+    }
+}
+Using Recursion
+
+class Solution {
+    public String countAndSay(int n) {
+        if(n==1){
+            return "1";
+        }
+        String s = countAndSay(n-1);
+        return helper(s);
+    }
+    String helper(String s){
+        StringBuilder sb = new StringBuilder();
+        int count=1;
+        int n = s.length();
+        int j=0;
+        while(j<n-1){
+            if(s.charAt(j)==s.charAt(j+1)){
+                count++;
+            }else{
+                sb.append(count);
+                sb.append(s.charAt(j));
+                count=1;
+            }
+            j++;
+        }
+        sb.append(count);
+        sb.append(s.charAt(j));  //can do sb.append(count+""+s.charAt(j));
+        return sb.toString();
+    }
+}
+165. Compare Version Numbers MediumLeetCode Problem. Tags: Arrays. 20 May, 2022
+public class Solution {
+    public int compareVersion(String version1, String version2) {
+        int temp1 = 0,temp2 = 0;
+        int m = version1.length(),n = version2.length();
+        int i = 0,j = 0;
+        while(i<m || j<n) {
+            temp1 = 0;
+            temp2 = 0;
+            while(i<m && version1.charAt(i) != '.') {
+                temp1 = temp1*10 + version1.charAt(i)-'0';
+                i++;
+
+            }
+            while(j<n && version2.charAt(j) != '.') {
+                temp2 = temp2*10 + version2.charAt(j)-'0';
+                j++;
+            }
+            if(temp1>temp2) return 1;
+            else if(temp1<temp2) return -1;
+            else {
+                i++;
+                j++;
+
+            }
+        }
+        return 0;
+    }
+}
+Top voted LC Solution
+public int compareVersion(String version1, String version2) {
+    String[] levels1 = version1.split("\\.");
+    String[] levels2 = version2.split("\\.");
+    
+    int length = Math.max(levels1.length, levels2.length);
+    for (int i=0; i<length; i++) {
+    	Integer v1 = i < levels1.length ? Integer.parseInt(levels1[i]) : 0;
+    	Integer v2 = i < levels2.length ? Integer.parseInt(levels2[i]) : 0;
+    	int compare = v1.compareTo(v2);
+    	if (compare != 0) {
+    		return compare;
+    	}
+    }
+    
+    return 0;
+}
+ 443. String Compression Medium. LC Problem. Tags: Strings. 2 June, 2022
+
+Input: chars = ["a","a","b","b","c","c","c"]
+Output: Return 6, and the first 6 characters of the input array should be: ["a","2","b","2","c","3"]
+Input: chars = ["a","b","b","b","b","b","b","b","b","b","b","b","b"]
+Output: Return 4, and the first 4 characters of the input array should be: ["a","b","1","2"].
+
+Using Basic String Manipulation
+See bold lines. We could have directly converted int count into String and added those String char inside our char array.
+class Solution {
+    public int compress(char[] chars) {
+        char prev = chars[0];
+        int count = 0;
+        int index =0;
+        int n = chars.length;
+        for(int i=0;i<=n;i++){
+            if(i<n && chars[i]==prev){
+                count++;
+                continue;
+            }
+            chars[index++]=prev;
+            if(count>1){
+                int start = index;
+                while(count>0){
+                    chars[index++] = (char)(count%10 + '0');
+                    count = count/10;
+                }
+                int end = index-1;
+                reverse(chars, start, end);
+	//for(char c : Integer.toString(count).toCharArray()) 
+             //       chars[index++] = c;
+                count=1;
+            }
+            if(i<n){
+                prev = chars[i];
+            }
+        }
+        return index;
+    }
+    void reverse(char[] chars, int start, int end){
+        while(start<end){
+            char temp = chars[start];
+            chars[start] = chars[end];
+            chars[end]=temp;
+            start++;
+            end--;
+        }
+    }
+}
+String And Its Frequency Medium Asked In: Clevertap. InterviewBit Problem3 June, 2022
+
+Example Input
+Input 1:
+abbhuabcfghh
+Input 2:
+a
+
+
+Example Output
+Ouput 1:
+a2b3h3u1c1f1g1
+Ouput 2:
+a1
+
+Using 26 size array as HashMap
+Ans not necessarily in sorted order. But in the order given in Question.
+public class Solution {
+    public String solve(String s) {
+        int n = s.length();
+        char[] word = s.toCharArray();
+        int[] map = new int[26];
+        for(char letter: word){
+            map[letter-'a']++;
+        }
+        StringBuilder sb = new StringBuilder();
+        for(char letter: word){
+            if(map[letter-'a']!=-1){
+                sb.append(letter);
+                sb.append(map[letter-'a']);
+                map[letter-'a']=-1;
+            }
+        }
+        return sb.toString();
+    }
+}
+
+1313. Decompress Run-Length Encoded List Easy LC Problem. Tags: Strings. 2 June, 2022
+class Solution {
+    public int[] decompressRLElist(int[] nums) {
+        int n = nums.length;
+        List<Integer> list = new ArrayList<>();
+        for(int i=0;i<n;i+=2){
+            int freq = nums[i];
+            for(int j=1;j<=freq;j++){
+                list.add(nums[i+1]);
+            }
+        }
+//converting List<Integer> to int[] 
+        int[] res = new int[list.size()];
+        for(int i=0;i<list.size();i++){
+            res[i]=list.get(i);
+        }
+        return res;
+    }
+}
+
+Vowel and Consonant Substrings! Easy InterviewBit Problem. Tags: String, PrefixSum? 2 June, 2022. 
+Using Brute force. Time complexity = O(n2). Check all subsets
+public class Solution {
+    public int solve(String s) {
+        int n = s.length();
+        int count =0;
+        for(int i=0;i<n;i++){
+            if(isVowel(s.charAt(i))==true){
+                for(int j =i+1;j<n;j++){
+                    if(isVowel(s.charAt(j))==false){
+                        count++;
+                    }
+                }
+            }else{
+               for(int j =i+1;j<n;j++){
+                    if(isVowel(s.charAt(j))==true){
+                        count++;
+                    }
+                } 
+            }
+        }
+        return count%(1000000007);
+    }
+    boolean isVowel(char c){
+        if(c=='a'||c=='e'||c=='i'||c=='o'||c=='u'){
+            return true;
+        }
+        return false;
+    }
+}
+
+Linear Time Solution
+Looks like a sliding window question. But it is a little different.
+public class Solution {
+    public int solve(String s) {
+        int n = s.length();
+        int count =0;
+        int vowelCount = 0;
+        int consonantCount = 0;
+        for(int i=0;i<n;i++){
+            if(isVowel(s.charAt(i))){
+                vowelCount++;
+                count+=consonantCount;
+            }else{
+                consonantCount++;
+                count+=vowelCount;
+            }
+        }
+        return count%(1000000007);
+    }
+    boolean isVowel(char c){
+        if(c=='a' || c=='e'||c=='i'||c=='o'||c=='u'){
+            return true;
+        }
+        return false;
+    }
+}
+See pic on GMAIL.
+More Optimized Solution. IB Official solution. A surprise to me. Ans is vowelCount * consonantCount. Reason: With every vowel, we can make consonantCount number of Substrings whether they start with that vowel or end with that vowel. So for vowelCount vowels, there are vowelCount*consonantCount number of such Substrings.
+public class Solution {
+    public int solve(String A) {
+        // Count the number of vowels and the number of consonants and return their product
+        int vowels = 0;
+        int consonant = 0;
+        int n = A.length();
+        for(int i = 0; i<n; i++){
+            if(isVowel(A.charAt(i))){
+                vowels++;
+            }
+            else{
+                consonant++;
+            }
+        }
+        return (vowels*consonant)%(1000000007);
+        
+    }
+    public boolean isVowel(char c){
+        if(c== 'a' || c== 'e' || c== 'i' || c== 'o' || c== 'u'){
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+
+
+
+
+468. Validate IP Address Medium
+Ignore this problem.
+
+
+
+273. Integer to English Words Hard
+
+Top voted LC Solution.
+If you want to make it fast, use StirngBuilder. See my last submitted LC solution.
+class Solution {
+    private final String[] LESS_THAN_20 = {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+    private final String[] TENS = {"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+    private final String[] THOUSANDS = {"", "Thousand", "Million", "Billion"};
+    public String numberToWords(int num) {
+        if(num==0){
+            return "Zero";
+        }
+        StringBuilder sb = new StringBuilder();
+        int i=0;
+        // String words = "";
+        while(num>0){
+            if(num%1000!=0){
+                sb.insert(0, " ");
+                sb.insert(0, THOUSANDS[i]);
+                sb.insert(0, helper(num%1000));
+                // words = helper(num%1000) + THOUSANDS[i] + " " + words;
+            }
+            num = num/1000;
+            i++;
+        }
+        // return words.trim();
+        return sb.toString().trim();
+        //trim removes leading and trailing spaces.
+    }
+    String helper(int num){
+        if(num==0){
+            return "";
+        }else if(num<20){
+            return LESS_THAN_20[num] + " ";
+        }else if(num<100){
+            return TENS[num/10] + " " + helper(num%10);
+        }else{
+            return LESS_THAN_20[num/100] + " Hundred " + helper(num%100);            
+        }
+    }
+}
+
+Length of Last Word Easy InterviewBit Problem. Tags: String 2 June, 2022. 
+
+public class Solution {
+    // DO NOT MODIFY THE LIST. IT IS READ ONLY
+    public int lengthOfLastWord(final String s) {
+        int length =0;
+        int i;
+        for(i=s.length()-1;i>=0;i--){
+            if(s.charAt(i)==' ' && length==0){
+                continue;
+            }
+            if(s.charAt(i)==' ' && length!=0){
+                return length;
+            }
+            length++;
+        }
+        return length;
+    }
+}
+
+Remove Consecutive Characters Easy InterviewBit Problem. Tags: String 3 June, 2022. 
+Basic String Manipulation
+public class Solution {
+    public String solve(String s, int B) {
+        int n = s.length();
+        char prev = s.charAt(0);
+        int count = 0;
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<=n;i++){
+            if(i==n || (i<n && s.charAt(i) != prev)){
+                if(count==1){
+                    sb.append(prev);
+                }
+                if(i<n){ 
+                    prev = s.charAt(i);
+                }
+                count=1;
+                continue;
+            }
+            count++;
+        }
+        return sb.toString();
+    }
+}
+13. Roman to Integer Easy LC Problem. Tags: String 3 June, 2022. 
+Using Iteration
+class Solution {
+    public int romanToInt(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        map.put('I', 1);
+        map.put('V',5);
+        map.put('X',10);
+        map.put('L',50);
+        map.put('C',100);
+        map.put('D',500);
+        map.put('M',1000);
+        
+        int n = s.length();
+        int num = 0;
+        for(int i=0;i<n;i++){
+            char c = s.charAt(i);
+            if(i<n-1 && subtract(s,i)==true){
+                num = num - map.get(c);
+                continue;
+            }
+            num = num + map.get(c);
+        }
+        return num;
+    }
+    boolean subtract(String s, int i){
+        if(s.charAt(i)=='I' && (s.charAt(i+1)=='V' ||s.charAt(i+1)=='X')){
+            return true;
+        }
+        if(s.charAt(i)=='X' && (s.charAt(i+1)=='L' ||s.charAt(i+1)=='C')){
+            return true;
+        }
+        if(s.charAt(i)=='C' && (s.charAt(i+1)=='M' ||s.charAt(i+1)=='D')){
+            return true;
+        }
+        return false;
+    }
+}
+12. Integer to Roman Medium LC Problem. Tags: String 3 June, 2022.
+Using String Manipulation.
+Logic used in  273. Integer to English Words Hard
+class Solution {
+    String[] ones = {"","I","II","III","IV","V","VI","VII","VIII","IX"};
+    String[] tens = {"","X","XX","XXX","XL","L","LX","LXX","LXXX","XC"};
+    String[] hundreds = {"","C","CC","CCC","CD","D","DC","DCC","DCCC","CM"};
+    String[] thousands = {"","M","MM","MMM"};
+    public String intToRoman(int num) {
+        int index=0;
+        StringBuilder sb = new StringBuilder();
+        while(num>0){
+            if(num%10!=0){
+                if(index==0){
+                    sb.insert(0, ones[num%10]);
+                }else if(index ==1){
+                    sb.insert(0, tens[num%10]);
+                }else if(index ==2){
+                    sb.insert(0, hundreds[num%10]);
+                }else if(index ==3){
+                    sb.insert(0, thousands[num%10]);
+                }
+            }
+            num = num/10;
+            index++;
+        }
+        return sb.toString();
+    }
+}
+Longest Prefix Suffix Questions
+28. Implement strStr() Easy
+Using Naïve pattern matching algorithm
+Using KMP algorithm.  Time complexity = O(m+n).
+Make LPS array(Longest Prefix Suffix). Find Longest Prefix which is also a Suffix. Prefix cannot be the entire String itself. So starting index of array will always be 0.
+A prefix is any substring starting at the beginning
+A suffix is any substring ending at the last character.
+
+
+
+
+
+
+
+Not working
+class Solution {
+	public int strStr(String haystack, String needle) {
+		if (needle.length() == 0) {
+			return 0;
+		}
+        int[]lps = new int[needle.length()];
+        int prevLPS = 0;
+        int i=1;
+        while(i<needle.length()){
+            if(needle.charAt(i)==needle.charAt(prevLPS)){
+                lps[i]=prevLPS+1;
+                prevLPS++;
+                i++;
+            }else{
+                if(prevLPS == 0){
+                    lps[i]=0;
+                    i++;
+                }else{
+                    prevLPS = lps[prevLPS-1];
+                }
+            }
+        }
+        
+        i=0;   //pointer for haystack
+        int j=0;  //pointer for needle
+        while(i<haystack.length()){
+            if(haystack.charAt(i)==needle.charAt(i)){
+                i++;
+                j++;
+            }else{
+                if(j==0){
+                    i++;
+                }else{
+                    j=lps[j-1];
+                }
+            }
+            if(j==needle.length()){
+                return i-needle.length();
+            }
+        }
+		return -1;
+	}
+}
+
+Minimum Characters required to make a String Palindromic Medium Asked In: Amazon MicrosoftInterviewBit Problem. Tags: LPS, Strings. 3 June, 2022
+Using LPS Array concept(used in KMP Algorithm). O(n)
+public class Solution {
+    void computeLPS(String s,int[] lps)
+    {
+        int m=s.length();
+        int len=0;
+        lps[0]=0;
+        int i=1;
+        while(i<m)
+        {
+            if(s.charAt(i)==s.charAt(len))
+            {
+                len++;
+                lps[i]=len;
+                i++;
+            }
+            else
+            {
+                if(len!=0)
+                {
+                    len=lps[len-1];
+                }
+                else
+                {
+                    lps[i]=0;
+                    i++;
+                }
+            }
+        }
+    }
+    public int solve(String a) 
+    {
+        StringBuilder s=new StringBuilder(a);
+        s=s.reverse();
+        String str=a+"$"+s.toString();
+        int[] lps=new int[str.length()];
+        computeLPS(str, lps);
+        return (a.length()-lps[str.length()-1]);
+    }
+}
+
+Brute force solution: Gives TLE. O(n2) time.
+public class Solution {
+    public int solve(String s) {
+        int n = s.length();
+        int i,j,end=n-1;
+        while(end>=0){
+            i=0;
+            j=end;
+            while(i<j){
+                if(s.charAt(i)!=s.charAt(j)){
+                    end--;
+                    break;
+                }
+                i++;
+                j--;
+            }
+            if(i>=j){
+                break;
+            }
+        }
+        return n-(end+1);
+    }
+}
+Minimum Appends for Palindrome! Medium Asked In: Facebook InterviewBit Problem. Tags: LPS, Strings. 3 June, 2022
+public class Solution {
+    void computeLPS(String s,int[] lps)
+    {
+        int m=s.length();
+        int len=0;
+        lps[0]=0;
+        int i=1;
+        while(i<m)
+        {
+            if(s.charAt(i)==s.charAt(len))
+            {
+                len++;
+                lps[i]=len;
+                i++;
+            }
+            else
+            {
+                if(len!=0)
+                {
+                    len=lps[len-1];
+                }
+                else
+                {
+                    lps[i]=0;
+                    i++;
+                }
+            }
+        }
+    }
+    public int solve(String a) 
+    {
+        StringBuilder s=new StringBuilder(a);
+        s=s.reverse();
+        String str=s.toString()+"$"+a;
+        int[] lps=new int[str.length()];
+        computeLPS(str, lps);
+        return (a.length()-lps[str.length()-1]);
+    }
+}
+
+Convert to Palindrome Easy Asked In: Amazon.InterviewBit Problem. Tags: LPS, Strings. 3 June, 2022
+Using String Manipulation
+public class Solution {
+    public int solve(String s) {
+        int n = s.length();
+        int i=0,j=n-1;
+        while(i<j){
+            if(s.charAt(i)!=s.charAt(j)){
+                if(isPalin(s,i+1,j)){
+                    return 1;
+                }
+                if(isPalin(s,i,j-1)){
+                    return 1;
+                }
+                return 0;
+            }
+            i++;
+            j--;
+        }
+        if(i==j){
+            return 1;
+        }
+        return 0;
+    }
+    boolean isPalin(String s, int start, int end){
+        while(start<end){
+            if(s.charAt(start)!=s.charAt(end)){
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+}
+
+Character Frequencies Easy Asked In: Cognizant InterviewBit Problem. Tags: LPS, Strings. 3 June, 2022
+
+public class Solution {
+    public ArrayList<Integer> solve(String s) {
+        // HashMap<Character, Integer> map = new HashMap<>();
+        int[] map = new int[26];
+        for(char c: s.toCharArray()){
+            map[c-'a']++;
+            // map.put(c, map.getOrDefault(c,0)+1);
+        }
+        ArrayList<Integer>result = new ArrayList<>();
+        for(char c: s.toCharArray()){
+            // int freq = map.get(c);
+            int freq = map[c-'a'];
+            if(freq!=0){
+                result.add(freq);
+                map[c-'a']=0;
+                // map.put(c,-1);
+            }
+        }
+        return result;
+    }
+}
+
+String Inversion Very Easy Asked In: Wipro InterviewBit Problem. Tags: LPS, Strings. 3 June, 2022
+
+Example Input
+Input 1:
+A = 6 = "InterviewBit"
+Input 2:
+A = "Scaler"
+
+
+Example Output
+Output 1:
+"iNTERVIEWbIT"
+Output 2:
+"sCALER"
+
+Using String Manipulation
+public class Solution {
+    public String solve(String word) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<word.length();i++){
+            if (Character.isLowerCase(word.charAt(i))) {
+                // sb.insert(i,Character.toUpperCase(word.charAt(i)));
+                sb.append(Character.toUpperCase(word.charAt(i)));
+            }else{
+                // sb.insert(i,Character.toLowerCase(word.charAt(i)));
+                sb.append(Character.toLowerCase(word.charAt(i)));
+            }
+        }
+        return sb.toString();
+    }
+}
+
+Valid Password Very EasyAsked In: Cognizant IBMInterviewBit Problem. Tags: LPS, Strings. 3 June, 2022
+Given a password as a character array A.
+Check if it is valid or not.
+
+
+Password should have at least one numerical digit(0-9).
+Password's length should be in between 8 to 15 characters.
+Password should have at least one lowercase letter(a-z).
+Password should have at least one uppercase letter(A-Z).
+Password should have at least one special character ( @, #, %, &, !, $, *).
+Using String Manipulation
+public class Solution {
+    public int solve(String A) {
+        boolean digit = false;
+        boolean upper = false;
+        boolean lower = false;
+        boolean special = false;
+        for(int i = 0; i < A.length(); i++){
+            char x = A.charAt(i);
+            if('a'<=x && x<='z'){
+                lower = true;
+            }
+            if('A'<=x && x<='Z'){
+                upper = true;
+            }
+            if('0'<=x && x<='9'){
+                digit = true;
+            }
+            if(x=='@' || x=='#' || x=='%' || x=='&' || x=='!' || x=='$' || x=='*'){
+                special = true;
+            }
+        }
+        if(8<=A.length() && A.length()<=15){
+            if(digit && upper && lower && special){
+                return 1;
+            }
+            return 0;
+        }
+        return 0;
+    }
+}
+415. Add Strings Easy LC Problem. Tags:Strings. 3 June, 2022
+
+Using String Manipulation and Maths. See add 2 numbers represented by LL
+class Solution {
+    public String addStrings(String num1, String num2) {
+        int m= num1.length();
+        int n = num2.length();
+        int i=m-1,j=n-1,carry =0;
+        StringBuilder sb = new StringBuilder();
+        while(i>=0 || j>=0 || carry>0){
+            int a = i>=0?num1.charAt(i) - '0': 0;
+            int b = j>=0?num2.charAt(j) - '0': 0;
+            int sum = a+b+carry;
+            sb.append(sum%10);
+            carry = sum/10;
+            i--;
+            j--;
+        }
+        // if(carry>0){
+        //     sb.append(carry);
+        // }
+        return sb.reverse().toString();
+    }
+}
+43. Multiply Strings Medium LC Problem. Tags:Strings. 4 June, 2022
+Using Basic String Manipulation and Maths
+class Solution {
+    public String multiply(String num1, String num2) {
+        int m = num1.length();
+        int n = num2.length();
+        if(num1.charAt(0)=='0' || num2.charAt(0)=='0'){
+            return "0";
+        }
+        int index = 0;
+        StringBuilder sb = new StringBuilder();
+        for(int i=n-1;i>=0;i--){
+            int a = num2.charAt(i)-'0';
+            int carry = 0;
+            int k=index;
+            for(int j=m-1;j>=0;j--){
+                int b = num1.charAt(j)-'0';
+                int prev = k>=sb.length()? 0: sb.charAt(k)-'0';
+                int prod = a*b+carry + prev;
+                if(k>=sb.length()){
+                    sb.append(prod%10);
+                }else{
+                    sb.setCharAt(k, (char)(prod%10+'0'));
+                }
+                carry = prod/10;
+                k++;
+            }
+            if(carry>0){
+                if(k>=sb.length()){
+                    sb.append(carry);
+                }else{
+                    sb.setCharAt(k, (char)(carry + '0'));
+                }
+                carry = 0;
+            }
+            index++;
+        }
+        return sb.reverse().toString();
+    }
+}
+Optimizing above code.
+First Reverse the 2 Strings. Then do product. See NeetCode.
+class Solution {
+    public String multiply(String num1, String num2) {
+        int m = num1.length();
+        int n = num2.length();
+        if(num1.charAt(0)=='0' || num2.charAt(0)=='0'){
+            return "0";
+        }
+        int[] nums = new int[m+n];
+        num1 = new StringBuilder(num1).reverse().toString();
+        num2 = new StringBuilder(num2).reverse().toString();
+        for(int i=0;i<n;i++){
+            int a = num2.charAt(i)-'0';
+            for(int j=0;j<m;j++){
+                int b = num1.charAt(j)-'0';
+                int digit = a*b;
+                int prod = nums[i+j]+digit%10;
+                nums[i+j] = prod%10;
+                nums[i+j+1] += digit/10 + prod/10;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for(int num: nums){
+            sb.append(num);
+        }
+        
+        String result = sb.reverse().toString();
+        int i=0;
+        while(i<result.length() && result.charAt(i)=='0'){
+            i++;
+        }
+        return result.substring(i);
+    }
+}
+
+139. Word Break Medium LC Problem. Tags:Strings, DP. 4 June, 2022
+
+Using DP
+See NeetCode for explanation
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        int n = s.length();
+        boolean[]dp = new boolean[n+1];
+        dp[n]=true;
+        for(int i=n-1;i>=0;i--){
+            for(String word: wordDict){
+                int m = word.length();
+                if(i+m<=n && s.substring(i,i+m).equals(word)){
+                    dp[i]=dp[i+m];
+                }
+                if(dp[i]==true){
+                    break;
+                }
+            }
+        }
+        return dp[0];
+    }
+}
+Modified Question
+Return number of ways s can be split into words such that each word is in wordDict
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        int n = s.length();
+        boolean[]dp = new boolean[n+1];
+        dp[n]=true;
+        for(int i=n-1;i>=0;i--){
+            for(String word: wordDict){
+                int m = word.length();
+                if(i+m<=n && s.substring(i,i+m).equals(word)){
+                    dp[i]+=dp[i+m];
+                }
+            }
+        }
+        return dp[0];
+    }
+}
+
+1864. Minimum Number of Swaps to Make the Binary String Alternating Medium LC Problem. Asked in Microsoft OA. Tags:Strings, Greedy. 5 June, 2022
+Take pen and paper and work out the approach. Nothing Rocket Science.
+Example 1:
+Input: s = "111000"
+Output: 1
+Explanation: Swap positions 1 and 4: "111000" -> "101010"
+The string is now alternating.
+Example 2:
+Input: s = "010"
+Output: 0
+Explanation: The string is already alternating, no swaps are needed.
+Example 3:
+Input: s = "1110"
+Output: -1
+Using Basic Observation. LC Top voted Solution
+class Solution {
+    public int minSwaps(String s) {
+        int ones = 0;
+        int zeros = 0;
+        
+        //count no. of zeros and ones
+        for(char c: s.toCharArray()){
+            if(c=='0')
+                zeros++;
+            else
+                ones++;
+        }
+        
+        //base case we cannot make it alternative if this is the case
+        if(Math.abs(ones-zeros)>1)
+            return -1;
+        
+        //if ones are more, the string should start with 1
+        if(ones>zeros)
+            return findMinSwaps(s, '1');
+        
+        //string should start with 0
+        if(zeros>ones)
+            return findMinSwaps(s, '0');
+        
+        //if both are equal, lets check both possibilities
+        return Math.min(findMinSwaps(s, '1'),findMinSwaps(s, '0'));
+    }
+    
+    
+    //we are counting the no. of changes we are doing, but we are basically swapping two indexes,
+    //so return /2
+    public int findMinSwaps(String s, char ch){
+        //For example 11100. We expect our target String would be 10101. Target String would start with 1. So if you observe ch values, they are in that order only. Wherever values mismatch, we increment numberOfMismatch.
+        //Similarly for example 00011. We expect target String to be 01010. Startign with 0.
+        int minSwaps = 0; //numberOfMissmatch 
+        for(char c: s.toCharArray()){
+            if(c!=ch)
+            {
+                minSwaps++;
+            }
+            ch = (ch == '1')? '0':'1';
+        }
+        
+        return minSwaps/2;
+    }
+}
+1758. Minimum Changes To Make Alternating Binary String Easy LC Problem. Tags: Strings, Greedy. 5 June, 2022
+Min Number of Flips Easy GFG Problem. Tags:Strings, Greedy. 5 June, 2022
+Similar to above question
+Note if Number of flips asked, donot do number of mismatch/2.
+Example 1:
+S = "001"
+Output: 1
+Example 2:
+S = "0001010111" 
+Output: 2
+
+Using Basic Observation
+class Solution {
+    public int minFlips(String s) {
+        int zeros =0;
+        int ones = 0;
+        for(char c: s.toCharArray()){
+            if(c=='0'){
+                zeros++;
+            }else{
+                ones++;
+            }
+        }
+        return Math.min(findMinFlips(s,'1'), findMinFlips(s,'0'));
+    }
+    int findMinFlips(String s, char ch){
+        int numberOfMismatch = 0;
+        for(char c: s.toCharArray()){
+            if(c!=ch){
+                numberOfMismatch++;
+            }
+            ch = (ch=='0')?'1':'0';
+        }
+        return numberOfMismatch;
+    }
+}
+
+1963. Minimum Number of Swaps to Make the String Balanced Medium LeetCode Problem. Tags:Strings, Greedy. 5 June, 2022
+Swapping 1 parenthesis cancels 1 other parenthesis. So ans would be number of (closing parenthesis +1)/2
+Dry run for “]][[”, “]]][[[”,”]]]][[[[”
+Using Basic Observation
+class Solution {
+    public int minSwaps(String s) {
+        int max = Integer.MIN_VALUE;
+        int closingPar = 0;
+        for(char c: s.toCharArray()){
+            if(c==']'){
+                closingPar++;
+            }else{
+                closingPar--;
+            }
+            if(closingPar>max){
+                max = closingPar;
+            }
+        }
+        return (max+1)/2;
+    }
+}
+
+1541. Minimum Insertions to Balance a Parentheses String Medium. Later
+
+Split the binary string into substrings with equal number of 0s and 1s Medium GFG Problem. Tags:Strings. 5 June, 2022
+Using Basic String Maths
+class Solution {
+    public static int maxSubStr(String s) {
+        int n = s.length();
+        int zeros = 0;
+        int ones = 0;
+        int count =0;
+        for(int i=0;i<n;i++){
+            if(s.charAt(i)=='0'){
+                zeros++;
+            }else{
+                ones++;
+            }
+            if(zeros==ones){
+                count++;
+                zeros=0;
+                ones=0;
+            }
+        }
+        if(Math.abs(zeros-ones)>0){
+            return -1;
+        }
+        return count;
+    }
+}
+696. Count Binary Substrings Easy LeetCode Problem. Tags:Strings. 5 June, 2022
+Example 1:
+Input: s = "00110011"
+Output: 6
+Explanation: There are 6 substrings that have equal number of consecutive 1's and 0's: "0011", "01", "1100", "10", "0011", and "01".
+Notice that some of these substrings repeat and are counted the number of times they occur.
+Also, "00110011" is not a valid substring because all the 0's (and 1's) are not grouped together.
+Example 2:
+Input: s = "10101"
+Output: 4
+Explanation: There are 4 substrings: "10", "01", "10", "01" that have equal number of consecutive 1's and 0's.
+Not as easy as it looks
+Observation based question
+class Solution {
+    public int countBinarySubstrings(String s) {
+        int n = s.length();
+        int count =0;
+        char prev = s.charAt(0);
+        int[] freq = new int[2];
+        for(int i=0;i<n;i++){
+            if(s.charAt(i)!=prev && freq[s.charAt(i)-'0']!=0){
+                count+=Math.min(freq[0],freq[1]);
+                freq[s.charAt(i)-'0']=0;
+            }
+            freq[s.charAt(i)-'0']++;
+            prev = s.charAt(i);
+        }
+        count+=Math.min(freq[0],freq[1]);
+        return count;
+    }
+}
+LC Top voted solution. No need to use array to store 0 and 1 counts. Just store these counts in 2 variables and interchange these variables once we encounter that current element and previous element are not equal. 
+class Solution {
+    public int countBinarySubstrings(String s) {
+        int c=0;
+        int currCount=1,prevCount=0;
+        for(int i=1;i<s.length();i++){
+            if(s.charAt(i)==s.charAt(i-1)) currCount++;
+            else{
+                prevCount=currCount;
+                currCount=1;
+            }
+            if(prevCount>=currCount) c++;
+        }
+        return c;
+    }
+}
+
+1047. Remove All Adjacent Duplicates In String Easy LeetCode Problem. Tags:Strings, Stack. 5 June, 2022
+Input:
+aa:   “”
+aaa:   “a” 
+abbc -> ac
+abbbc -> abc
+Example 1:
+Input: s = "abbaca"
+Output: "ca"
+Explanation: 
+For example, in "abbaca" we could remove "bb" since the letters are adjacent and equal, and this is the only possible move.  The result of this move is that the string is "aaca", of which only "aa" is possible, so the final string is "ca".
+Example 2:
+Input: s = "azxxzy"
+Output: "ay"
+
+Using Stack
+class Solution {
+    public String removeDuplicates(String s) {
+        Stack<Character> stack = new Stack<>();
+        int n = s.length();
+        for(int i=0;i<n;i++){
+            if(!stack.isEmpty() && stack.peek()==s.charAt(i)){
+                stack.pop();
+                continue;
+            }
+            stack.push(s.charAt(i));
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            sb.append(stack.pop());
+        }
+        return sb.reverse().toString();
+    }
+}
+Using Recursion
+class Solution {
+    public String removeDuplicates(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        helper(sb, 0);
+        return sb.toString();
+    }
+    
+    private void helper(StringBuilder sb, int start) {
+        for(int i = start; i < sb.length() - 1; i++) {
+            char c = sb.charAt(i);
+            char c2 = sb.charAt(i + 1);
+            if(c == c2) {
+                sb.deleteCharAt(i);
+                sb.deleteCharAt(i);
+                if(i >= 1) helper(sb, i - 1); 
+                else helper(sb, i);
+            }
+        }
+    }
+}
+
+
+1209. Remove All Adjacent Duplicates in String II Medium LeetCode Problem. Tags:Strings, Stack. 6 June, 2022
+Example 1:
+Input: s = "abcd", k = 2
+Output: "abcd"
+Explanation: There's nothing to delete.
+Example 2:
+Input: s = "deeedbbcccbdaa", k = 3
+Output: "aa"
+Explanation: 
+First delete "eee" and "ccc", get "ddbbbdaa"
+Then delete "bbb", get "dddaa"
+Finally delete "ddd", get "aa"
+Example 3:
+Input: s = "pbbcggttciiippooaais", k = 2
+Output: "ps"
+
+"dtpdtaaaaaaaaappppppppppppppppppppaaaaaaaaaaxxxxxxxxxxxxxxsssssssssjjjjjjjjjjjjjjjjjjjjxxxxxxxxxxxxxxxxxxxxsssssssjjjjjjjjjjjjjjjjjjjjssssxxxxxxatdwvvpctpggggggggggggggggggggajagglaaaaaaaaaaaaaaaaaaaa" 
+20
+"dtpdttdwvvpctpajaggl"
+Using Stack
+Also keep count of each char. So crate a Pair/Node class
+class Node{
+    char c;
+    int count;
+    public Node(char c, int count){
+        this.c = c;
+        this.count = count;
+    }
+}
+class Solution {
+    public String removeDuplicates(String s, int k) {
+        Stack<Node> stack = new Stack<>();
+        int n = s.length();
+        for(int i=0;i<n;i++){
+            if(!stack.isEmpty() && stack.peek().c==s.charAt(i)){
+                if(stack.peek().count==k-1){
+                    stack.pop();
+                }else{
+                    stack.peek().count++;
+                }
+                continue;
+            }
+            stack.push(new Node(s.charAt(i),1));
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            Node node = stack.peek();
+            int count = node.count;
+            while(count-->0){
+                sb.append(node.c);
+            }
+            stack.pop();
+        }
+        return sb.reverse().toString();
+    }
+}
+
+Remove Duplicates Easy GFG Problem. Tags:Strings, Stack. 5 June, 2022
+Example 1:
+Input: S = "zvvo"
+Output: "zvo"
+Explanation: Only keep the first
+occurrence
+Example 2:
+Input: S = "gfg"
+Output: gf
+Explanation: Only keep the first
+occurrence
+Using HashMap. Array of 26 size as HashMap
+class Solution {
+    String removeDups(String s) {
+        int[] freq = new int[26];
+        StringBuilder sb = new StringBuilder();
+        for(char c: s.toCharArray()){
+            if(freq[c-'a']==0){
+                sb.append(c);
+                freq[c-'a']=1;
+            }
+        }
+        return sb.toString();
+    }
+}
+String Maths
+
+2259. Remove Digit From Number to Maximize Result Easy LeetCode Problem. Tags:Strings, Maths, Greedy. 6 June, 2022
+
+Basic String Manipulation
+class Solution {
+    public String removeDigit(String number, char digit) {
+        int n = number.length();
+        String max = "";
+        for(int i=0;i<n;i++){
+            char c = number.charAt(i);
+            if(c==digit){
+               String probableMax = number.substring(0,i) + number.substring(i+1,n);
+                if (probableMax.compareTo(max) >= 0) {
+                    max = probableMax;
+                }
+            }
+        }
+        return max;
+    }
+    
+}
+402. Remove K Digits Medium LeetCode Problem. Tags:Strings, Maths, Greedy, Stack. 6 June, 2022
+Using Monotonically Increasing(Non decreasing)Stack
+Unique algortihm
+class Solution {
+    public String removeKdigits(String num, int k) {
+        Stack<Character>stack = new Stack<>();
+        for(char c: num.toCharArray()){
+            while(k>0 && !stack.isEmpty() && stack.peek()>c){
+                stack.pop();
+                k--;
+            }
+            stack.push(c);
+        }
+        //what if num="123456" in ascending order. Not handled by previous case.
+        while(k>0 && !stack.isEmpty()){
+            stack.pop();
+            k--;
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            sb.append(stack.pop());
+        }
+        String result = sb.reverse().toString();
+        //logic to remove leading 0's
+        int j = 0;
+        while(j<result.length() && result.charAt(j)=='0'){
+            j++;
+        }
+        return result.substring(j)==""?"0":result.substring(j);
+    }
+}
+Much cleaner Implementation
+class Solution {
+public String removeKdigits(String num, int k) {
+if (num == null || k == 0) return num;
+    if (num.length() == k) return "0"; 
+    
+    // if more significant digit is greater than less significant digit remove it
+    
+    int index = 0;
+    Stack<Character> stack = new Stack<>();
+    
+    while (index < num.length()) {
+        char ch = num.charAt(index);
+        
+        // remove
+       while (k > 0 && !stack.isEmpty() && stack.peek() > ch) {
+           stack.pop();
+           k--;
+       }    
+                    
+       // push
+        stack.push(ch);
+        index++;
+    }
+    
+    // if k remaining
+    while(k > 0 && !stack.isEmpty()) {
+        stack.pop();
+        k--;
+    }
+    
+    // make answer
+    StringBuilder sb = new StringBuilder();
+    
+    while(!stack.isEmpty()) {
+        sb.append(stack.pop());
+    }
+    
+    // reverse
+    sb.reverse();
+    
+    
+    // remove leading zeros
+    while(sb.length() > 1 && sb.charAt(0) == '0' ) {
+        sb.deleteCharAt(0);
+    }
+    
+    return sb.toString();
+}
+}
+767. Reorganize String Medium LeetCode Problem. Tags:Heap, Strings, HashMap, Greedy, Stack. 6 June, 2022
+See in Heap Section.
+205. Isomorphic Strings Easy
+Using HashMap
+In Map there is unique key. Not necessary there are unique values.
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        int n = s.length();
+        HashMap<Character, Character>map = new HashMap<>();
+        for(int i=0;i<n;i++){
+            char ch1 = s.charAt(i);
+            char ch2 = t.charAt(i);
+            if(map.containsKey(ch1) && map.get(ch1)!=ch2){
+                return false;
+            }
+            if(map.containsValue(ch2)){
+                for (Map. Entry<Character, Character> entry: map. entrySet()) {
+                    if (entry.getValue()==ch2 && entry.getKey()!=ch1){
+                       return false; 
+                    } 
+                }
+            }
+            map.put(ch1,ch2);
+        }
+        return true;
+    }
+}
+
+Efficient Solution
+Used char array as HashMap. Given ASCII chars so size of array = 256. Here char only serves as index of the char array. Could have used HashMap also in its place.
+Logic change: s should be isomorphic to t and at the same time t should be isomorphic to s.
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        return helper(s,t) && helper(t,s);// s should be isomorphic to t and at the same time t should be isomorphic to s.
+    }
+    boolean helper(String s, String t){
+        int n = s.length();
+        char[] map = new char[256];
+        for(int i=0;i<n;i++){
+            char key = s.charAt(i);
+            char value = t.charAt(i);
+            if(map[key]!='\u0000' && map[key]!=value){
+                return false;
+            }
+            map[key]=value;
+        }
+        return true;
+    }
+}
+		
