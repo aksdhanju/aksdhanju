@@ -1,0 +1,378 @@
+Strings
+String(char[] char_arr) – Allocates a new String from the given Character array
+Example:
+Convert Char Array to String in Java
+char char_arr[] = {'G', 'e', 'e', 'k', 's'};
+String s = new String(char_arr); //Geeks
+String s = String.valueOf(char_arr);
+Convert String to Char Array in Java
+char[] array = s.toCharArray();
+
+
+Substring method of String class:
+String name="akash";
+System.out.println(name.substring(0,1));   //”a”
+System.out.println(name.substring(0,0));   //””
+System.out.println(name.substring(0,5));   //”akash”s
+Reversing a String
+Using StringBuilder: String text2 = new StringBuilder(text1).reverse().toString();
+Using While loop
+Using Char Array
+Using Stack
+
+
+String Assignment
+String text1=”akash”
+text1 = text1 + "123";
+String text3 = text1;
+System.out.println(text3);   //akash123
+
+
+Comparing 2 Strings
+
+
+String first = "1294";
+String second = "1703";
+System.out.println(first.compareTo(second));    //-5 (-ve number if first<second)
+
+
+String first = "1994";
+String second = "1114";
+System.out.println(first.compareTo(second));    //8 (+ve number if first>second)
+
+
+String first = "218";
+String second = "218";
+System.out.println(first.compareTo(second));    //0 (0 if first==second)
+
+
+String first = "abc";
+String second = "cde";
+System.out.println(first.compareTo(second));   //-2 (-ve number if first<second)
+String first = "abcdf";
+String second = "abcde";
+System.out.println(first.compareTo(second));   //1 (+ve number if first>second)
+
+
+Can make Class Solution implements Comparable<String>{
+String s1;
+@Override
+    public int compareTo(String s2) {
+        if (s1.equals(s2))
+            return 0;
+        return name.compareTo(s.name));
+    }
+}
+Explore later.
+Joining List<String> with commas(“,”)
+List<String> list = new ArrayList<>();
+List = [“a”,”b”,”c”,”d”]
+String ans = String.join(",",list);
+//ans = “a,b,c,d”
+
+
+
+
+Working with Primitives
+Convert int to char
+Int count = 5;
+char c = (char)(count+’0’)   //prints ‘5’
+char c2 = (char)count;       //Prints some special character.
+Comparison of char with each other
+for(int i = 0; i < A.length(); i++){
+            char x = A.charAt(i);
+            if('a'<=x && x<='z'){
+                lower = true;
+            }
+            if('A'<=x && x<='Z'){
+                upper = true;
+            }
+            if('0'<=x && x<='9'){
+                digit = true;
+            }
+}
+Default value of Char Array in Java
+'\u0000' 
+Like 0 for array
+StringBuilder
+Delete last char of a StringBuilder(used in backtracking questions)
+sb.deleteCharAt(sb.length() - 1);
+sb.setLength(sb.length() - 1);
+sb.deleteCharAt(i);
+Delete char from [start to end)
+sb.delete(start, end)
+Insert at Start of StringBuilder
+sb.insert(0,”abc”);
+
+
+Replacing char at ith index
+string.setCharAt(index, ch);
+
+
+
+
+
+
+Integer Parsing
+Integer.parseInt() returns a primitive int and not Integer object. It takes String as argument.
+int decimalExample = Integer.parseInt("20");
+int signedPositiveExample = Integer.parseInt("+20");
+int signedNegativeExample = Integer.parseInt("-20");
+Integer.valueOf(): returns an Integer Object.
+Integer obj = Integer.valueOf(“77”);  //can take String as argument
+Integer obj = Integer.valueOf(77);   //can take primitive int as argument
+
+
+String Split method: returns array of String
+String str = "Akash:Deep:Singh:Dhanju";
+String[] arrOfStr = str.split(":");
+for (String a : arrOfStr){
+   System.out.println(a);      
+}
+Output:
+Akash
+Deep
+Singh
+Dhanju
+
+
+
+
+String str = "GeeksforGeeksforStudents";
+String[] arrOfStr = str.split("for");
+for (String a : arrOfStr)
+      System.out.println(a);        
+
+
+
+
+Working with Character/char
+This surprisingly works:
+for(char c='a';c<='z';c++){
+            if(isVowel(c)){
+                map.put(c,1);
+            }else{
+                map.put(c,0);
+            }
+        }
+
+
+Using array of characters instead of HashMap
+        int[] cache = new int[256];
+        while(j<n){
+            if(cache[s.charAt(j)] > 0){
+                while(cache[s.charAt(j)] > 0){
+                    cache[s.charAt(i)]--;
+                    i++;
+                }
+            }
+            cache[s.charAt(j)]++;
+HashMap
+Map with value as List<Integer>
+Map<String, List<String>> given. To return List<List<String>>. Means combine all values of map and put in list and return.
+	Instead use return new ArrayList<>(map.values());
+To update value, just do map.get(keyStr).add(s); 
+	Do not do map.put(keyStr, map.get(keyStr).add(s));
+
+
+List constructor accepts any data structure that implements Collection interface to be used to build a list.
+To get all the keys from a hash map to a list:
+Map<String, Integer> map = new HashMap<String, Integer>();
+List<String> keys = new ArrayList<>(map.keySet());
+To get all the values from a hash map to a list:
+Map<String, Integer> map = new HashMap<String, Integer>();
+List<Integer> values = new ArrayList<>(map.values());
+
+
+Iterating over a HashMap<String, Integer>
+        for (Map.Entry<String, Integer> entry :map.entrySet()){
+            if(entry.getValue()>1){
+                list.add(entry.getKey());
+            }
+        }
+Setting Value of Map.Entry<Character, Integer>Object
+Map.Entry<Character, Integer> obj = maxHeap.poll();
+sb.append(obj.getKey());
+obj.setValue(obj.getValue()-1);
+
+Map.containsValue()
+map.containsValue's time complexity is O(n), therefore might make the total time n^2
+Tree Map stores keys in sorted order.
+Map<Integer, Integer> map = new TreeMap<>();
+
+Iterating over HashMap using Key only
+Map<Integer, Integer> frequencyMap = new HashMap<Integer, Integer>();
+for (int key : frequencyMap.keySet()) {
+		int frequency = frequencyMap.get(key);
+	}
+hashCode() and equals() method
+
+HashSet
+Creating an empty HashSet
+        HashSet<String> set = new HashSet<String>();
+  
+        // Using add() method to add elements into the Set
+        set.add("Welcome");
+        set.add("To");
+        set.add("Geeks");
+        set.add("4");
+        set.add("Geeks");
+  
+        // Displaying the HashSet
+        System.out.println("HashSet: " + set);
+  
+        // Check for "Geeks" in the set
+        System.out.println("Does the Set contains 'Geeks'? " + set.contains("Geeks"));
+  
+        // Check for "4" in the set
+        System.out.println("Does the Set contains '4'? " + set.contains("4"));
+  
+        // Check if the Set contains "No"
+        System.out.println("Does the Set contains 'No'? " + set.contains("No"));
+    }
+}
+
+
+
+Output:
+HashSet: [4, Geeks, Welcome, To]
+Does the Set contains 'Geeks'? true
+Does the Set contains '4'? true
+Does the Set contains 'No'? false
+HashSet remove
+HashSet<String> set = new HashSet<String>();
+ 
+        // Adding custom input elements into the Set
+        // using add() method
+        set.add("Welcome");
+        set.add("To");
+        set.add("Geeks");
+        set.add("For");
+        set.add("Geeks");
+ 
+        // Displaying the HashSet(object elements)
+        System.out.println("HashSet: " + set);
+ 
+        // Removing elements
+        // using remove() method
+        set.remove("Geeks");
+        set.remove("For");
+        set.remove("Welcome");
+
+        // Now displaying the HashSet after removal
+        // of elements from it
+        System.out.println(
+            "HashSet after removing elements: " + set);
+    }
+}
+Output
+HashSet: [Geeks, For, Welcome, To]
+HashSet after removing elements: [To]
+
+Array List in Java
+return new ArrayList<>(Arrays.asList(i+1,j+1));
+  ArrayList<String> gfgstrings = new ArrayList<>(
+            Arrays.asList("DSA", "FAANG", "ALGO"));
+
+
+Convert List<Long> into long[] in java
+1st way:
+long[] result = list.stream().mapToLong(i -> i).toArray();
+2nd way:
+long[] result = new long[list.size()];
+for (int i = 0; i < list.size(); i++){
+	result[i] = list.get(i);
+}
+Converting List<int[]> result into int[][] RESULT;	
+List<int[]> result = new ArrayList<>();
+//processing of result
+return result.toArray(new int[result.size()][]);
+
+
+Reversing an Array List in java
+Collections.reverse(list);
+Swaping elements of ArrayList
+Collections.swap(nums,start,end);
+Sorting an ArrayList:
+Collections.sort(ArrayList);
+Using Comparator 
+
+
+Convert int[] ar into Integer[] nums
+public String largestNumber(int[] array) {
+        Integer[] nums = Arrays.stream(array).boxed().toArray(Integer[]::new);
+        Arrays.sort(nums, new NumberComparator());
+}
+Arrays.sort(nums , new Comparator()) always works for Integer[] nums, not primitive int array. Keep in mind
+However Arrays.sort(nums) works for primitive array. But comparator cant be applied on primitive array.
+Primtive int[], Boolean[] array
+Boolean[] array = new Boolean[n]. Each element is initialized as null
+For boolean[] array = new Boolean[n]. Each element is initialized as false; 
+
+
+Shortcut to create int[] array in Java
+int [] result = new int[2];
+result[1]=i+1;
+result[0]=nums[i];
+return result;
+Use instead this:
+return new int[]{nums[i], i+1};
+       
+
+
+Generating Random Number in Java
+import java.util.concurrent.ThreadLocalRandom; 
+// nextInt is normally exclusive of the top value, 
+// so add 1 to make it inclusive int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
+
+
+Input in Java
+Taking int as Input
+Taking String as Input
+public static void main(String[] args)  
+{  
+Scanner sc= new Scanner(System.in); //System.in is a standard input stream  
+System.out.print("Enter a string: ");  
+String str= sc.nextLine();              //reads string   
+System.out.print("You have entered: "+str);             
+}  
+}  
+
+sc.next();
+
+
+Using Buffered Reader()
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
+class TestClass {
+    public static void main(String args[] ) throws Exception {
+        //BufferedReader
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String s1 = br.readLine();                // Reading input from STDIN
+        // System.out.println("Hi, " + s1 + ".");    // Writing output to STDOUT
+        String s2 = br.readLine();
+        // System.out.println("Hi, " + s2 + "."); 
+
+
+        solve(s1,s2);
+    }
+    static void solve(String s1, String s2){
+        int n = s1.length();
+        int count =0;
+        for(int i=0;i<n;i++){
+            char c1 = s1.charAt(i);
+            char c2 = s2.charAt(i);
+            if(c1 == c2){
+                count++;
+            }
+        }
+        System.out.println(count);
+    }
+}
+
+
+
+
