@@ -1,0 +1,189 @@
+208. Implement Trie (Prefix Tree) Medium. LC Problem Tags: Strings, Trie. 9 June, 2022. Blind 75 Problem
+
+See NeetCode video
+A trie (pronounced as "try") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker.
+Implement the Trie class:
+Trie() Initializes the trie object.
+void insert(String word) Inserts the string word into the trie.
+boolean search(String word) Returns true if the string word is in the trie (i.e., was inserted before), and false otherwise.
+boolean startsWith(String prefix) Returns true if there is a previously inserted string word that has the prefix prefix, and false otherwise.
+ 
+Example 1:
+Input
+["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
+[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]
+Output
+[null, null, true, false, true, null, true]
+
+
+Explanation
+Trie trie = new Trie();
+trie.insert("apple");
+trie.search("apple");   // return True
+trie.search("app");     // return False
+trie.startsWith("app"); // return True
+trie.insert("app");
+trie.search("app");     // return True
+class TrieNode{
+    HashMap<Character, TrieNode>children;
+    boolean endOfWord;
+    public TrieNode(){
+        this.children = new HashMap<>();
+        endOfWord = false;
+    }
+}
+class Trie {
+    TrieNode root;
+    public Trie() {
+        root = new TrieNode();
+    }
+    
+    public void insert(String word) {
+        TrieNode curr = root;
+        for(char c: word.toCharArray()){
+            if(curr.children.get(c)==null){
+                curr.children.put(c, new TrieNode());
+            }
+            curr = curr.children.get(c);
+        }
+        curr.endOfWord = true;
+    }
+    
+    public boolean search(String word) {
+        TrieNode curr = root;
+        for(char c: word.toCharArray()){
+            if(curr.children.get(c)==null){
+                return false;
+            }
+            curr = curr.children.get(c);
+        }
+        if(curr.endOfWord == false){
+            return false;
+        }
+        return true;
+        //return curr.endOfWord;
+    }
+    
+    public boolean startsWith(String prefix) {
+        TrieNode curr = root;
+        for(char c: prefix.toCharArray()){
+            if(curr.children.get(c)==null){
+                return false;
+            }
+            curr = curr.children.get(c);
+        }
+        return true;
+    }
+}
+Implementation using Array
+Since only 26 chars so can use array
+class TrieNode {
+    public boolean isWord; 
+    public TrieNode[] children = new TrieNode[26];
+    public TrieNode() {}
+}
+
+
+public class Trie {
+    private TrieNode root;
+    public Trie() {
+        root = new TrieNode();
+    }
+
+
+    public void insert(String word) {
+        TrieNode ws = root;
+        for(int i = 0; i < word.length(); i++){
+            char c = word.charAt(i);
+            if(ws.children[c - 'a'] == null){
+                ws.children[c - 'a'] = new TrieNode();
+            }
+            ws = ws.children[c - 'a'];
+        }
+        ws.isWord = true;
+    }
+
+
+    public boolean search(String word) {
+        TrieNode ws = root; 
+        for(int i = 0; i < word.length(); i++){
+            char c = word.charAt(i);
+            if(ws.children[c - 'a'] == null) return false;
+            ws = ws.children[c - 'a'];
+        }
+        return ws.isWord;
+    }
+
+
+    public boolean startsWith(String prefix) {
+        TrieNode ws = root; 
+        for(int i = 0; i < prefix.length(); i++){
+            char c = prefix.charAt(i);
+            if(ws.children[c - 'a'] == null) return false;
+            ws = ws.children[c - 'a'];
+        }
+        return true;
+    }
+}
+
+211. Design Add and Search Words Data Structure Medium. LC Problem Tags: Strings, Trie. 9 June, 2022. Blind 75 Problem
+Using Trie.
+Backtracking, Wild card handling logic was tricky
+class TrieNode{
+    HashMap<Character, TrieNode>children;
+    boolean endOfWord;
+    public TrieNode(){
+        children = new HashMap<>();
+        endOfWord = false;
+    }
+}
+class WordDictionary {
+    TrieNode root;
+    public WordDictionary() {
+        root = new TrieNode();
+    }
+    
+    public void addWord(String word) {
+        TrieNode curr = root;
+        for(char c: word.toCharArray()){
+            if(curr.children.get(c)==null){
+                curr.children.put(c, new TrieNode());
+            }
+            curr = curr.children.get(c);
+        }
+        curr.endOfWord = true;
+    }
+    
+    public boolean search(String word) {
+        return dfs(0, root, word);
+    }
+    boolean dfs(int start, TrieNode root, String word){
+        TrieNode curr = root;
+        for(int i=start;i<word.length();i++){
+            char c = word.charAt(i);
+            if(c=='.'){
+                List<TrieNode> list = new ArrayList<>(curr.children.values());
+                //in a way, in next iteration, curr will be set to child
+                for(TrieNode child: list){
+                    if(dfs(i+1, child, word)){
+                        return true;
+                    }
+//alternate implementation of the above part
+		for(Map.Entry<Character,TrieNode> entry : node.trieNodeMap.entrySet()){
+                If(dfs(i+1,entry.getValue(), word)){
+		Return true;
+		}	
+            }
+
+                }
+                return false;
+            }else{
+                if(curr.children.get(c)==null){
+                    return false;
+                }
+                curr = curr.children.get(c);
+            }
+        }
+        return curr.endOfWord;
+    }
+}
