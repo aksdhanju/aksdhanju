@@ -1,0 +1,393 @@
+Graph applications: 
+Google maps
+Facebook friends, mutual friends
+Linkedin 2nd, 3rd connections
+Routers used for sending packet data
+
+Graph Implementation
+import java.io.*;
+import java.util.*;
+class GFG {
+	public static void main (String[] args) {
+		int v = 5;
+		int e = 10;
+		
+		int [][]adjMatrix = new int[v][v];
+		
+		ArrayList<ArrayList<Integer>> adjList = new ArrayList<>();
+		for(int i=0;i<=v;i++){
+		    adjList.add(new ArrayList<Integer>());
+		}
+		
+	}
+	//for adjacencyMatrix
+	static void addEdge(int[][] adjMatrix, int source, int dest){
+	    adjMatrix [source][dest]=1;
+	    adjMatrix [dest][source]=1;
+	}
+	//for adjacencyList
+	static void addEdge(ArrayList<ArrayList<Integer>> adjList, int source, int dest){
+	    adjList.get(source).add(dest);
+	    adjList.get(dest).add(source);
+	}
+}
+
+BFS
+
+
+
+
+import java.io.*;
+import java.util.*;
+class GFG {
+	public static void main (String[] args) {
+	    ArrayList<ArrayList<Integer>> adjList = new ArrayList<>();
+	    int v = 6;
+	    int e = 8;
+	    int[] dist = new int[v+1];
+	    int[] pred = new int[v+1];
+	    boolean[] visited = new boolean[v+1];
+	    boolean result = bfs(adjList, 1, 6, pred, dist);
+	    int components = connectedComponents(adjList, 1, 6, v, pred, dist, visited);
+	}
+	private static boolean bfs(ArrayList<ArrayList<Integer>> adjList, int source, int dest, int v, int[] pred, int[] dist){
+	    Queue<Integer> queue = new LinkedList<>();
+	    boolean[] visited = new boolean[v];
+	    for(int i=0;i<v;i++){
+	        visited[i]=false;
+	        dist[i]=Integer.MAX_VALUE;
+	        pred[i]=-1;
+	    }
+	    visited[source]=true;
+	    dist[source]=0;
+	    queue.add(source);
+	    while(!queue.isEmpty()){
+	        int curr = queue.poll();
+	        for(int i=0;i<adjList.get(curr).size();i++){
+	            int neighbour = adjList.get(curr).get(i);
+	            if(visited[neighbour]==false){
+	                visited[neighbour] = true;
+	                dist[neighbour] = dist[curr]+1;
+	                pred[neighbour]=curr;
+	                queue.add(neighbour);
+	                
+	                if(neighbour==dist){
+	                    return true;
+//can modify as per Question
+	                }
+	            }
+	        }
+	    }
+	    return false;
+	}
+	int connectedComponents(ArrayList<ArrayList<Integer>> adjList, int source, int dest, int v, int[] pred, int[] dist, int[] visited){
+	    int components = 0;
+	    for(int i=1;i<=v;i++){
+	        if(visited[i]==false){
+	            components++;
+	            bfs(adjList, 1, 6, v, pred, dist, visited);
+	        }
+	    }
+	    return components;
+	}
+}
+DFS of Graph
+
+DFS of Graph EasyGFG Problem. Tags: Graph, dfs. 21 June, 2022 
+Given a connected undirected graph. Perform a Depth First Traversal of the graph.
+Example 1:
+Input:
+
+Output: 0 1 2 4 3
+Explanation: 
+0 is connected to 1, 2, 4.
+1 is connected to 0.
+2 is connected to 0.
+3 is connected to 4.
+4 is connected to 0, 3.
+so starting from 0, it will go to 1 then 2
+then 4, and then from 4 to 3.
+Thus dfs will be 0 1 2 4 3.
+Example 2:
+Input:
+
+Output: 0 1 2 3
+Explanation:
+0 is connected to 1 , 3.
+1 is connected to 2. 
+2 is connected to 1.
+3 is connected to 0. 
+so starting from 0, it will go to 1 then 2
+then back to 0 then 0 to 3
+thus dfs will be 0 1 2 3. 
+
+class Solution {
+    // Function to return a list containing the DFS traversal of the graph.
+    ArrayList<Integer> result;
+    public ArrayList<Integer> dfsOfGraph(int V, ArrayList<ArrayList<Integer>> adj) {
+        boolean []visited = new boolean[V+1];
+        result = new ArrayList<>();
+        dfs(0,adj,visited);   //start at 0th vertex. Small v is current vertex. Capital V is number of vertices in graph.
+        return result;
+    }
+    void dfs(int v, ArrayList<ArrayList<Integer>> adj, boolean [] visited) {
+        visited[v]=true;
+        result.add(v);
+        // for(int i=0;i<adj.get(v).size();i++)
+        for(Integer neighbour: adj.get(v)){
+            if(visited[neighbour]==false){
+                dfs(neighbour, adj, visited);
+            }
+        }
+    }
+}
+
+
+Given a unconnected undirected graph. Perform a Depth First Traversal of the graph.
+
+class Solution {
+    // Function to return a list containing the DFS traversal of the graph.
+    ArrayList<Integer> result;
+    public ArrayList<Integer> dfsOfGraph(int V, ArrayList<ArrayList<Integer>> adj) {
+        boolean []visited = new boolean[V+1];
+        result = new ArrayList<>();
+for(int i=0;i<=V;i++){
+if(visited[i]==false){
+dfs(i,adj,visited);   
+}
+}
+        
+        return result;
+    }
+    void dfs(int v, ArrayList<ArrayList<Integer>> adj, boolean [] visited) {
+        visited[v]=true;
+        result.add(v);
+        // for(int i=0;i<adj.get(v).size();i++)
+        for(Integer neighbour: adj.get(v)){
+            if(visited[neighbour]==false){
+                dfs(neighbour, adj, visited);
+            }
+        }
+    }
+}
+Detect cycle in an undirected graph MediumGFG Problem. Tags: Graph, dfs. 21 June, 2022 
+Can be unconnected graph.
+Example 1:
+Input:   
+
+Output: 1
+Explanation: 1->2->3->4->1 is a cycle.
+Example 2:
+Input: 
+
+Output: 0
+Explanation: No cycle in the graph.
+
+class Solution {
+    public boolean isCycle(int V, ArrayList<ArrayList<Integer>> adj) {
+        boolean []visited = new boolean[V];
+         for (int i = 0; i < V; i++){
+             visited[i] = false;
+         }
+        for(int i=0;i<V;i++){
+            if(visited[i]==false){
+                if(dfs(i,adj,visited, -1)){
+                    return true;
+                }   
+            }
+        }
+        return false;
+    }
+    boolean dfs(int v, ArrayList<ArrayList<Integer>> adj, boolean [] visited, int parent) {
+        visited[v]=true;
+        for(Integer neighbour: adj.get(v)){
+            if(visited[neighbour]==false){
+                if(dfs(neighbour, adj, visited, v)==true){
+                    return true;
+                }
+            }else if(visited[neighbour]==true && neighbour!=parent){
+                return true;
+            }
+        }
+        return false;
+    }
+}
+Complexity Analysis: 
+Time Complexity: O(V+E). 
+The program does a simple DFS Traversal of the graph which is represented using adjacency list. So the time complexity is O(V+E).
+Space Complexity: O(V). 
+To store the visited array O(V) space is required.
+
+
+
+
+
+Union Find
+684. Redundant Connection Medium
+whether an undirected graph contains cycle or not.
+
+whether an undirected graph contains cycle or not.
+Using Union Find
+This method assumes that the graph doesn’t contain any self-loops.
+class Solution
+{
+    int find(int par[], int x){
+        int p = par[x];
+        if(p==par[p]){
+            return p;
+        }
+        par[p]=par[par[p]];
+        return find(par, p);
+    }
+    //Function to merge two nodes n1 and n2.
+    public void union_(int n1, int n2, int par[], int rank[]){
+        int p1 = find(par, n1);
+        int p2 = find(par, n2);
+        
+        if(rank[p1]>=rank[p2]){
+            par[p2]=p1;
+            rank[p1]+=rank[p2];
+        }else{
+            par[p1]=p2;
+            rank[p2] +=rank[p1];
+        }
+    }
+    //Function to check whether 2 nodes are connected or not.
+    public Boolean isConnected(int n1, int n2, int par[], int rank[]){
+        if(find(par,n1)==find(par, n2)){
+            return true;
+        }
+        return false;
+    }
+}
+
+684. Redundant Connection MediumLC Problem. Tags: Graph, union find. 2 July, 2022 
+In this problem, a tree is an undirected graph that is connected and has no cycles.
+ Return an edge that can be removed so that the resulting graph is a tree of n nodes. If there are multiple answers, return the answer that occurs last in the input.
+https://www.youtube.com/watch?v=FXWRE67PLL0
+Example 1:
+
+Input: edges = [[1,2],[1,3],[2,3]]
+Output: [2,3]
+Example 2:
+
+Input: edges = [[1,2],[2,3],[3,4],[1,4],[1,5]]
+Output: [1,4]
+ 
+Using Union Find
+class Solution {
+    int[] parent;
+    int[] rank;
+    public int[] findRedundantConnection(int[][] edges) {
+        int n = edges.length;
+        parent = new int[n+1];
+        for(int i=0;i<=n;i++){
+            parent[i]=i;
+        }
+        rank = new int[n+1];
+        Arrays.fill(rank, 1);
+        
+        for(int i=0;i<n;i++){
+            int n1 = edges[i][0];
+            int n2 = edges[i][1];
+            if(union(n1,n2)==false){
+                return new int[]{n1,n2};
+            }
+        }
+        return new int[]{-1,-1};
+    }
+    int find(int i){
+        int p = parent[i];
+        while(p!=parent[p]){
+            parent[p]=parent[parent[p]];   //path compression step. It makes sure we shorten the links as we go up the chain of parents.
+            p = parent[p];
+        }
+        return p;
+    }
+    boolean union(int n1, int n2){
+        int p1 = find(n1);
+        int p2 = find(n2);
+        
+        //if both have same parent. Thats how we know we already have a redundant connection
+        if(p1==p2){
+            return false;
+        }
+        
+        //do union by rank
+        if(rank[p1]>rank[p2]){
+            //means p1 is parent of p2
+            parent[p2]=p1;
+            rank[p1] += rank[p2];
+        }else{
+            parent[p1]=p2;
+            rank[p2] +=rank[p1];
+        }
+        return true;
+    }
+}
+Complexity Analysis
+Time Complexity: O(N\alpha(N)) \approx O(N)O(Nα(N))≈O(N), where NN is the number of vertices (and also the number of edges) in the graph, and \alphaα is the Inverse-Ackermann function. We make up to NN queries of dsu.union, which takes (amortized) O(\alpha(N))O(α(N)) time. Outside the scope of this article, it can be shown why dsu.union has O(\alpha(N))O(α(N)) complexity, what the Inverse-Ackermann function is, and why O(\alpha(N))O(α(N)) is approximately O(1)O(1).
+Space Complexity: O(N)O(N). The current construction of the graph (embedded in our dsu structure) has at most NN nodes.
+178 · Graph Valid Tree Algorithms MediumLC Problem. Tags: Graph, union find. 2 July, 2022 
+Using DFS
+
+Using Union Find
+public class Solution {
+    /**
+     * @param n: An integer
+     * @param edges: a list of undirected edges
+     * @return: true if it's a valid tree, or false
+     */
+    int[] parent;
+    int[] rank;
+    public boolean validTree(int n, int[][] edges) {
+        // write your code here
+        int size = edges.length;
+        if(size == 0){
+            return false;
+        }
+        parent = new int[n];
+        for(int i=0;i<n;i++){
+            parent[i]=i;
+        }
+        rank = new int[n];
+        Arrays.fill(rank, 1);
+        for(int i=0;i<size;i++){
+            int n1 = edges[i][0];
+            int n2 = edges[i][1];
+            if(union(n1,n2)==false){
+                return false;
+            }
+        }
+        return true;
+    }
+    int find(int i){
+        int p = parent[i];
+        while(p!=parent[p]){
+            parent[p]=parent[parent[p]];   //path compression step. It makes sure we shorten the links as we go up the chain of parents.
+            p = parent[p];
+        }
+        return p;
+    }
+    boolean union(int n1, int n2){
+        int p1 = find(n1);
+        int p2 = find(n2);
+        
+        //if both have same parent. Thats how we know we already have a redundant connection
+        if(p1==p2){
+            return false;
+        }
+        
+        //do union by rank
+        if(rank[p1]>=rank[p2]){
+            //means p1 is parent of p2
+            parent[p2]=p1;
+            rank[p1] += rank[p2];
+        }else{
+            parent[p1]=p2;
+            rank[p2] +=rank[p1];
+        }
+        return true;
+    }
+}
+
