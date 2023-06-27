@@ -1,0 +1,660 @@
+Merge Sort Problems
+
+Count Inversions MediumGFG Problem. Tags: Sorting, Arrays, BST, BIT. 19 June, 2022
+Count inversions is same as min swaps required to make array sorted? No that is different question.
+Example: 
+Input: arr[] = {8, 4, 2, 1}
+Output: 6
+
+Explanation: Given array has six inversions:
+(8, 4), (4, 2), (8, 2), (8, 1), (4, 1), (2, 1).
+
+
+Input: arr[] = {3, 1, 2}
+Output: 2
+
+Explanation: Given array has two inversions:
+(3, 1), (3, 2) 
+
+Brute Force
+static int getInvCount(int n)
+    {
+        int inv_count = 0;
+        for (int i = 0; i < n - 1; i++)
+            for (int j = i + 1; j < n; j++)
+                if (arr[i] > arr[j])
+                    inv_count++;
+ 
+        return inv_count;
+    }
+
+Using merge sort. Revisit again. Understood the important step but partially.
+Time complexity = O(nlogn). Space complexity = o(n).
+class Solution
+{
+    static long inversionCount(long ar[], long N){
+        int n=ar.length;
+        return mergeSort(ar,0,n-1);
+    }
+    static long merge(long ar[], int low, int mid, int high){
+        int m = mid-low+1, n=high-mid;
+        long[]L = new long[m];
+        long[]H = new long[n];
+        // long[] L = Arrays.copyOfRange(ar, low, mid + 1);
+        for(int i=0;i<m;i++){
+            L[i]=ar[i+low];
+        }
+        for(int j=0;j<n;j++){
+            H[j]=ar[mid+1+j];
+        }
+        int i=0, j=0;
+        int k=low;
+        long count =0;
+        while(i<m&&j<n){
+            if(L[i]<=H[j]){
+                ar[k++]=L[i++];
+            }else{
+	//see case [8,7,6,5,1,4,3,2]. For sub case [1,4,3,2] -> low = 4, mid =5, i=1, (5-4+1)-1=1
+               count+=(mid-low+1)-i;    //the only important step
+                ar[k++]=H[j++];
+            }
+        }
+        while(i<m){
+            ar[k++]=L[i++];
+        }
+        while(j<n){
+            ar[k++]=H[j++];
+        }
+        return count;
+    }
+    static long mergeSort(long ar[], int low, int high){
+        if(low>=high){
+            return 0;
+        }
+        int mid = low+(high-low)/2;
+        return mergeSort(ar,low, mid) + mergeSort(ar,mid+1,high)+ merge(ar,low,mid,high);
+    }
+}
+Other methods using BST, BIT. See Later
+Count Inversions of size three in a given arrayGFG Problem. Tags: Sorting, Arrays, BST, BIT. 19 June, 2022
+Time Complexity: O(n^2)
+Auxiliary Space: O(1).
+
+Input:  {8, 4, 2, 1}
+Output: 4
+The four inversions are (8,4,2), (8,4,1), (4,2,1) and (8,2,1).
+
+Input:  {9, 6, 4, 5, 8}
+Output:  2
+The two inversions are {9, 6, 4} and {9, 6, 5}
+int getInvCount(int arr[], int n)
+    {
+        int invcount = 0; // initialize result
+         
+        for (int i=1 ; i< n-1; i++)
+        {
+            // count all smaller elements on right of arr[i]
+            int small=0;
+            for (int j=i+1; j<n; j++)
+                if (arr[i] > arr[j])
+                    small++;
+                     
+            // count all greater elements on left of arr[i]
+            int great = 0;
+            for (int j=i-1; j>=0; j--)
+                        if (arr[i] < arr[j])
+                            great++;
+                     
+            // update inversion count by adding all inversions
+            // that have arr[i] as middle of three elements
+            invcount += great*small;
+        }
+        return invcount;
+    }
+
+Comparator Problems
+179. Largest Number Medium
+
+179. Largest Number Medium LC Problem. Tags: Sorting, Arrays, Greedy. 21 June, 2022
+
+Concept of String Comparator used. Very important concept. Asked in GS OA.
+return order2.compareTo(order1); Using compareTo function, we can directly compare 2 objects?
+ 
+Example 1:
+Input: nums = [10,2]
+Output: "210"
+Example 2:
+Input: nums = [3,30,34,5,9]
+Output: "9534330"
+
+My Solution. Accepted
+class Solution {
+    public String largestNumber(int[] array) {
+        Integer[] nums = Arrays.stream(array).boxed().toArray(Integer[]::new);
+        Arrays.sort(nums, new NumberComparator());
+        
+        //if after sorting in descending order, first number is zero. means entire number is 000000... type.
+        if(nums[0]==0){
+            return "0";
+        }
+        StringBuilder sb = new StringBuilder();
+        for(Integer num: nums){
+            sb.append(num);
+        }
+        
+        return sb.toString();
+    }
+    class NumberComparator implements Comparator<Integer>{
+        public int compare(Integer n1, Integer n2){
+            String s1 = Integer.toString(n1);
+            String s2 = Integer.toString(n2);
+            
+            String num1 = s1+s2;
+            String num2 = s2+s1;
+            int i=0,j=0;
+            int m = s1.length() + s2.length();
+            while(i<m){
+                char c1 = num1.charAt(i);
+                char c2 = num2.charAt(j);
+                if(Integer.parseInt(c1+"")>Integer.parseInt(c2+"")){
+                    return -1;
+                }else if(Integer.parseInt(c1+"")<Integer.parseInt(c2+"")){
+                    return 1;
+                }
+                i++;
+                j++;
+            }
+            return 0;
+        }
+    }
+}
+LC Solution
+class Solution {
+    public String largestNumber(int[] nums) {
+        int n = nums.length;
+        String[] ar = new String[n];
+        for (int i = 0; i < n; i++) {
+            ar[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(ar, new LargeNumberComparator());
+        if(ar[0].equals("0")){
+            return "0";
+        }
+        StringBuilder sb = new StringBuilder();
+        for(String s: ar){
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+    class LargeNumberComparator implements Comparator<String>{
+        public int compare(String s1, String s2){
+            String num1 = s1+s2;
+            String num2 = s2+s1;
+            return num2.compareTo(num1);
+        }
+    }
+}
+
+Swap Sort Problems
+268. Missing Number Easy
+448. Find All Numbers Disappeared in an Array Easy
+287. Find the Duplicate Number Medium
+442. Find All Duplicates in an Array Medium
+Set Mismatch
+41. First Missing Positive Hard
+268. Missing Number Easy. LeetCode problem. Tags: Swap sort, Binary Search. 27 June, 2022
+Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array.
+Example 1:
+Input: nums = [3,0,1]
+Output: 2
+Explanation: n = 3 since there are 3 numbers, so all numbers are in the range [0,3]. 2 is the missing number in the range since it does not appear in nums.
+Example 2:
+Input: nums = [0,1]
+Output: 2
+Explanation: n = 2 since there are 2 numbers, so all numbers are in the range [0,2]. 2 is the missing number in the range since it does not appear in nums.
+Example 3:
+Input: nums = [9,6,4,2,3,5,7,0,1]
+Output: 8
+Explanation: n = 9 since there are 9 numbers, so all numbers are in the range [0,9]. 8 is the missing number in the range since it does not appear in nums.
+
+Using swap sort. nums containing n distinct numbers in the range [0, n],. Means no duplicates in the array
+My implementation using KK’s videos.
+public int missingNumber(int[] nums) {
+       int i =0;
+        int ans =0;
+        while(i<nums.length){
+            int correct = nums[i]-1;
+            if(correct == i) {
+            	i++;
+            } else if(nums[i]==0) {
+            	ans = i+1;
+            	i++;
+            } else {
+            	swap(nums, i, correct);
+            }
+        }
+		return ans;
+    }
+Gauss Method . Simple mathematical approach. Top voted LC solution.
+public int missingNumber(int[] nums) {
+        int n = nums.length;
+        int sum =0;
+        for(int num:nums){
+            sum+=num;
+        }
+        return (n*(n+1)-2*sum)/2;
+    }
+Using XOR  operator. Top voted LC solution. Note a^b^b=a;
+[3,0,1]
+3^0^3^1^0^2^1 = 0^0^0^2 = 0^0^2 = 0^2=2. 
+Number^0 = Number.
+
+public int missingNumber(int[] nums) { //xor
+    int res = nums.length;
+    for(int i=0; i<nums.length; i++){
+        res ^= i;
+        res ^= nums[i];
+    }
+    return res;
+}
+If array is sorted, can do binary search. Here Time complexity is O(nlogn).
+class Solution {
+    public int missingNumber(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        int low = 0, high = n-1, ans =n;
+        while(low<=high){
+            int mid = low + (high-low)/2;
+            if(nums[mid]==mid){
+                low = mid+1;
+            }else if(nums[mid]>mid){
+                ans = mid;
+                high = mid-1;
+            }
+        }
+        return ans;
+    }
+}
+Different way of doing Binary Search
+public int missingNumber(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        int low = 0, high = n-1;
+        while(low<=high){
+            int mid = low+(high-low)/2;
+            if(nums[mid]>mid){
+                high = mid-1;
+            }else if(nums[mid]<=mid){
+                low=mid+1;
+            }
+        }
+        return low;
+    }
+448. Find All Numbers Disappeared in an Array Easy. LeetCode problem. Tags: Swap sort. 27 June, 2022
+Given an array nums of n integers where nums[i] is in the range [1, n], return an array of all the integers in the range [1, n] that do not appear in nums.
+Example 1:
+Input: nums = [4,3,2,7,8,2,3,1]
+Output: [5,6]
+Example 2:
+Input: nums = [1,1]
+Output: [2]
+The problem specifies that the numbers in the array will be in the range [1, n] where n is the number of elements in the array. Can we use this information and modify the array in-place somehow to find what we need?
+Using Swap Sort
+class Solution {
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        int n = nums.length;
+        List<Integer> ans = new ArrayList<>();
+        int i=0;
+        while(i<n){
+            int correct = nums[i]-1;
+            if(nums[i]!=nums[correct]){
+                int temp = nums[i];
+                nums[i] = nums[correct];
+                nums[correct] = temp;
+            }else{
+                i++;
+            }
+        }
+        for(i=0;i<n;i++){
+            int correct = nums[i]-1;
+            if(i!=correct){
+                ans.add(i+1);
+            }
+        }
+        return ans;
+    }
+}
+Using HashMap but O(n) space
+287. Find the Duplicate Number Medium . LeetCode problem. Tags: Swap sort, Binary Search, 2 pointers27 June, 2022
+Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+There is only one repeated number in nums, return this repeated number.
+You must solve the problem without modifying the array nums and uses only constant extra space.
+
+Example 1:
+Input: nums = [1,3,4,2,2]
+Output: 2
+Example 2:
+Input: nums = [3,1,3,4,2]
+Output: 3
+ 
+
+Using Swap Sort. If modifying input array is allowed. Same code as Missing Number, Find all numbers disappeared in array.
+public int findDuplicate(int[] nums) {
+        int n = nums.length;
+        int i=0;
+        int correct;
+        while(i<n){
+            correct = nums[i]-1;
+            if(nums[i]==nums[correct]){
+                i++;
+            }else{
+                swap(nums,i, correct);
+            }
+        }
+        for(i=0;i<n;i++){
+            correct = nums[i]-1;
+            if(i!=correct){
+                return nums[i];
+            }
+        }
+        return n;
+    }
+Using 2 pointers
+Efficient solution. Desired element comes at index 0.
+public int findDuplicate(int[] nums) {
+        while (nums[0] != nums[nums[0]]) {
+            swap(nums, 0, nums[0]);
+        }
+        return nums[0];
+    }
+Using Binary search
+class Solution {
+    public int findDuplicate(int[] nums) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int low = 0, high = n-1,ans = n;
+        while(low<=high){
+            int mid = low+(high-low)/2;
+            if(nums[mid]>=mid+1){
+                low=mid+1;
+            }else if(nums[mid]<mid+1){
+                ans = mid;
+                high = mid-1;
+            }
+        }
+        return ans;
+    }
+
+}
+Different implementation of Binary Search
+public int findDuplicate(int[] nums) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int low = 0, high = n-1;
+        while(low<=high){
+            int mid = low+(high-low)/2;
+            if(nums[mid]>=mid+1){
+                low=mid+1;
+            }else if(nums[mid]<mid+1){
+                high = mid-1;
+            }
+        }
+        return low;
+    }
+442. Find All Duplicates in an Array Medium LC Problem. Tags: Swap sort, Arrays. 27 June, 2022
+Given an integer array nums of length n where all the integers of nums are in the range [1, n] and each integer appears once or twice, return an array of all the integers that appears twice.
+You must write an algorithm that runs in O(n) time and uses only constant extra space.
+
+
+Example 1:
+Input: nums = [4,3,2,7,8,2,3,1]
+Output: [2,3]
+Example 2:
+Input: nums = [1,1,2]
+Output: [1]
+
+Using Swap Sort
+class Solution {
+    public List<Integer> findDuplicates(int[] nums) {
+        int n = nums.length;
+        List<Integer> result = new ArrayList<>();
+        int i=0;
+        while(i<n){
+            int correct = nums[i]-1;
+            if(nums[i]==nums[correct]){
+                i++;
+            }else{
+                int temp = nums[i];
+                nums[i]=nums[correct];
+                nums[correct]=temp;
+            }
+        }
+        for(i=0;i<n;i++){
+            int correct = nums[i]-1;
+            if(correct!=i){
+                result.add(nums[i]);
+            }
+        }
+        return result;
+    }
+}
+645. Set Mismatch Easy. LC Problem. Tags: Swap sort 27 June, 2022
+Example 1:
+Input: nums = [1,2,2,4]
+Output: [2,3]
+Example 2:
+Input: nums = [1,1]
+Output: [1,2]
+
+Combination of previous 2 problems. Find Missing and Find duplicate number
+Using swap sort
+public int[] findErrorNums(int[] nums) {
+        int n = nums.length;
+        int i=0;
+        int correct;
+        while(i<n){
+            correct = nums[i]-1;
+            if(nums[i]==nums[correct]){
+                i++;
+            }else{
+                swap(nums,i, correct);
+            }
+        }
+        int [] result = new int[2];
+        for(i=0;i<n;i++){
+            correct = nums[i]-1;
+            if(i!=correct){
+                result[1]=i+1;
+                result[0]=nums[i];
+//return new int[]{nums[i], i+1};
+                return result;
+            }
+        }
+        return result;
+    }
+    private void swap(int nums[], int start, int end){
+        int temp = nums[start];
+        nums[start]=nums[end];
+        nums[end]=temp;
+    }
+Using Basic Maths. LC Solution
+[1,2,3,4] 
+[1,2,2,4]
+Diff = 1-1 + 2-2 + 3-2 + 4-4 = 3-2
+squareDiff = 1-1 + 4-4 + 9-4 + 16-16 = 9 -4
+Now deduce the 2 formulaes
+Approach 8:
+With single iteration and O(1) space we can solve this problem..
+
+
+class Solution {
+    public int[] findErrorNums(int[] nums) {
+        /** Assume m is the missing and d is the duplicate element
+         diff= m-d;
+         squareDiff= m^2-d^2;
+         sum=m+d= squareDiff/diff
+         =>sum    = (m+d)(m-d)/(m-d);
+         now m=(sum+diff)2;
+         and d= (sum-diff)2;
+        **/
+        int diff=0;
+        int sqaureDiff=0;
+        for(int i=0;i<nums.length;i++){
+            /** 
+            The order doesnot matter. keep adding the 1 to n and simultaneously subracting  corresponding array element.
+            Use i+1 to get 1 to n  since i is the index number which is zero based.
+            **/
+            diff+=(i+1)-nums[i];
+            /** squareDiff is also calculated in the same way as diff is calculated. **/
+            sqaureDiff+= (i+1)*(i+1)-nums[i]*nums[i];
+        } 
+       int sum=sqaureDiff/diff;
+      return new int[]{(sum-diff)/2,(sum+diff)/2};
+    }
+}
+41. First Missing Positive Hard LC Problem. Tags: Swap sort27 June, 2022
+Given an unsorted integer array nums, return the smallest missing positive integer.
+You must implement an algorithm that runs in O(n) time and uses constant extra space.
+
+Example 1:
+Input: nums = [1,2,0]
+Output: 3
+Example 2:
+Input: nums = [3,4,-1,1]
+Output: 2
+Example 3:
+Input: nums = [7,8,9,11,12]
+Output: 1
+Using Swap Sort
+Variation of missing number problem
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+        int i=0;
+        //first do cyclic sort. Place each element at its correct index. Ignore negatives and numbers greater than n. 
+        while(i<n){
+            if(nums[i]<=0 || nums[i]>n){
+                i++;
+                continue;
+            }
+            int correct = nums[i]-1;
+            if(nums[i]==nums[correct]){
+                i++;
+            }else{
+                int temp = nums[i];
+                nums[i]=nums[correct];
+                nums[correct]=temp;
+            }
+        }
+        //if element is not at correct index, just return i+1
+        for(i=0;i<n;i++){
+            int correct = nums[i]-1;
+            if(correct!=i){
+                return i+1;
+            }
+        }
+        return n+1;  //for case[1]. ans = 2
+    }
+}
+287. Find the Duplicate Number Medium
+Solution using Cyclic sort(as taught by KK)(But given in Q: You must solve the problem without modifying the array nums and uses only constant extra space.)
+public int findDuplicate(int[] nums) {
+        int i =0;
+        while(i<nums.length){
+            int correct = nums[i]-1;
+            if(correct==i){
+                i++;
+            }else{
+                if(nums[i]!=nums[correct]){
+                    swap(nums,i,correct);
+                }else{
+                    return nums[i];
+                }
+                
+            }
+        }
+        return -1;
+    }
+    public void swap(int []nums, int i , int correct){
+        int temp = nums[i];
+        nums[i] = nums[correct];
+        nums[correct] = temp;
+    }
+Solution using a modification of cyclic sort(seen from LeetCode section)
+public int findDuplicate(int[] nums) {
+        while (nums[0] != nums[nums[0]]) {
+            swap(nums, 0, nums[0]);
+        }
+        return nums[0];
+    }
+    public void swap(int []nums, int i , int correct){
+        int temp = nums[i];
+        nums[i] = nums[correct];
+        nums[correct] = temp;
+    }
+See LeetCode solution to solve the same problem using recursion by same above approach
+Solution using Sort and traversal using for loop. Time Complexity=O(nlogn). Space complexity = O(logn)(inbuilt sort function uses quick sort algorithm which uses logn space)
+public int findDuplicate(int[] nums) {
+        Arrays.sort(nums);
+        for(int i = 0;i<nums.length-1;i++){
+            if(nums[i] == nums[i+1]){
+                return nums[i];
+            }
+        }
+        return -1;
+    }
+Solution using Set. Set will contain unique elements. Time complexity=O(n) because in worst case, we traverse entire nums. Space complexity = O(n) because we use HashSet. Note can use enhance for loop**.
+public int findDuplicate(int[] nums) {
+        HashSet<Integer> set = new HashSet<>();
+        for(int i = 0; i<nums.length; i++){
+            if(set.contains(nums[i])){
+                return nums[i];
+            }
+            set.add(nums[i]);
+        }
+        return -1;
+    }
+Solution using Binary Search. Time complexity = O(nlogn). Space complexity = O(1)
+public int findDuplicate(int[] nums) {
+        int low =1;
+        int high = nums.length - 1;
+        int ans = -1;
+        while(low <=high){
+            int mid = low + (high - low)/2;
+            int count = 0;
+            for(int num : nums){
+                if(num <= mid){
+                    count++;
+                }
+            }
+            if(count > mid){
+                high = mid - 1;
+                ans = mid;
+                //mid is the probable answer
+                // means duplicates can be of mid or elements in left of mid
+                 // if mid has count>mid, means elements to right of mid will always have count>mid
+                //example 12234. mid =2 count = 3
+            } else{
+                low = mid + 1;
+                //example 12344 mid = 2 count= 2
+            }
+        }
+        return ans;
+    }
+
+Solution: Converting problem into Linked List cycle 2 problem. Given a linked list, return the node where the cycle begins. Time Complexity: O(n). Space complexity: O(1)
+public int findDuplicate(int[] nums) {
+		int slow = nums[0];
+		int originalSlow = nums[0];
+		int fast = nums[0];
+		do {
+			slow = nums[slow];
+			fast = nums[nums[fast]];
+		} while (slow != fast);
+		while (originalSlow != fast) {
+			originalSlow = nums[originalSlow];
+			fast = nums[fast];
+		}
+		return originalSlow;
+	}
+
