@@ -1,0 +1,49 @@
+These Questions appear similar to Sliding Window problems. But here count of subarrays is asked in most questions. 
+In SW problems, mostly largest/maximum/minimum keywords used. In fixed size SW, for a given Window length, find maximum sum. For variable size SW, for a given sum, find subarray with max length/min length.
+560. Subarray Sum Equals K Medium LeetCode Problem. Tags: Prefix Sum. 18 May, 2022
+Batao kitne subarray hai jinka sum k ho. Iss pure array mein se. It could have been solved by Variable size Sliding Window provided all elements in array were positive(non negative?). 
+Brute force solution
+Prefix Sum Solution. Use a HashMap with key as prefixSum and value as count of subarrays with the given prefixSum. Solution explained by NeetCode. https://www.youtube.com/watch?v=fFVZt-6sgyo
+
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int n = nums.length;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0,1);
+        int prefixSum=0, result=0;
+        for(int i=0;i<n;i++){
+            prefixSum = prefixSum + nums[i];
+            if(map.containsKey(prefixSum-k)){
+                result = result + map.get(prefixSum-k);
+            }
+            map.put(prefixSum, map.getOrDefault(prefixSum,0)+1);
+        }
+        return result;
+    }
+}
+1248. Count Number of Nice Subarrays Medium LeetCode Problem. Tags: Prefix Sum, Sliding Window. 18 May, 2022
+See sliding window section also
+Convert odds to 1, evens to 0. Problem becomes similar to Subarray Sum Equals K
+class Solution {
+    public int numberOfSubarrays(int[] nums, int k) {
+        int n = nums.length;
+        for(int i=0;i<n;i++){
+            nums[i]=nums[i]%2;     // nums[i]=nums[i]&1;   //for odd its 1, else 0
+        }
+        return subarraySum(nums,n,k);
+    }
+    public int subarraySum(int[] nums,int n,int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0,1);
+        int prefixSum=0, result=0;
+        for(int i=0;i<n;i++){
+            prefixSum = prefixSum + nums[i];
+            if(map.containsKey(prefixSum-k)){
+                result = result + map.get(prefixSum-k);
+            }
+            map.put(prefixSum, map.getOrDefault(prefixSum,0)+1);
+        }
+        return result;
+    }
+}
+Using Sliding Window technique
