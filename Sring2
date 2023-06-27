@@ -1,0 +1,220 @@
+Strings
+
+Substring of (String)“abc”= a, b, c, ab, bc, abc.   Note: ac is not a substring. Total n(n+1)/2 substrings. 
+Subsequence of (String)“abc” = a, b, c, ab, ac, bc, abc. Note: ac is a subsequence, but ca is not a subsequence. Total 2^n subsequences. For each element we can either take it or not. 2*2*2*2…*2(n times)
+Subset of (Set){abc} = {a}{b}{c}{ab}{ac}{bc}{abc}{}. Note here ordering doesnot matter. {ac} is same as {ca}.
+
+PowerSet
+Print Powerset, Subset, Subsequence all are same
+Permutation of “abc” = 
+
+Print All Subsequences of a String(GFG problem. Not on Leetcode)
+Using Pick and Don’t Pick Concept
+Using Backtracking
+
+
+Print distinct Subsequences of a String
+Maintain a HashMap/HashSet
+Print All Subsequences of a String in Lexicographic order.
+Put answer in List. Then Sort it.
+
+392. Is Subsequence Easy. LeetCode Problem.Tags: DP, Strings, Pattern Matching, 2 pointers. See dp_LCS also
+Using 2 pointers approach. Top voted leetcode solution. s="abc", t="ahbgdc" 
+ 
+public classSolution{ 
+    public boolean isSubsequence(Strings, Stringt){ 
+        if(s.length() == 0) returntrue; 
+        int indexS = 0, indexT = 0; 
+        while(indexT < t.length()) { 
+            if(t.charAt(indexT) == s.charAt(indexS)) { 
+                indexS++; 
+                if(indexS == s.length()) returntrue; 
+            } 
+            indexT++; 
+        } 
+        returnfalse; 
+    } 
+} 
+2 pointers approach.(Both pointers start at 0 index)
+Solution by NeetCode. Just alternate implementation of the above problem.
+public boolean isSubsequence(String s, String t) {
+        int i =0, j=0;
+        while(i<s.length() && j<t.length()){
+            if(s.charAt(i)==t.charAt(j)){
+                i++;
+            }
+            j++;
+        }
+        if(i==s.length())return true;
+        return false;
+    }
+
+5. Longest Palindromic Substring Medium. LeetCode Problem.Tags: DP, Strings, Pattern Matching, 2 pointers. See dp_LCS also12 May, 2022
+Blind 75 Problem
+Not the approach: Reverse SS and become S'S ′ . Find the longest common substring between SS and S'S ′ , which must also be the longest palindromic substring. Gives wrong answer.
+Brute force approach. O(n3) time complexity. 
+Generate all substrings(O(n2)). For each substring see if it is palindrome(O(n)) and if its length is longer than earlier detected palindromic substrings. Store start and end indices of that longest so far. At the end return that longest palindromic substring.
+class Solution {
+    public String longestPalindrome(String s){
+        int res =0, n=s.length();
+        int start =0, end=0;
+        for(int i=0;i<n;i++){
+            for(int j=i;j<n;j++){
+                if(j-i+1>res && isPalin(s,i,j)){
+                    start = i;
+                    end=j;
+                    res = j-i+1;
+                }
+            }
+        }
+        return s.substring(start, end+1);
+    }
+    boolean isPalin(String s, int left, int right){
+        while(left<right){
+            if(s.charAt(left)!=s.charAt(right)){
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+}
+
+2 pointers approach. O(n2) time complexity. Expand from Middle approach. By NeetCode
+class Solution {
+    public String longestPalindrome(String s) {
+        int start =0, end =0;
+        for(int i=0;i<s.length();i++){
+            //"racecar"
+            int len1 = expandFromMiddle(s,i,i);
+            //"aabbaa"
+            int len2 = expandFromMiddle(s,i,i+1);
+            int len = Math.max(len1, len2);
+            if(len>end-start){
+                //ensuring we do not get index out of bounds
+                start = i - ((len-1)/2);
+                end = i+(len/2);
+            }
+        }
+        //end+1 to ensure we donot get out of bounds
+        return s.substring(start, end+1);
+    }
+    int expandFromMiddle(String s, int left, int right){
+        //returns length of palindromic substring with centre at left and right. Different in case of odd and even length String
+        while(left>=0 && right<s.length() && s.charAt(left)==s.charAt(right)){
+            left--;
+            right++;
+        }
+        left++;
+        right--;
+        return right-left+1;
+    }
+}
+DP approach. Cannot understand. Do it again.
+
+647. Palindromic Substrings Medium. LeetCode Problem.Tags: DP, Strings, Pattern Matching, 2 pointers. See dp_LCS also12 May, 2022
+Blind 75 Problem
+Brute force approach. Time complexity=O(n3). Generate all substrings in O(n2) operations. Check if each substring is palindrome or not in O(n) time. So overall O(n3).
+class Solution {
+    public int countSubstrings(String s) {
+        int res =0, n=s.length();
+        for(int i=0;i<n;i++){
+            for(int j=i;j<n;j++){
+                if(isPalin(s,i,j)){
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+    boolean isPalin(String s, int left, int right){
+        while(left<right){
+            if(s.charAt(left)!=s.charAt(right)){
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+}
+2 pointers approach. Neet Code. Time complexity=O(n2)
+class Solution {
+    public int countSubstrings(String s) {
+        int res =0, n=s.length();
+        for(int i=0;i<n;i++){
+            res+=countPal(s,i,i);
+            res+=countPal(s,i,i+1);
+        }
+        return res;
+    }
+    int countPal(String s, int left, int right){
+        int res =0;
+        while(left>=0 && right<s.length() && s.charAt(left)==s.charAt(right)){
+            res++;
+            left--;
+            right++;
+        }
+        return res;
+    }
+}
+DP approach. Cannot understand. Do it again.
+
+Permutations of a given string Medium GFG Problem. Tags: Strings. (Last solved date)6 June, 2022
+Return Result in Lexicographic order. Also handle Duplicates.
+Example 1:
+Input: ABC
+Output:
+ABC ACB BAC BCA CAB CBA
+Explanation:
+Given string ABC has permutations in 6 
+forms as ABC, ACB, BAC, BCA, CAB and CBA .
+ABB
+And Your Code's output is:
+
+
+ABB ABB BAB BAB BBA BBA
+
+Its Correct output is:
+
+
+ABB BAB BBA
+
+Using Backtracking.
+Same as Array. Just convert String to CharArray()
+class Solution {
+    List<String> result;
+    HashSet<String> set;
+    public List<String> find_permutation(String s) {
+        int n =s.length();
+        set = new HashSet<>();
+        result = new ArrayList<>();
+        backtrack(0,s.toCharArray());
+        Collections.sort(result);   //to return result in lexicographic order.
+        return result;
+    }
+    void backtrack(int start, char[] ar){
+        if(start == ar.length){
+            StringBuilder sb = new StringBuilder();
+            for(char c: ar){
+                sb.append(c);
+            }
+            if(!set.contains(sb.toString())){   //ensures handling of duplicates.
+                result.add(sb.toString());
+                set.add(sb.toString());
+            }
+            return;
+        }
+        for(int i=start;i<ar.length;i++){
+            swap(ar, i, start);
+            backtrack(start+1, ar);
+            swap(ar, i, start);
+        }
+    }
+    void swap(char[] ar, int start, int end){
+        char temp = ar[start];
+        ar[start] = ar[end];
+        ar[end]=temp;
+    }
+}
