@@ -1,0 +1,555 @@
+2279. Maximum Bags With Full Capacity of Rocks Medium LeetCode Problem. Tags: Greedy. 22 May, 2022
+
+It’s a greedy question. Thought it was dp knapsack. Gave TLE in answer. Below is dp solution.
+class Solution {
+    int t[][];
+    public int maximumBags(int[] capacity, int[] rocks, int additionalRocks) {
+        int n = capacity.length;
+        t = new int[additionalRocks+1][n+1];
+        for(int[] row: t){
+            Arrays.fill(row,-1);
+        }
+        return helper(capacity, rocks, additionalRocks,n);
+    }
+    int helper(int[] capacity, int[] rocks, int additionalRocks,int n){
+        if(n==0){
+            return 0;
+        }
+        if(t[additionalRocks][n]!=-1){
+            return t[additionalRocks][n];
+        }
+        int rem = capacity[n-1]-rocks[n-1];
+        if(rem==0){
+            t[additionalRocks][n] = 1+helper(capacity, rocks, additionalRocks, n-1);
+        }
+        if(rem>additionalRocks){
+            t[additionalRocks][n] = helper(capacity, rocks,additionalRocks, n-1);
+        }else if(rem<=additionalRocks){
+            t[additionalRocks][n] = Math.max(1+helper(capacity, rocks,additionalRocks-rem, n-1),helper(capacity, rocks,additionalRocks, n-1));
+        }
+        return t[additionalRocks][n];
+    }
+}
+
+991. Broken Calculator Medium LC Problem. Tags: math, greedy. 17 June, 2022.
+Efficient solution
+class Solution {
+    public int brokenCalc(int startValue, int target) {
+        if(startValue>target){
+            return startValue-target;
+        }
+        int count = 0;
+        while(target>startValue){
+            if(target%2==1){
+                target = target +1;
+            }else{
+                target/=2;
+            }
+            count++;
+        }
+        return count + (startValue-target);
+    }
+}
+Inefficient solution
+class Solution {
+    public int brokenCalc(int startValue, int target) {
+        if(startValue>target){
+            return startValue-target;
+        }
+        int count = 0;
+        while(target!=startValue){
+            if(target%2==0 && (target >= startValue)){
+                target = target/2;
+            }else{
+                target = target+1;
+            }
+            count++;
+        }
+        return count;
+    }
+}
+
+881. Boats to Save People Medium LC Problem. Tags: 2 pointers, array, sorting , greedy. 17 June, 2022.
+2 pointers at start and end
+Using 2 pointers, Sorting. Time Complexity: O(NlogN), where N is the length of people. Space Complexity: O(1) for quick sort.
+Always take heaviest person on priority basis. If lightest person can be paired with heaviest person considering the limit, then pair them . If not, just 
+class Solution {
+    public int numRescueBoats(int[] people, int limit) {
+        Arrays.sort(people);
+        int boats = 0;
+        int start =0, end = people.length-1;
+        while(start<end){
+            if(people[start]+people[end]>limit){
+                end--;
+                boats++;
+            }else{
+                start++;
+                end--;
+                boats++;
+            }
+        }
+        //if start>end, return boats. If start==end, return boats+1
+        return boats+end-start+1;
+    }
+}
+Follow up Question: @awice I wanted to ask that if there is no constraint of having max 2 people on the boat then how would we handle this problem? binary search problem: 1011: Capacity To Ship Packages Within D Days
+
+55. Jump Game Medium LC Problem. Tags: array, greedy. 25 June, 2022
+You can assume that you can always reach the last index.
+
+Example 1:
+Input: nums = [2,3,1,1,4]
+Output: true
+Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+Example 2:
+Input: nums = [3,2,1,0,4]
+Output: false
+Explanation: You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
+ 
+
+Using Brute force
+Using Dp
+Using Greedy
+Usually we start from end
+class Solution {
+    public boolean canJump(int[] nums) {
+        int n = nums.length;
+        int goalPost = n-1;
+        for(int i=n-2;i>=0;i--){
+            if(i + nums[i] >= goalPost){
+                goalPost = i;
+            }
+        }
+        if(goalPost == 0){
+            return true;
+        }
+        return false;
+    }
+}
+45. Jump Game II Medium LC Problem. Tags: array, greedy. 25 June, 2022.
+Example 1:
+Input: nums = [2,3,1,1,4]
+Output: 2
+Explanation: The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
+Example 2:
+Input: nums = [2,3,0,1,4]
+Output: 2
+ 
+Your goal is to reach the last index in the minimum number of jumps.
+You can assume that you can always reach the last index. 
+Using Greedy Method. Starting from end. My own implementation.
+class Solution {
+    public int jump(int[] nums) {
+        int n = nums.length;
+        if(n==1){
+            return 0;
+        }
+        //at each iteration nums[i] gives min steps to reach end.
+        for(int i=n-2;i>=0;i--){
+            if(nums[i]==0){
+                continue;
+            }
+            if(i+nums[i]>=n-1){
+                //make nums[i] store the number of steps.
+                nums[i]=1;
+                continue;
+            }
+            int min = Integer.MAX_VALUE;
+            for(int j=i+1;j<=n-2 && j<=i+nums[i];j++){
+                if(nums[j]==0){
+                    continue;
+                }
+                if(nums[j]<min){
+                    min = nums[j];
+                }
+            }
+            if(min == Integer.MAX_VALUE){
+                nums[i]=0;
+                //all 0's in the range i+1.....i+nums[i].
+            }else{
+                nums[i]=1+min;
+            }
+        }
+        return nums[0];
+    }
+}
+NeetCode’s solution. He used BFS like technique on 1d array
+Solution fails for following test case=[2,1,0,1,4]. If it is not guaranteed that we can reach last index of the array.
+class Solution {
+    public int jump(int[] nums) {
+        int n = nums.length;
+        int left = 0, right =0;
+        int farthest = 0;
+        int jumps = 0;
+        while(right<n-1){
+            for(int j=left;j<=right;j++){
+                farthest = Math.max(farthest, j+nums[j]);
+            }
+            left = right+1;
+            right = farthest;
+            jumps++;
+        }
+        return jumps;
+    }
+}
+
+134. Gas Station Medium LC Problem. Tags: array, greedy. 25 June, 2022
+Example 1:
+Input: gas = [1,2,3,4,5], cost = [3,4,5,1,2]
+Output: 3
+Explanation:
+Start at station 3 (index 3) and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
+Travel to station 4. Your tank = 4 - 1 + 5 = 8
+Travel to station 0. Your tank = 8 - 2 + 1 = 7
+Travel to station 1. Your tank = 7 - 3 + 2 = 6
+Travel to station 2. Your tank = 6 - 4 + 3 = 5
+Travel to station 3. The cost is 5. Your gas is just enough to travel back to station 3.
+Therefore, return 3 as the starting index.
+Example 2:
+Input: gas = [2,3,4], cost = [3,4,3]
+Output: -1
+Explanation:
+You can't start at station 0 or 1, as there is not enough gas to travel to the next station.
+Let's start at station 2 and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
+Travel to station 0. Your tank = 4 - 3 + 2 = 3
+Travel to station 1. Your tank = 3 - 3 + 3 = 3
+You cannot travel back to station 2, as it requires 4 unit of gas but you only have 3.
+Therefore, you can't travel around the circuit once no matter where you start.
+
+Using Greedy
+class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int n = gas.length;
+        for(int i=0;i<n;i++){
+            gas[i]=gas[i]-cost[i];
+        }
+        int sum =0;
+        int cumSum = 0;
+        int index = -1;
+        for(int i=0;i<n;i++){
+            if(sum + gas[i]<0){
+                sum =0;
+            }
+            if(sum+gas[i]>=0){
+                if(sum==0){
+                    index=i;
+                }
+                sum+=gas[i];
+            }
+            cumSum+=gas[i];
+        }
+        if(cumSum<0){
+            return -1;
+        }
+        return index;
+    }
+}
+NeetCode’s SOlution
+class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int n = gas.length;
+        int sum = 0;
+        for(int i=0;i<n;i++){
+            gas[i]=gas[i]-cost[i];
+            sum+=gas[i];
+        }
+        if(sum<0){
+            return -1;
+        }
+        sum =0;
+        int index = 0;
+        for(int i=0;i<n;i++){
+            sum+=gas[i];
+            if(sum<0){
+                sum =0;
+                index = i+1;
+            }
+        }
+        return index;
+    }
+}
+
+253. Meeting Rooms II
+2406. Divide Intervals Into Minimum Number of Groups
+2402. Meeting Rooms III
+731. My Calendar II
+732. My Calendar III
+1094. Car Pooling
+1109. Corporate Flight Bookings
+218. The Skyline Problem
+Greedy Standard Problems
+452. Minimum Number of Arrows to Burst Balloons Medium Similar to Activity Selection Problem.
+435. Non-overlapping Intervals Medium Similar to Activity Selection Problem.
+920 · Meeting Rooms Algorithms Easy Similar to Activity Selection Problem.
+Minimum Platforms Medium
+
+Activity Selection Problem
+Example 1 : Consider the following 3 activities sorted by
+by finish time.
+     start[]  =  {10, 12, 20};
+     finish[] =  {20, 25, 30};
+A person can perform at most two activities. The 
+maximum set of activities that can be executed 
+is {0, 2} [ These are indexes in start[] and 
+finish[] ]
+
+Example 2 : Consider the following 6 activities 
+sorted by finish time.
+     start[]  =  {1, 3, 0, 5, 8, 5};
+     finish[] =  {2, 4, 6, 7, 9, 9};
+A person can perform at most four activities. The 
+maximum set of activities that can be executed 
+is {0, 1, 3, 4} [ These are indexes in start[] and 
+finish[] ]
+ 
+
+452. Minimum Number of Arrows to Burst Balloons Medium LC Problem. Tags: array, greedy. 30  June, 2022
+Example 1:
+Input: points = [[10,16],[2,8],[1,6],[7,12]]
+Output: 2
+Explanation: The balloons can be burst by 2 arrows:
+- Shoot an arrow at x = 6, bursting the balloons [2,8] and [1,6].
+- Shoot an arrow at x = 11, bursting the balloons [10,16] and [7,12].
+Example 2:
+Input: points = [[1,2],[3,4],[5,6],[7,8]]
+Output: 4
+Explanation: One arrow needs to be shot for each balloon for a total of 4 arrows.
+Example 3:
+Input: points = [[1,2],[2,3],[3,4],[4,5]]
+Output: 2
+Explanation: The balloons can be burst by 2 arrows:
+- Shoot an arrow at x = 2, bursting the balloons [1,2] and [2,3].
+- Shoot an arrow at x = 4, bursting the balloons [3,4] and [4,5].
+
+Similar to Activity Selection Problem.
+Using Greedy
+To pass the test case [[-2147483646,-2147483645],[2147483646,2147483647]], Do Integer.compare(a[1],b[1]);
+class Solution {
+    public int findMinArrowShots(int[][] points) {
+        Arrays.sort(points, new PointComparator());
+        int m = points.length;
+        int i=0;
+        int count = 1;
+        
+        for(int j=1;j<m;j++){
+            if(points[j][0]>points[i][1]){
+                count++;
+                i=j;
+            }
+        }
+        return count;
+    }
+}
+class PointComparator implements Comparator<int[]>{
+    public int compare(int[] a, int[] b){
+        return Integer.compare(a[1],b[1]);
+    }
+}
+
+435. Non-overlapping Intervals Medium LC Problem. Tags: array, greedy. 30  June, 2022
+Using Greedy
+class Solution {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        Arrays.sort(intervals, new PointComparator());
+        int m = intervals.length;
+        int i=0;
+        int count = 1;
+        
+        for(int j=1;j<m;j++){
+            if(intervals[j][0]>=intervals[i][1]){
+                count++;
+                i=j;
+            }
+        }
+        return m-count;
+    }
+}
+class PointComparator implements Comparator<int[]>{
+    public int compare(int[] a, int[] b){
+        return Integer.compare(a[1],b[1]);
+    }
+}
+920 · Meeting Rooms Algorithms Easy LC Premium Problem. Tags: array, greedy. 30  June, 2022
+Using Greedy
+public class Solution {
+    public boolean canAttendMeetings(List<Interval> intervals) {
+        Collections.sort(intervals, new PointComparator());
+        int m = intervals.size();
+        int i=0;
+        
+        for(int j=1;j<m;j++){
+            if(intervals.get(j).start>=intervals.get(i).end){
+                i=j;
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
+}
+class PointComparator implements Comparator<Interval>{
+    public int compare(Interval a, Interval b){
+        return Integer.compare(a.end,b.end);
+    }
+}
+Pattern
+Minimum Platforms
+1419. Minimum Number of Frogs Croaking Medium
+2406. Divide Intervals Into Minimum Number of Groups Medium
+
+
+Minimum Platforms Medium. GFG Problem. 24 September, 2022
+
+
+https://practice.geeksforgeeks.org/problems/minimum-platforms-1587115620/1?utm_source=youtube&utm_medium=collab_anujbhaiya_description&utm_campaign=minimum-platforms
+Using Greedy. Time=O(n). Space=O(1)
+class Solution
+{
+    //Function to find the minimum number of platforms required at the
+    //railway station such that no train waits.
+    static int findPlatform(int arr[], int dep[], int n){
+        Arrays.sort(arr);
+        Arrays.sort(dep);
+        int platforms = 0, ans = 0;
+        int i =0, j=0;
+        while(i<n && j<n){
+            if(arr[i]<=dep[j]){
+                // same platform can not be used for both departure of a train and 
+                //arrival of another train
+                platforms++;
+                ans = Math.max(ans, platforms);
+                i++;
+            }else{
+                platforms--;
+                j++;
+            }
+        }
+        return ans;
+    }
+}
+
+
+
+
+
+1419. Minimum Number of Frogs Croaking Medium. LC Problem. 24 September, 2022
+https://leetcode.com/problems/minimum-number-of-frogs-croaking/
+Example 1:
+Input: croakOfFrogs = "croakcroak"
+Output: 1 
+Explanation: One frog yelling "croak" twice.
+
+Example 2:
+Input: croakOfFrogs = "crcoakroak"
+Output: 2 
+Explanation: The minimum number of frogs is two. 
+The first frog could yell "crcoakroak".
+The second frog could yell later "crcoakroak".
+
+Example 3:
+Input: croakOfFrogs = "croakcrook"
+Output: -1
+Explanation: The given string is an invalid combination of "croak" from different frogs.
+
+Variation of above problem
+class Solution {
+    public int minNumberOfFrogs(String croakOfFrogs) {
+        int c=0, r=0, o=0, a=0,k=0;
+        int frogs = 0;
+        int ans = 0;
+        int n = croakOfFrogs.length();
+        for(int i=0;i<n;i++){
+            char ch = croakOfFrogs.charAt(i);
+            if(ch=='c'){
+                frogs++;
+                c++;
+                ans = Math.max(ans, frogs);
+            }else if(ch=='r'){
+                r++;
+            }else if(ch=='o'){
+                o++;
+            }else if(ch=='a'){
+                a++;
+            }else if(ch=='k'){
+                frogs--;
+                k++;
+            }
+            if(c<r||r<o||o<a||a<k){
+                return -1;
+            }
+        }
+        if(frogs!=0){
+            return -1;
+        }
+        return ans;
+    }
+}
+2406. Divide Intervals Into Minimum Number of Groups Medium. LC Problem. 24 September, 2022
+https://leetcode.com/problems/divide-intervals-into-minimum-number-of-groups/
+Example 1:
+Input: intervals = [[5,10],[6,8],[1,5],[2,3],[1,10]]
+Output: 3
+Explanation: We can divide the intervals into the following groups:
+- Group 1: [1, 5], [6, 8].
+- Group 2: [2, 3], [5, 10].
+- Group 3: [1, 10].
+It can be proven that it is not possible to divide the intervals into fewer than 3 groups.
+
+Example 2:
+Input: intervals = [[1,3],[5,6],[8,10],[11,13]]
+Output: 1
+Explanation: None of the intervals overlap, so we can put all of them in one group.
+
+
+
+Using Greedy. Same as Minimum Platforms. The minimum number of groups we need is equivalent to the maximum number of intervals that overlap at some point. How can you find that?
+class Solution {
+    public int minGroups(int[][] intervals) {
+        int n = intervals.length;
+        int[]left = new int[n];
+        for(int i=0;i<n;i++){
+            left[i]=intervals[i][0];
+        }
+        int[]right = new int[n];
+        for(int i=0;i<n;i++){
+            right[i]=intervals[i][1];
+        }
+        Arrays.sort(left);
+        Arrays.sort(right);
+        int groups = 0, ans =0;
+        int l=0,r=0;
+        while(l<n && r<n){
+            if(left[l]<=right[r]){
+                l++;
+                groups++;
+                ans = Math.max(ans, groups);
+            }else{
+                r++;
+                groups--;
+            }
+        }
+        return ans;
+    }
+}
+
+Using Heaps
+class Solution {
+    public int minGroups(int[][] intervals) {
+        return this.sol(intervals);
+    }
+     public int sol(int[][] intervals) {
+        Arrays.sort(intervals,(int[] a,int[] b)-> a[0]==b[0]?a[1]-b[1]:a[0] - b[0]);
+        PriorityQueue<Integer> que =new PriorityQueue<>();
+        que.add(intervals[0][1]);
+        int count =0;
+        for(int i =1; i < intervals.length;i++) {
+            if(que.size() > 0 && intervals[i][0] >que.peek()) {
+                que.poll();
+            }
+            que.add(intervals[i][1]);
+        }
+        return que.size();
+    }
+}
+Using Prefix Sum
+Using Binary Search
