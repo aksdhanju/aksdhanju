@@ -1,0 +1,799 @@
+Backtracking Problems
+51. N-Queens Hard LC Problem. Tags: Stack, Backtracking. 26 May,2022
+Maintain 3 hashsets-> col, positiveDiagonal, negativeDiagonal.
+Using Backtracking
+class Solution {
+    List<List<String>> result;
+    HashSet<Integer> col; 
+    HashSet<Integer> positiveDiagonal; 
+    HashSet<Integer> negativeDiagonal; 
+    public List<List<String>> solveNQueens(int n) {
+        col = new HashSet<>();
+        positiveDiagonal = new HashSet<>();
+        negativeDiagonal = new HashSet<>();
+        result = new ArrayList<>();
+        backtrack(0, n, new ArrayList<String>());
+        return result;
+    }
+    void backtrack(int row, int n, List<String> list){
+        if(row==n){
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        for(int i=0;i<n;i++){
+            if(col.contains(i) || positiveDiagonal.contains(row+i) || negativeDiagonal.contains(row-i)){
+                continue;
+            }
+            char[] charArray = new char[n];
+            Arrays.fill(charArray, '.');
+            charArray[i] = 'Q';
+            String rowString = new String(charArray);
+            
+            list.add(rowString);
+            col.add(i);
+            positiveDiagonal.add(row + i);
+            negativeDiagonal.add(row - i);
+            
+            backtrack(row + 1, n, list);
+            
+            list.remove(list.size() - 1);
+            col.remove(i);
+            positiveDiagonal.remove(row + i);
+            negativeDiagonal.remove(row - i);
+        }
+    }
+}
+
+22. Generate Parentheses MediumLC problem. Tags: Stack, Backtracking. 26 May,2022
+
+
+
+
+Using StringBuilder
+class Solution {
+    List<String> result;
+    StringBuilder sb;
+    public List<String> generateParenthesis(int n) {
+        result = new ArrayList<>();
+        sb = new StringBuilder();
+        backtrack(n, 0, 0);
+        return result;
+    }
+    void backtrack(int n, int open, int close){
+        if(open==n && close==n){
+            result.add(sb.toString());
+            return;
+        }
+        if(open<n){
+            sb.append("(");
+            backtrack(n,open+1,close);
+            sb.deleteCharAt(sb.length() - 1);
+            // sb.setLength(sb.length() - 1);
+        }
+        if(close<open){
+            sb.append(")");
+            backtrack(n,open, close+1);
+            sb.deleteCharAt(sb.length() - 1);
+            // sb.setLength(sb.length() - 1);
+        }
+    }
+}
+Using Stack. Possible in Python but not in Java
+46. Permutations Medium. LeetCode Problem. Tags: Backtracking, Arrays (NO DUPLICATES)
+Note: Similar problem for Strings also. Just see String2 file.
+Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.
+2 variations: Can just print all permutations. Here return all permutations as List<List<Integer>>
+Using result(List<List<Integer>>) as global variable. Using Backtracking approach. Time Complexity: O(n*n!) Note that there are n! permutations and it requires O(n) time to print a permutation.
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> permute(int[] nums) {
+        int n = nums.length;
+        result = new ArrayList<>();
+        permuteArray(nums, 0,n-1);
+        return result;
+    }
+    void permuteArray(int[] nums, int low, int high) {
+        if(low==high) {
+        	List<Integer> list = new ArrayList<>();
+            for (int element: nums) {
+                list.add(element);
+            }
+        	result.add(list);
+        	return;
+        }
+        
+        for(int i=low;i<=high;i++) {
+        	swap(nums,i,low);
+        	permuteArray(nums, low+1,high);
+        	swap(nums,i,low);    //important step here. Can be skipped if nums is //String because strings are immutable and kind of pass by value
+        }
+    }
+}
+
+Without swapping values and modifying nums array.
+Top voted LC solution. Very difficult to implement. Good to see the solution.
+public List<List<Integer>> permute(int[] nums) {
+   List<List<Integer>> list = new ArrayList<>();
+   // Arrays.sort(nums); // not necessary
+   backtrack(list, new ArrayList<>(), nums);
+   return list;
+}
+
+
+private void backtrack(List<List<Integer>> list, List<Integer> tempList, int [] nums){
+   if(tempList.size() == nums.length){
+      list.add(new ArrayList<>(tempList));
+   } else{
+      for(int i = 0; i < nums.length; i++){ 
+         if(tempList.contains(nums[i])) continue; // element already exists, skip
+         tempList.add(nums[i]);
+         backtrack(list, tempList, nums);
+         tempList.remove(tempList.size() - 1);
+      }
+   }
+} 
+47. Permutations II Medium. LeetCode problem. Tags: Backtracking. Arrays.
+(WITH DUPLICATES)
+Using HashSet
+class Solution {
+    List<List<Integer>> result;
+    HashSet<List<Integer>> set;
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        result = new ArrayList<>();
+        set = new HashSet<>();
+        backtrack(0, nums);
+        return result;
+    }
+    void backtrack(int start, int[]nums){
+        if(start == nums.length){
+            //convert int[] array into List<Integer>
+            // List<Integer> list = Arrays.stream(nums).boxed().collect(Collectors.toList());
+            List<Integer> list = new ArrayList<>();
+            for (int element: nums) {
+                list.add(element);
+            }
+            if(!set.contains(list)){
+                set.add(list);
+                result.add(list); //already made using new
+            }
+            return;
+        }
+        for(int i=start;i<nums.length;i++){
+            swap(nums, i, start);
+            backtrack(start+1, nums);
+            swap(nums, i, start);
+        }
+    }
+    void swap(int[] nums, int start, int end){
+        int temp = nums[start];
+        nums[start] = nums[end];
+        nums[end]=temp;
+    }
+}
+Not able to understand other solutions Revisit again. 
+77. Combinations Medium LeetCode problem. Tags: Backtracking. Arrays. 1 June, 2022
+Example 1:
+Input: n = 4, k = 2
+Output:
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+Example 2:
+Input: n = 1, k = 1
+Output: [[1]]
+
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> combine(int n, int k) {
+        result = new ArrayList<>();
+        backtrack(n,k,1, new ArrayList<>());
+        return result;
+    }
+    void backtrack(int n, int k,int start, List<Integer> comb){
+        if(comb.size()==k){
+            //make a copy of comb list, because in future we would make changes in comb and they would be reflected in result which we do not want.
+            result.add(new ArrayList<>(comb));
+            return;
+        }
+        for(int i=start;i<=n;i++){
+            comb.add(i);
+            backtrack(n,k,i+1,comb);   //its i+1 and not start+1. Reason is we need all combinations start from i and of length 2 greater than it.
+            comb.remove(comb.size()-1);
+        }
+    }
+}
+
+All Possible Combinations Medium InterviewBit problem. Tags: Backtracking. Arrays. 1 June, 2022
+Input 1:
+A = ['ab', 'cd']
+Input 2:
+A = ['aa', 'bb']
+
+
+Example Output
+Output 1:
+['ac', 'ad', 'bc', 'bd']
+Output 2:
+['ab', 'ab', 'ab', 'ab']    
+//Duplicates allowed.
+Input: [“ab”,”cd”,”ef”]
+Output: [“ace”, “acf”, “ade”, “adf”, “bce”, “bcf”, “bde”, “bdf”]. Each string contains ith character from ith string. Each string is called special string. Return list of special strings.
+Using Backtracking
+public class Solution {
+    ArrayList<String> result;
+    public ArrayList<String> specialStrings(ArrayList<String> ar) {
+        result = new ArrayList<>();
+        backtrack(0, ar, new StringBuilder());
+        return result;
+    }
+    void backtrack(int start, ArrayList<String> ar, StringBuilder sb){
+        if(sb.length() == ar.size()){
+//passing copy of sb as a string. So further changes in sb will not reflect in //result because sb.toString() is a String which is immutable
+//here sb is equivalent to Special String we want to make.
+            result.add(sb.toString());
+            return;
+        }
+        for(int i=0;i<ar.get(start).length();i++){
+            sb.append(ar.get(start).charAt(i));
+            backtrack(start+1, ar, sb);
+            sb.deleteCharAt(sb.length()-1);
+            // specialString.remove(specialString.length()-1);  //does not work like in arrays
+        }
+    }
+}
+17. Letter Combinations of a Phone Number Medium LeetCode problem. Tags: Backtracking. Arrays. 1 June, 2022
+Variation of the above Special String InterviewBit Problem.
+Using Backtracking
+class Solution {
+    List<String> result;
+    public List<String> letterCombinations(String digits) {
+        result = new ArrayList<>();
+        if(digits.equals("")){
+            return result;
+        }
+        String[] phone = new String[10];
+        phone[2] = "abc";
+        phone[3]="def";
+        phone[4]="ghi";
+        phone[5]="jkl";
+        phone[6]="mno";
+        phone[7]="pqrs";
+        phone[8]="tuv";
+        phone[9]="wxyz";
+        
+        List<String> ar = new ArrayList<>();
+        for(char c: digits.toCharArray()){
+            ar.add(phone[c-'0']);            
+        }
+        
+        backtrack(0, ar, new StringBuilder());
+        return result;
+    }
+    void backtrack(int start, List<String> ar, StringBuilder sb){
+        if(sb.length()==ar.size()){
+            result.add(sb.toString());
+            return;
+        }
+        
+        for(int i=0;i<ar.get(start).length();i++){
+            sb.append(ar.get(start).charAt(i));
+            backtrack(start+1, ar, sb);
+            sb.deleteCharAt(sb.length()-1);
+        }
+    }
+}
+More Optimized Solution. Removed ar array
+class Solution {
+    List<String> result;
+    private final String[] keys = { "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
+    public List<String> letterCombinations(String digits) {
+        result = new ArrayList<>();
+        if(digits.equals("")){
+            return result;
+        }
+        backtrack(0, digits, new StringBuilder());
+        return result;
+    }
+    void backtrack(int start, String digits, StringBuilder sb){
+        if(sb.length()==digits.length()){
+            result.add(sb.toString());
+            return;
+        }
+        int num = digits.charAt(start)-'0';
+        for(int i=0;i<keys[num].length();i++){
+            sb.append(keys[num].charAt(i));
+            backtrack(start+1, digits, sb);
+            sb.deleteCharAt(sb.length()-1);
+        }
+    }
+}
+78. Subsets Medium LeetCode problem. Tags: Backtracking. Arrays. 1 June, 2022
+Example 1:
+Input: nums = [1,2,3]
+Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+Example 2:
+Input: nums = [0]
+Output: [[],[0]]
+Given an integer array nums of unique elements, return all possible subsets (the power set). Return the solution in any order.
+Also same as printing All Subsequences of a String/Array. Just add one [] 
+Using Backtracking
+class Solution {
+    List<List<Integer>>result;
+    public List<List<Integer>> subsets(int[] nums) {
+        result = new ArrayList<>();
+        backtrack(0, nums, new ArrayList<>());
+        return result;
+    }
+    void backtrack(int i, int[] nums, List<Integer> list){
+        if(i==nums.length){
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        list.add(nums[i]);
+        backtrack(i+1, nums, list);
+        list.remove(list.size()-1);
+        backtrack(i+1, nums, list);
+    }
+}
+
+Using Pick and Don’t Pick Concept.
+Does not work in case of Arrays. Its actually similar to backtracking solution. Concept wise we are doing the same thing.
+See this problem also: Print All Subsequences of a String(GFG problem. Not on Leetcode)
+
+SubsetMedium InterviewBit problem. Tags: Backtracking. Arrays. 1 June, 2022
+Sort the output in Lexicographic order. Only difference from above question.
+
+If S = [1,2,3], a solution is:
+[
+  [],
+  [1],
+  [1, 2],
+  [1, 2, 3],
+  [1, 3],
+  [2],
+  [2, 3],
+  [3],
+]
+Using Backtracking
+Found how to compare two List<Integer>. Time complexity = O(n*2^n)
+class Solution {
+    ArrayList<ArrayList<Integer>>result;
+    public ArrayList<ArrayList<Integer>> subsets(ArrayList<Integer> nums) {
+        result = new ArrayList<>();
+        Collections.sort(nums);
+        //nums = [ 15, 20, 12, 19, 4 ] behaving unexpectedly.
+        backtrack(0, nums, new ArrayList<>());
+        // Comparator is used so that all subset get
+        // sorted in ascending order of values
+        Collections.sort(result, new SubsetComparator());
+        return result;
+    }
+    void backtrack(int i, ArrayList<Integer> nums, List<Integer> list){
+        if(i==nums.size()){
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        list.add(nums.get(i));
+        backtrack(i+1, nums, list);
+        list.remove(list.size()-1);
+        backtrack(i+1, nums, list);
+    }
+}
+
+// creates the comparator for comparing 2 List<Integer>
+class SubsetComparator implements Comparator<ArrayList<Integer>> {
+    // override the compare() method
+    public int compare(ArrayList<Integer> obj1, ArrayList<Integer> obj2){
+        int n = Math.min(obj1.size(), obj2.size());
+        for (int i = 0; i < n; i++) {
+                if (obj1.get(i) == obj2.get(i)){
+                    continue;
+                }else{
+                    return obj1.get(i) - obj2.get(i);
+                }
+            }
+            return Integer.compare(obj1.size(), obj2.size());  
+	//If we have to compare [] and [1,2] lets say. Then return -1. 
+	//If we have to compare [1,2] and [] lets say. Then return 1.
+	//If fist number is smaller than second, return -1.
+            // I was doing: return -1; that is why it was not working.
+    }
+}
+
+90. Subsets II Medium LeetCode problem. Tags: Backtracking. Arrays. 1 June, 2022
+
+
+Example 1:
+Input: nums = [1,2,2]
+Output: [[],[1],[1,2],[1,2,2],[2],[2,2]]
+Example 2:
+Input: nums = [0]
+Output: [[],[0]]
+Example 3(tricky test case):
+Nums=[2,1,2]
+Output of previous question: [[],[2], [2,1], [2,1,2],[2,2], [1], [1,2], [2]]
+Expected Output: [[],[2], [2,1], [2,1,2],[2,2], [1]]
+Not only exact duplicates but with changes order also here. This is different from Permutations 2 question. So we cant just use HashSet here. Because [1,2] and [2,1] should be counted as one subset here.
+Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
+Using Backtracking
+
+Slight variation. Just extra while loop. See Bold lines.
+class Solution {
+    List<List<Integer>>result;
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        result = new ArrayList<>();
+        Arrays.sort(nums);
+        backtrack(0, nums, new ArrayList<>());
+        return result;
+    }
+    void backtrack(int i, int[] nums, List<Integer> list){
+        if(i==nums.length){
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        list.add(nums[i]);
+        backtrack(i+1, nums, list);
+        list.remove(list.size()-1);
+        
+        //for nums=[1,2,2] i=1
+        //we skipped second 2
+        while(i+1<nums.length && nums[i]==nums[i+1]){
+            i++;
+        }
+        backtrack(i+1, nums, list);
+    }
+}
+39. Combination Sum Medium LeetCode problem. Tags: Backtracking. Arrays. 1 June, 2022Blind 75 Problem
+Example 1:
+Input: candidates = [2,3,6,7], target = 7
+Output: [[2,2,3],[7]]
+Explanation:
+2 and 3 are candidates, and 2 + 2 + 3 = 7. Note that 2 can be used multiple times.
+7 is a candidate, and 7 = 7.
+These are the only two combinations.
+We have to return combinations not permutations. So [2,2,3] is same as [3,2,2]. We can use digits any number of times. Example 2 can be used any number of times.
+Example 2:
+Input: candidates = [2,3,5], target = 8
+Output: [[2,2,2,2],[2,3,3],[3,5]]
+Example 3:
+Input: candidates = [2], target = 1
+Output: []
+
+Using Backtracking
+
+
+Time complexity = O(2^target)
+
+class Solution {
+     List<List<Integer>> result;
+    public List<List<Integer>> combinationSum(int[] nums, int target) {
+        result = new ArrayList<>();
+        // Arrays.sort(nums);
+        backtrack(0,0,new ArrayList<>(), nums, target);
+        return result;
+    }
+    void backtrack(int i, int sum, List<Integer>list, int[] nums, int target){
+        if(i==nums.length || sum>target){
+            return;
+        }
+        if(sum==target){
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        list.add(nums[i]);
+        backtrack(i,sum+nums[i], list, nums, target);
+        list.remove(list.size()-1);
+        //now we cant choose ith candidates thereafter
+        backtrack(i+1, sum, list, nums, target);
+    }
+}
+
+Using dp
+This question appears similar to Subset sum problem taught by Aditya Verma. Also Unbounded Knapsack variations.
+In Dp questions, we just had to return if there is 1 subset/combination which has sum/difference equal to target. Here we have to return all those possible combinations. So it is a little different.
+Thought it is similar to Unbounded Knapsack Pattern
+Combination Sum Medium InterviewBit problem. Tags: Backtracking. Arrays. 1 June, 2022
+
+Using Backtracking
+Need combinations in sorted order. Also there should be no duplicate combinations. Using earlier code, below was the case:
+The expected return value: 
+[1 1 1 1 1 ] 
+Your function returned the following: 
+[1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] [1 1 1 1 1 ] 
+
+class Solution {
+     ArrayList<ArrayList<Integer>> result;
+     HashSet<ArrayList<Integer>>set;
+    public ArrayList<ArrayList<Integer>> combinationSum(ArrayList<Integer> nums, int target) {
+        result = new ArrayList<>();
+        set = new HashSet<>();
+        Collections.sort(nums);
+        backtrack(0,0,new ArrayList<>(), nums, target);
+        Collections.sort(result, new ResultComparator());
+        return result;
+    }
+    void backtrack(int i, int sum, ArrayList<Integer>list, ArrayList<Integer> nums, int target){
+        if(i>=nums.size() || sum>target){
+            return;
+        }
+        if(sum==target){
+            if(!set.contains(list)){
+                set.add(list);
+                result.add(new ArrayList<>(list));
+            }
+            return;
+        }
+        list.add(nums.get(i));
+        backtrack(i,sum+nums.get(i), list, nums, target);
+        list.remove(list.size()-1);
+        //now we cant choose ith candidates thereafter
+        backtrack(i+1, sum, list, nums, target);
+    }
+}
+class ResultComparator implements Comparator<ArrayList<Integer>>{
+    public int compare(ArrayList<Integer> list1, ArrayList<Integer> list2) {
+        int n = Math.min(list1.size(), list2.size());
+        for(int i=0;i<n;i++){
+                if(list1.get(i)==list2.get(i)){
+                    continue;
+                }
+                return list1.get(i)-list2.get(i);
+        }
+        return Integer.compare(list1.size(), list2.size());
+    }
+}
+
+40. Combination Sum II Medium LeetCode problem. Tags: Backtracking. Arrays. 2 June, 2022
+It is similar to 0-1 Knapsack Pattern
+
+Each number in candidates may only be used once in the combination. Note: The solution set must not contain duplicate combinations.
+Using Backtracking
+Time complexity = O(2^n). Sorting only takes O(nlogn)
+backtrack(i+1,sum+nums[i], list, nums, target); Only change from previous code.  [Each number in candidates may only be used once in the combination.]
+
+Code was giving duplicates. I sorted the input candidates/nums array. Use the logic used in subset2 question.
+ while(i+1<nums.length && nums[i]==nums[i+1]){
+       i++;
+ }
+[Each number in candidates may only be used once in the combination.]
+Wrong Answer
+Runtime: 1 ms
+Your input
+[10,1,2,7,6,1,5]
+8
+Output
+[[1,1,6],[1,2,5],[1,7],[1,2,5],[1,7],[2,6]]
+Diff
+Expected
+[[1,1,6],[1,2,5],[1,7],[2,6]]
+
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> combinationSum2(int[] nums, int target) {
+        result = new ArrayList<>();
+        Arrays.sort(nums);
+        backtrack(0,0,new ArrayList<>(), nums, target);
+        return result;
+    }
+    void backtrack(int i, int sum, List<Integer>list, int[] nums, int target){
+        if(sum==target){
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        if(i==nums.length || sum>target){
+            return;
+        }
+        
+        list.add(nums[i]);
+        backtrack(i+1,sum+nums[i], list, nums, target);
+        list.remove(list.size()-1);
+        //to ensure we donot count duplicates
+        //this works when nums array is sorted.
+        while(i+1<nums.length && nums[i]==nums[i+1]){
+            i++;
+        }
+        //now we cant choose ith candidates thereafter
+        backtrack(i+1, sum, list, nums, target);
+    }
+}
+Using Backtracking. Further Optimization. Unnecessary calls being made even if we know sum of all numbers we are going to add will be greater than target. See Bold statement.
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> combinationSum2(int[] nums, int target) {
+        result = new ArrayList<>();
+        Arrays.sort(nums);
+        backtrack(0,0,new ArrayList<>(), nums, target);
+        return result;
+    }
+    void backtrack(int i, int sum, List<Integer>list, int[] nums, int target){
+        if(sum==target){
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        if(i==nums.length || sum>target){
+            return;
+        }
+        
+        list.add(nums[i]);
+        backtrack(i+1,sum+nums[i], list, nums, target);
+        list.remove(list.size()-1);
+        if(sum+nums[i]>target){
+            return;
+        }
+        //to ensure we donot count duplicates
+        //this works when nums array is sorted.
+        while(i+1<nums.length && nums[i]==nums[i+1]){
+            i++;
+        }
+        //now we cant choose ith candidates thereafter
+        backtrack(i+1, sum, list, nums, target);
+    }
+}
+Different implementation using For Loop
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> combinationSum2(int[] nums, int target) {
+        result = new ArrayList<>();
+        Arrays.sort(nums);
+        backtrack(0,0,new ArrayList<>(), nums, target);
+        return result;
+    }
+    void backtrack(int pos, int sum, List<Integer>list, int[] nums, int target){
+        if(sum==target){
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        if(pos==nums.length || sum>target){
+            return;
+        }
+        //this for loop is basically doing the work which seocnd backtrack function call was doing.
+        //ie.  // backtrack(i+1, sum, list, nums, target);
+        int prev =-1;
+        for(int i=pos;i<nums.length;i++){
+            if(nums[i]==prev){
+                continue;
+            }
+            list.add(nums[i]);
+            backtrack(i+1,sum+nums[i], list, nums, target);
+            list.remove(list.size()-1);
+            if(sum+nums[i]>target){
+                break;
+            }
+            prev = nums[i];
+        }
+    }
+}
+
+216. Combination Sum III Medium LeetCode problem. Tags: Backtracking. Arrays. 2 June, 2022
+Using Backtracking. Variation of above problem. See bold lines.
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        result = new ArrayList<>();
+        int[] nums = {1,2,3,4,5,6,7,8,9};
+        backtrack(0,0,new ArrayList<>(), nums, n, k);
+        return result;
+    }
+    void backtrack(int i, int sum, List<Integer>list, int[] nums, int target, int k){
+        if(sum==target && k==0){
+            result.add(new ArrayList<>(list));
+            return;
+        }
+        if(k<0 || i==nums.length || sum>target){
+            return;
+        }
+        
+        list.add(nums[i]);
+        backtrack(i+1,sum+nums[i], list, nums, target, k-1);
+        list.remove(list.size()-1);
+        //to ensure we donot count duplicates
+        //this works when nums array is sorted.
+        while(i+1<nums.length && nums[i]==nums[i+1]){
+            i++;
+        }
+        //now we cant choose ith candidates thereafter
+        backtrack(i+1, sum, list, nums, target, k);
+    }
+}
+Kth Permutation Sequence Medium Asked In: Amazon InterviewBit  problem. Tags: Backtracking. Arrays. 2 June, 2022
+
+
+We get the following sequence (ie, for n = 3 ) :
+1. "123"
+2. "132"
+3. "213"
+4. "231"
+5. "312"
+6. "321"
+Given n and k, return the kth permutation sequence.
+For example, given n = 3, k = 4, ans = "231"
+
+Using Backtracking. Gives TLE
+Your submission timed out for the following input:
+Your submission failed for the following input
+A : 100
+B : 10000000
+
+
+The expected return value: 
+123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888992989690911009497959993
+
+public class Solution {
+    String result;
+    int count;
+    public String getPermutation(int n, int k) {
+        int[] nums = new int[n];
+        for(int i=0;i<n;i++){
+            nums[i]=i+1;
+        }
+        count = 0;
+        backtrack(k, nums, new ArrayList<>());
+        return result;
+    }
+    void backtrack(int k, int[] nums, ArrayList<Integer> list){
+        //we achieved one permutation
+        if(list.size()==nums.length){
+            count++;
+            if(count==k){
+                StringBuilder sb =  new StringBuilder();
+                 for (int element: list) {
+                    sb.append(element);
+                }
+                result = sb.toString();
+            }
+            return;
+        }
+        for(int i = 0; i < nums.length; i++){ 
+            if(list.contains(nums[i])) continue; // element already exists, skip
+            list.add(nums[i]);
+            backtrack(k,nums,list);
+            list.remove(list.size() - 1);
+      }
+    }
+}
+IB solution
+public class Solution {
+	public String getPermutation(int A, int B) {
+	ArrayList candidateSet = new ArrayList<>();
+        for (int i = 1; i <= A; i++){
+            candidateSet.add(i);
+        }
+        return getPermutation(B - 1, candidateSet);
+    }
+
+    private static String getPermutation(int k, ArrayList candidateSet) {
+        int n = candidateSet.size();
+        if (n == 0) {
+            return "";
+        }
+        if (k > factorial(n)) return ""; // invalid. Should never reach here.
+
+        int f = factorial(n - 1);
+        int pos = k / f;
+        k %= f;
+        String ch = String.valueOf(candidateSet.get(pos));
+        // now remove the character ch from candidateSet.
+        candidateSet.remove(pos);
+        return ch + getPermutation(k, candidateSet);
+    }
+
+    static int factorial(int n) {
+        if (n > 12) {
+            // this overflows in int. So, its definitely greater than k
+            // which is all we care about. So, we return INT_MAX which
+            // is also greater than k.
+            return Integer.MAX_VALUE;
+        }
+        // Can also store these values. But this is just < 12 iteration, so meh!
+        int fact = 1;
+        for (int i = 2; i <= n; i++) fact *= i;
+        return fact;
+    }
+}
+
+917 · Palindrome Permutation II Algorithms Medium.LC Premium
