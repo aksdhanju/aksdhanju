@@ -1,0 +1,1266 @@
+Matrix
+Code for printing a matrix
+for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                System.out.print(matrix[i][j]+ " ");
+            }
+            System.out.println();
+        }
+73. Set Matrix Zeroes Medium LeetCode problemTags: Matrix. 1 july, 2022
+Using 2 additional arrays R[] for row  and C[] for column. Time complexity=O(2mn)=O(mn).2 traversals of matrix both from bottom up. Space complexity=O(m+n)
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        int m= matrix.length;
+        int n = matrix[0].length;
+        int[] R=new int[m];
+        int[] C=new int[n];
+        Arrays.fill(R,-1);
+        Arrays.fill(C,-1);
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]==0){
+                    R[i]=0;
+                    C[j]=0;
+                }
+            }
+        }
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(R[i]==0 || C[j]==0){
+                    matrix[i][j]=0;
+                }
+            }
+        }
+    }
+}
+Efficient solution. Using 1st row of matrix as C and 1st column of matrix as R[]. Time complexity=O(mn). Space complexity=O(1)
+1st Use a custom comparator when sorting, to sort by parity. traversal is bottom up. Next is top down.
+public void setZeroes(int[][] matrix) {
+        int m= matrix.length;
+        int n = matrix[0].length;
+        int firstColumn = 1;
+        for(int i=0;i<m;i++){
+            if(matrix[i][0]==0){
+                firstColumn=0;
+            }
+            for(int j=1;j<n;j++){
+                if(matrix[i][j]==0){
+                    matrix[i][0]=0;
+                    matrix[0][j]=0;
+                }
+            }
+        }
+        for(int i=m-1;i>=0;i--){
+            for(int j=n-1;j>=1;j--){
+                if(matrix[i][0]==0 || matrix[0][j]==0){
+                    matrix[i][j]=0;
+                }
+            }
+            if(firstColumn==0){
+                matrix[i][0]=0;
+            }
+        }
+    }
+My own implementation
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        boolean isZero = false;
+        for(int j=0;j<n;j++){
+            if(matrix[0][j]==0){
+                isZero = true;
+            }
+        }
+        for(int i=0;i<m;i++){
+            if(matrix[i][0]==0){
+                matrix[0][0]=0;
+            }
+        }
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                if(matrix[i][j]==0){
+                    matrix[i][0]=0;
+                    matrix[0][j]=0;
+                }
+            }
+        }
+        
+        for(int i=m-1;i>=1;i--){
+            for(int j=n-1;j>=0;j--){
+                if(matrix[i][0] == 0 || matrix[0][j]==0){
+                    matrix[i][j]=0;
+                }
+            }
+        }
+        for(int j=n-1;j>=0;j--){
+            if(isZero == true){
+                matrix[0][j]=0;
+            }
+        }
+    }
+}
+Game of Life LeetCode problemTags: Matrix. 1 july, 2022
+Using Basic Logic
+class Solution {
+    public void gameOfLife(int[][] board) {
+        int m = board.length;
+        int n = board[0].length;
+        //0->1 changed is 3. So that for further calculation it an be known it was 0
+        //1->0 changed is 2/0*. Our further calculations should consider original board for its calculations.
+        for(int i=0;i<m;i++){
+            for(int j =0;j<n;j++){
+                if(board[i][j]==0){
+                    //consider 2/0* as also 1
+                    int onesAroundZero = 0;
+                    for(int k=-1;k<=1;k++){
+                        for(int l=-1;l<=1;l++){
+                            if(k==0 && l ==0){
+                                continue;
+                            }
+                            if(i+k <0 || i+k>m-1){
+                                continue;
+                            }
+                            if(j+l <0 || j+l>n-1){
+                                continue;
+                            }
+                            if(board[i+k][j+l]==1 || board[i+k][j+l]==2){
+                                onesAroundZero++;
+                            }
+                        }
+                    }
+                    if(onesAroundZero==3){
+                        //0->1 changed is 3. So that for further calculation it an be known it was 0
+                        board[i][j]=3;
+                    }
+                }else{
+                    int onesAroundOne = 0;
+                    for(int k=-1;k<=1;k++){
+                        for(int l=-1;l<=1;l++){
+                            if(k==0 && l ==0){
+                                continue;
+                            }
+                            if(i+k <0 || i+k>m-1){
+                                continue;
+                            }
+                            if(j+l <0 || j+l>n-1){
+                                continue;
+                            }
+                            if(board[i+k][j+l]==1 || board[i+k][j+l]==2){
+                                onesAroundOne++;
+                            }
+                        }
+                    }
+                    if(onesAroundOne<2 || onesAroundOne>3){
+                        board[i][j]=2;
+                    }
+                }
+            }
+        }
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(board[i][j]==2){
+                    board[i][j]=0;
+                }
+                if(board[i][j]==3){
+                    board[i][j]=1;
+                }
+            }
+        }
+    }
+}
+Follow up:
+Could you solve it in-place? Remember that the board needs to be updated simultaneously: You cannot update some cells first and then use their updated values to update other cells.
+In this question, we represent the board using a 2D array. In principle, the board is infinite, which would cause problems when the active area encroaches upon the border of the array (i.e., live cells reach the border). How would you address these problems?
+
+54. Spiral Matrix Medium. Tags: Matrix
+Using Approach by MyCodeSchool and NeetCode. Its better to use definitive name of variables like left, right, top, bottom, direction rather than I,j,k. Here I is iterator.
+public List<Integer> spiralOrder(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        List<Integer> result = new ArrayList<>();
+        int left = 0, right = n-1, top=0, bottom=m-1;
+        int direction=0;
+        while(left<=right && top<=bottom){
+            if(direction==0){
+                for(int i=left;i<=right;i++){
+                    result.add(matrix[top][i]);
+                }
+                top++;
+            }else if(direction==1){
+                for(int i=top;i<=bottom;i++){
+                    result.add(matrix[i][right]);
+                }
+                right--;
+            }else if(direction==2){
+                for(int i=right;i>=left;i--){
+                    result.add(matrix[bottom][i]);
+                }
+                bottom--;
+            }else if(direction==3){
+                for(int i=bottom;i>=top;i--){
+                    result.add(matrix[i][left]);
+                }
+                left++;
+            }
+            direction = (direction+1)%4;
+        }
+        return result;
+    }
+
+
+
+59. Spiral Matrix II Medium. Tags: Matrix. Variation of the above problem.
+public int[][] generateMatrix(int n) {
+        int[][]matrix = new int[n][n];
+        int left = 0, right = n-1, top=0, bottom=n-1;
+        int direction=0;
+        int count =1;
+        while(left<=right && top<=bottom){
+            if(direction==0){
+                for(int i=left;i<=right;i++){
+                    matrix[top][i]=count;
+                    count++;
+                }
+                top++;
+            }else if(direction==1){
+                for(int i=top;i<=bottom;i++){
+                    matrix[i][right]=count;
+                    count++;
+                }
+                right--;
+            }else if(direction==2){
+                for(int i=right;i>=left;i--){
+                    matrix[bottom][i]=count;
+                    count++;
+                }
+                bottom--;
+            }else if(direction==3){
+                for(int i=bottom;i>=top;i--){
+                    matrix[i][left]=count;
+                    count++;
+                }
+                left++;
+            }
+            direction = (direction+1)%4;
+        }
+        return matrix;
+    }
+885. Spiral Matrix III Medium. Tags: Matrix. Variation of the above problem.
+Not able to solve completely. Revisit again. See the condition for left, right, top, bottom.
+public int[][] spiralMatrixIII(int rows, int cols, int rStart, int cStart) {
+        int size = rows*cols;
+        int[][] result = new int[size][2];
+        int left = cStart-1, right = cStart+1, top=rStart, bottom=rStart+1;
+        int index=0;
+        //base case
+        for(int i=cStart;i<=right;i++){
+            result[index][0] = top;
+            result[index][1]=i;
+            index++;
+        }
+        top--;
+        int direction=1;
+        while(left<=right && top<=bottom &&index<size){
+            if(direction==0){
+                for(int i=left+2;i<=right;i++){
+                    result[index][0] = top;
+                    result[index][1]=i;
+                }
+                top--;
+            }else if(direction==1){
+                for(int i=top+2;i<=bottom;i++){
+                    result[index][0] = i;
+                    result[index][1]=right;
+                    // result.add(matrix[i][right]);
+                }
+                right++;
+            }else if(direction==2){
+                for(int i=right-2;i>=left;i--){
+                    result[index][0] = bottom;
+                    result[index][1]=i;
+                    // result.add(matrix[bottom][i]);
+                }
+                bottom++;
+            }else if(direction==3){
+                for(int i=bottom-2;i>=top;i--){
+                    result[index][0] = i;
+                    result[index][1]=left;
+                    // result.add(matrix[i][left]);
+                }
+                left--;
+            }
+            index++;
+            direction = (direction+1)%4;
+        }
+        return result;
+    }
+48. Rotate Image Medium. Tags: Matrix
+Using method suggested by neetcode
+public void rotate(int[][] matrix) {
+        int n = matrix[0].length;
+        int left = 0, right = n-1;
+        while(left<right){
+            for(int i=0;i<=right-left-1;i++){
+                int top=left, bottom=right;
+                int temp=matrix[top][left+i];
+                matrix[top][left+i]=matrix[bottom-i][left];
+                matrix[bottom-i][left]=matrix[bottom][right-i];
+                matrix[bottom][right-i]=matrix[top+i][right];
+                matrix[top+i][right]=temp;
+            }
+            left++;
+            right--;
+        }
+    }
+Transposing and then reflecting the matrix. Crucial for loop count while transposing.
+public void rotate(int[][] matrix) {
+        int n = matrix[0].length;
+        transpose(matrix,n);
+        reflect(matrix, n);
+    }
+    void transpose(int[][]matrix, int n){
+        for(int i=0;i<n-1;i++){
+            for(int j=i+1;j<n;j++){
+                int temp = matrix[i][j];
+                matrix[i][j]=matrix[j][i];
+                matrix[j][i]=temp;
+            }
+        }
+    }
+    void reflect(int[][]matrix, int n){
+        for(int i=0;i<n;i++){
+            reverse(matrix[i], n);
+        }
+    }
+    void reverse(int[]ar, int n){
+        int start =0, end=n-1;
+        while(start<end){
+            int temp = ar[start];
+            ar[start]=ar[end];
+            ar[end]=temp;
+            start++;
+            end--;
+        }
+    }
+240. Search a 2D Matrix II Medium. LeetCode problem. Tags: Binary Search, Matrix
+Matrix is sorted row wise and column wise. KK Video. Find ways to reduce search space. Can also return index of target element. Time Complexity is O(n+n)=O(n). Because at max, we move length of row+length of column. Space complexity=O(1).
+public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int row=0,column=n-1;
+        while(row<=m-1 && column>=0){
+            if(matrix[row][column]==target){
+                return true;
+            }else if(matrix[row][column]>target){
+                column--;
+            }else if(matrix[row][column]<target){
+                row++;
+            }
+        }
+        return false;
+    }
+
+74. Search a 2D Matrix Medium. LeetCode problem. Tags: Binary Search, Matrix
+Brute force. O(mn). Nooo
+Convert to sorted array. Space=O(mn). Time=O(logmn).Noo
+Matrix is sorted only row wise. First element of each row is greater than last element of previous row. First Reach the desired row in max m steps/comparisons. Then find the target in logn steps. So time complexity =O(logn +m)=O(n). Space complexity =O(1). Start from column = n-1 and row=0.
+public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int row=0,column=n-1;
+        while(row<=m-1&&column>=0){
+            if(matrix[row][column]==target){
+                return true;
+            }else if(matrix[row][column]<target){
+                row++;
+            }else if(matrix[row][column]>target){
+                return binarySearch(matrix[row],0,column-1, target);
+            }
+        }
+        return false;
+    }
+
+378. Kth Smallest Element in a Sorted Matrix Medium LeetCode problem. Tags: Binary Search, Matrix, Heaps. 2 July, 2022
+Using Heap
+Using Binary Search
+DFS Questions similar to Graphs
+733. Flood Fill Easy
+463. Island Perimeter Easy
+200. Number of Islands Medium
+695. Max Area of Island Medium
+130. Surrounded Regions Medium
+733. Flood Fill Easy LeetCode problem. Tags: DFS,BFS, Matrix7 June, 2022
+Example 1:
+
+Input: image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, color = 2
+Output: [[2,2,2],[2,2,0],[2,0,1]]
+Explanation: From the center of the image with position (sr, sc) = (1, 1) (i.e., the red pixel), all pixels connected by a path of the same color as the starting pixel (i.e., the blue pixels) are colored with the new color.
+Note the bottom corner is not colored 2, because it is not 4-directionally connected to the starting pixel.
+Example 2:
+Input: image = [[0,0,0],[0,0,0]], sr = 0, sc = 0, color = 0
+Output: [[0,0,0],[0,0,0]]
+Explanation: The starting pixel is already colored 0, so no changes are made to the image.
+
+Using DFS
+Time complexity = O(mn) because at max we process each pixel
+class Solution {
+    int m;
+    int n;
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        m = image.length;
+        n = image[0].length;
+        int oldColor = image[sr][sc];
+        if(oldColor==newColor){
+            return image;
+        }
+        dfs(image, sr,sc, oldColor,newColor);
+        return image;
+    }
+    void dfs(int[][] image, int sr, int sc, int oldColor, int newColor){
+        if(sr>=m || sr<0){
+            return;
+        }
+        if(sc>=n || sc<0){
+            return;
+        }
+        if(image[sr][sc]!=oldColor){
+            return;
+        }
+        image[sr][sc] = newColor;
+        dfs(image, sr+1,sc, oldColor, newColor);
+        dfs(image, sr-1,sc, oldColor, newColor);
+        dfs(image, sr,sc+1, oldColor, newColor);
+        dfs(image, sr,sc-1, oldColor, newColor);
+        
+    }
+}
+Using BFS
+Time complexity = O(mn) because at max we process each pixel
+class Solution {
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        if (image[sr][sc] == newColor) return image;
+
+        int m = image.length, n = image[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{sr, sc});
+        int oldColor = image[sr][sc];
+        image[sr][sc] = newColor;
+        while (!queue.isEmpty()) {
+            int[] top = queue.poll();
+            int row = top[0];
+            int column = top[1];
+            
+            //top
+            if(row-1>=0 && image[row-1][column]==oldColor){
+                image[row-1][column]=newColor;
+                queue.offer(new int[]{row-1, column});
+            }            
+            //left
+            if(column-1>=0 && image[row][column-1]==oldColor){
+                image[row][column-1]=newColor;
+                queue.offer(new int[]{row, column-1});
+            } 
+            //bottom
+            if(row+1<m && image[row+1][column]==oldColor){
+                image[row+1][column]=newColor;
+                queue.offer(new int[]{row+1, column});
+            } 
+            //right
+            if(column+1<n && image[row][column+1]==oldColor){
+                image[row][column+1]=newColor;
+                queue.offer(new int[]{row, column+1});
+            } 
+        }
+        return image;
+    }
+}
+463. Island Perimeter Easy LeetCode problem. Tags: DFS,BFS, Matrix, Union Find.7 June, 2022/1 July, 2022
+Example 1:
+
+Input: grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]
+Output: 16
+Explanation: The perimeter is the 16 yellow stripes in the image above.
+Example 2:
+Input: grid = [[1]]
+Output: 4
+Example 3:
+Input: grid = [[1,0]]
+Output: 4
+
+Using DFS
+class Solution {
+    int perimeter;
+    public int islandPerimeter(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int i=0;
+        int j=0;
+        boolean flag = false;
+        for(i=0;i<m;i++){
+            for(j=0;j<n;j++){
+                if(grid[i][j]==1){
+                    flag=true;
+                    break;
+                }
+            }
+            if(flag==true){
+                break;
+            }
+        }
+        perimeter = 0;
+        dfs(grid,i,j);
+        return perimeter;
+    }
+    void dfs(int[][]grid, int row, int column){
+        if(row<0 || row>=grid.length){
+            perimeter++;
+            return;
+        }
+        if(column<0 || column>=grid[0].length){
+            perimeter++;
+            return;
+        }
+        if(grid[row][column]==0){
+            perimeter++;
+            return;
+        }
+        if(grid[row][column]==-1){
+            return;
+        }
+        grid[row][column]=-1;
+        dfs(grid, row-1, column);
+        dfs(grid, row, column-1);
+        dfs(grid, row+1, column);
+        dfs(grid, row, column+1);
+    }
+}
+Having DFS with int as return type
+class Solution {
+    int m;
+    int n;
+    public int islandPerimeter(int[][] grid) {
+        m = grid.length;
+        n = grid[0].length;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==1){
+                    return dfs(grid, i,j);
+                }
+            }
+        }
+        return -1;
+    }
+    int dfs(int[][]grid, int i, int j){
+        if(i<0 || i>=m || j<0 || j>=n){
+            return 1;
+        }
+        if(grid[i][j]==0){
+            return 1;
+        }
+        if(grid[i][j]==2){
+            return 0;
+        }
+        grid[i][j]=2;
+        return dfs(grid, i-1,j) + dfs(grid,i,j-1) + dfs(grid, i+1, j) + dfs(grid, i, j+1);
+        
+    }
+} 
+200. Number of Islands Medium LeetCode problem. Tags: DFS,BFS, Matrix, Arrays, Union Find.7 June, 2022/1 July,2022
+Using DFS
+Time Complexity = O(mn). If we have array with all 1’s, then in worst case all elements will be converted to ‘2’. 
+class Solution {
+    public int numIslands(char[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int count = 0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]=='1'){
+                    count += dfs(grid,i,j);
+                }
+            }
+        }
+        return count;
+    }
+    int dfs(char[][]grid, int row, int column){
+        if(row<0 || row>=grid.length){
+            return 0;
+        }
+        if(column<0 || column>=grid[0].length){
+            return 0;
+        }
+        if(grid[row][column]=='0'){
+            return 0;
+        }
+        if(grid[row][column] == '2'){    
+            return 0;
+        }
+        grid[row][column]='2';   //can also do grid[row][column]=’0’ and omit above statement.
+        dfs(grid, row-1, column);
+        dfs(grid, row, column-1);
+        dfs(grid, row+1, column);
+        dfs(grid, row, column+1);
+        return 1;
+    }
+}
+695. Max Area of Island Medium LeetCode problem. Tags: DFS,BFS, Matrix7 June, 2022/2 July, 2022
+Example 1:
+
+Input: grid = [[0,0,1,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,1,1,0,1,0,0,0,0,0,0,0,0],[0,1,0,0,1,1,0,0,1,0,1,0,0],[0,1,0,0,1,1,0,0,1,1,1,0,0],[0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,0,0,0,0,0,0,1,1,0,0,0,0]]
+Output: 6
+Explanation: The answer is not 11, because the island must be connected 4-directionally.
+Example 2:
+Input: grid = [[0,0,0,0,0,0,0,0]]
+Output: 0
+
+Using DFS
+class Solution {
+    public int maxAreaOfIsland(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int max = 0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==1){
+                    int area = dfs(grid,i,j);
+                    if(area>max){
+                        max = area;
+                    }
+                }
+            }
+        }
+        return max;
+    }
+    int dfs(int[][]grid, int row, int column){
+        if(row<0 || row>=grid.length){
+            return 0;
+        }
+        if(column<0 || column>=grid[0].length){
+            return 0;
+        }
+        if(grid[row][column]==0){
+            return 0;
+        }
+        grid[row][column]=0;   
+        int area = 0;
+        area += dfs(grid, row-1, column);
+        area += dfs(grid, row, column-1);
+        area += dfs(grid, row+1, column);
+        area += dfs(grid, row, column+1);
+        return 1+area;
+    }
+}
+130. Surrounded Regions Medium LeetCode problem. Tags: DFS,BFS, Matrix7 June, 2022/2 July, 2022
+https://www.youtube.com/watch?v=9z2BunfoZ5Y
+
+Example 1:
+
+Input: board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
+Output: [["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","O","X","X"]]
+Explanation: Surrounded regions should not be on the border, which means that any 'O' on the border of the board are not flipped to 'X'. Any 'O' that is not on the border and it is not connected to an 'O' on the border will be flipped to 'X'. Two cells are connected if they are adjacent cells connected horizontally or vertically.
+Example 2:
+Input: board = [["X"]]
+Output: [["X"]]
+
+Using DFS(called Boundary DFS)
+Capture border regions wale ‘O’ and change them into ‘*’. Do dfs on each of these cells.
+Run for loop on inner region of matrix from 1 to m-1 and 1 to n-1. Change each O to X. Note * will not be changed to X because they are connected to border regions.
+Run for loop on entire matrix and change * to O
+Note: Step 2 and 3 can be compressed into one step.
+
+class Solution {
+    int m;
+    int n;
+    public void solve(char[][] board) {
+        m = board.length;
+        n = board[0].length;
+        for(int i=0;i<m;i++){
+            if(board[i][0]=='O'){
+                dfs(board,i,0);
+            }
+            if(board[i][n-1]=='O'){
+                dfs(board,i,n-1);
+            }
+        }
+        for(int j=1;j<n-1;j++){
+            if(board[0][j]=='O'){
+                dfs(board,0,j);
+            }
+            if(board[m-1][j]=='O'){
+                dfs(board,m-1,j);
+            }
+        }
+        // for(int i=1;i<m-1;i++){
+        //     for(int j=1;j<n;j++){
+        //         if(board[i][j]=='O'){
+        //             board[i][j]='X';
+        //         }
+        //     }
+        // }
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(board[i][j]=='O'){
+                    board[i][j]='X';
+                }
+                if(board[i][j]=='*'){
+                    board[i][j]='O';
+                }
+            }
+        }
+    }
+    
+    void dfs(char[][]board, int i, int j){
+        if(i<0 || i>=m || j<0 || j>=n){
+            return;
+        }
+        if(board[i][j]=='X' || board[i][j]=='*'){
+            return;
+        }
+        board[i][j]='*';
+        dfs(board, i-1, j);
+        dfs(board, i, j-1);
+        dfs(board, i+1, j);
+        dfs(board, i, j+1);
+    }
+}
+Using BFS. Gives TLE. We are making queue again and again
+class Solution {
+    int m;
+    int n;
+    public void solve(char[][] board) {
+        m = board.length;
+        n = board[0].length;
+        for(int i=0;i<m;i++){
+            if(board[i][0]=='O'){
+                bfs(board,i,0);
+            }
+            if(board[i][n-1]=='O'){
+                bfs(board,i,n-1);
+            }
+        }
+        for(int j=1;j<n-1;j++){
+            if(board[0][j]=='O'){
+                bfs(board,0,j);
+            }
+            if(board[m-1][j]=='O'){
+                bfs(board,m-1,j);
+            }
+        }
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(board[i][j]=='O'){
+                    board[i][j]='X';
+                }
+                if(board[i][j]=='*'){
+                    board[i][j]='O';
+                }
+            }
+        }
+    }
+    
+    void bfs(char[][]board, int i, int j){
+        Queue<Pair> queue = new LinkedList<>();
+        queue.offer(new Pair(i,j));
+        while(queue.isEmpty()==false){
+            Pair pair = queue.poll();
+            int row = pair.row;
+            int col = pair.col;
+            board[row][col]='*';
+            //top
+            if(row-1>=0 && board[row-1][col]=='O'){
+                queue.offer(new Pair(row-1,col));
+            }
+            //left
+            if(col-1>=0 && board[row][col-1]=='O'){
+                queue.offer(new Pair(row,col-1));
+            }
+            //bottom
+            if(row+1<=m-1 && board[row+1][col]=='O'){
+                queue.offer(new Pair(row+1,col));
+            }
+            //right
+            if(col+1<=n-1 && board[row][col+1]=='O'){
+                queue.offer(new Pair(row,col+1));
+            }
+        }
+    }
+}
+class Pair{
+    int row;
+    int col;
+    public Pair(int row, int col){
+        this.row = row;
+        this.col = col;
+    }
+}
+Using BFS. Make queue only once
+class Solution {
+    int m;
+    int n;
+    public void solve(char[][] board) {
+        m = board.length;
+        n = board[0].length;
+        Queue<Pair> queue = new LinkedList<>();
+        for(int i=0;i<m;i++){
+            if(board[i][0]=='O'){
+                board[i][0]='*';
+                queue.offer(new Pair(i,0));
+            }
+            if(board[i][n-1]=='O'){
+                board[i][n-1]='*';
+                queue.offer(new Pair(i,n-1));
+            }
+        }
+        for(int j=1;j<n-1;j++){
+            if(board[0][j]=='O'){
+                board[0][j]='*';
+                queue.offer(new Pair(0,j));
+            }
+            if(board[m-1][j]=='O'){
+                board[m-1][j]='*';
+                queue.offer(new Pair(m-1,j));
+            }
+        }
+        bfs(board, queue);
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(board[i][j]=='O'){
+                    board[i][j]='X';
+                }
+                if(board[i][j]=='*'){
+                    board[i][j]='O';
+                }
+            }
+        }
+    }
+    
+    void bfs(char[][]board, Queue<Pair> queue){
+        while(queue.isEmpty()==false){
+            Pair pair = queue.poll();
+            int row = pair.row;
+            int col = pair.col;
+            //top
+            if(row-1>=0 && board[row-1][col]=='O'){
+                board[row-1][col]='*';
+                queue.offer(new Pair(row-1,col));
+            }
+            //left
+            if(col-1>=0 && board[row][col-1]=='O'){
+                board[row][col-1]='*';
+                queue.offer(new Pair(row,col-1));
+            }
+            //bottom
+            if(row+1<=m-1 && board[row+1][col]=='O'){
+                board[row+1][col]='*';
+                queue.offer(new Pair(row+1,col));
+            }
+            //right
+            if(col+1<=n-1 && board[row][col+1]=='O'){
+                board[row][col+1]='*';
+                queue.offer(new Pair(row,col+1));
+            }
+        }
+    }
+}
+class Pair{
+    int row;
+    int col;
+    public Pair(int row, int col){
+        this.row = row;
+        this.col = col;
+    }
+}
+Using Union Find
+See later
+
+BFS Questions
+994. Rotting Oranges Medium
+542. 01 Matrix Medium
+Walls and Gates
+994. Rotting Oranges Medium LeetCode problem. Tags:BFS, Matrix 15 June, 2022
+Example 1:
+
+Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+Output: 4
+Example 2:
+Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
+Output: -1
+Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
+Example 3:
+Input: grid = [[0,2]]
+Output: 0
+Explanation: Since there are already no fresh oranges at minute 0, the answer is just 0.
+
+Using BFS(This is multisource BFS technique)
+class Pair{
+    int row;
+    int column;
+    public Pair(int row, int column){
+        this.row = row;
+        this.column = column;
+    }
+}
+class Solution {
+    public int orangesRotting(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        Queue<Pair>queue = new LinkedList<>();
+        int ones =0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==2){
+                    queue.offer(new Pair(i,j));
+                }
+                if(grid[i][j]==1){
+                    ones++;
+                }
+            }
+        }
+        int time = -1;
+        while(queue.isEmpty()==false){
+            int cnt = queue.size();
+            for(int i=1;i<=cnt;i++){
+                Pair pair = queue.poll();
+                int row = pair.row;
+                int col = pair.column;
+                //check top 
+                if(row>=1 && grid[row-1][col]==1){
+                    grid[row-1][col]=2;
+                    ones--;
+                    queue.offer(new Pair(row-1, col));
+                }
+                //check left 
+                if(col>=1 && grid[row][col-1]==1){
+                    grid[row][col-1]=2;
+                    ones--;
+                    queue.offer(new Pair(row, col-1));
+                }
+                //check bottom
+                if(row+1<=m-1 && grid[row+1][col]==1){
+                    grid[row+1][col]=2;
+                    ones--;
+                    queue.offer(new Pair(row+1, col));
+                }
+                //check right
+                if(col+1<=n-1 && grid[row][col+1]==1){
+                    grid[row][col+1]=2;
+                    ones--;
+                    queue.offer(new Pair(row, col+1));
+                }
+            }
+            time++;
+        }
+        if(ones>0){
+            return -1;   //could have checked again in O(mn) if there is any 1 in matrix. Costly operation.
+        }
+        if(time==-1){
+            return 0;
+        }
+        return time;
+    }
+}
+542. 01 Matrix Medium LeetCode problem. Tags:BFS, Matrix 15 June, 2022
+Example 1:
+
+Input: mat = [[0,0,0],[0,1,0],[0,0,0]]
+Output: [[0,0,0],[0,1,0],[0,0,0]]
+Example 2:
+
+Input: mat = [[0,0,0],[0,1,0],[1,1,1]]
+Output: [[0,0,0],[0,1,0],[1,2,1]]
+Ans for 0 is 0
+Using BFS(This is multisource BFS technique)(Why see bold lines)
+class Pair{
+    int row;
+    int column;
+    public Pair(int row, int column){
+        this.row = row;
+        this.column = column;
+    }
+}
+class Solution {
+    public int[][] updateMatrix(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        Queue<Pair>queue = new LinkedList<>();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 0) {
+                     queue.offer(new Pair(i,j));
+                }
+                else {
+                    grid[i][j] = Integer.MAX_VALUE;    //to do it in place.
+                }
+            }
+        }
+        while (!queue.isEmpty()) {
+            int cnt = queue.size();
+            for(int i=1;i<=cnt;i++){
+                Pair pair = queue.poll();
+                int row = pair.row;
+                int col = pair.column;
+                //check top 
+                if(row>=1 && grid[row-1][col]>grid[row][col]+1){
+                    grid[row-1][col]=grid[row][col]+1;
+                    queue.offer(new Pair(row-1, col));
+                }
+                //check left 
+                if(col>=1 && grid[row][col-1]>grid[row][col]+1){
+                    grid[row][col-1]=grid[row][col]+1;
+                    queue.offer(new Pair(row, col-1));
+                }
+                //check bottom
+                if(row+1<=m-1 && grid[row+1][col]>grid[row][col]+1){
+                    grid[row+1][col]=grid[row][col]+1;
+                    queue.offer(new Pair(row+1, col));
+                }
+                //check right
+                if(col+1<=n-1 && grid[row][col+1]>grid[row][col]+1){
+                    grid[row][col+1]=grid[row][col]+1;
+                    queue.offer(new Pair(row, col+1));
+                }
+            }
+        }
+        
+        return grid;
+    }
+}
+DP on Matrix
+62. Unique Paths Medium
+63. Unique Paths II Medium
+64. Minimum Path Sum Medium
+221. Maximal Square Medium
+62. Unique Paths Medium Tags: Matrix, DP
+Brute force. Gives TLE.
+class Solution {
+    public int uniquePaths(int m, int n) {
+        if(m==1 || n==1){
+            return 1;
+        }
+        return uniquePaths(m-1,n) + uniquePaths(m,n-1);
+    }
+}
+Memoized solution
+class Solution {
+    int[][]t;
+    public int uniquePaths(int m, int n) {
+        t = new int[m+1][n+1];
+        for(int[] row: t){
+            Arrays.fill(row,-1);
+        }
+        return uniquePathsRecurse(m,n);
+    }
+    int uniquePathsRecurse(int m, int n){
+        if(m==0 || n==0)return 0;
+        if(m==1&&n==1)return 1;
+        if(t[m][n]!=-1){
+            return t[m][n];
+        }
+        return t[m][n]=uniquePathsRecurse(m-1,n)+uniquePathsRecurse(m,n-1);
+    }
+}
+Memoized Solution with 1 indexed
+class Solution {
+    int [][]t;
+    public int uniquePaths(int m, int n) {
+        t = new int[m][n];
+        for(int[] row: t){
+            Arrays.fill(row,-1);
+        }
+        return recurse(m,n);
+    }
+    int recurse(int m, int n){
+        if(m==1 || n==1){
+            return 1;
+        }
+        if(t[m-1][n-1]!=-1){
+            return t[m-1][n-1];
+        }
+        return t[m-1][n-1] = recurse(m-1,n) + recurse(m,n-1);
+    }
+}
+Bottomup Solution with 1 indexed
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int [][]t = new int[m][n];
+        for(int i=0;i<m;i++){
+            t[i][0]=1;
+        }
+        for(int j=0;j<n;j++){
+            t[0][j]=1;
+        }
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                t[i][j]=t[i-1][j]+t[i][j-1];
+            }
+        }
+        return t[m-1][n-1];
+    }
+}
+
+Bottom Up Solution
+public int uniquePaths(int m, int n) {
+        int[][] t = new int[m+1][n+1];
+        for(int i=0;i<m+1;i++){
+            t[i][0]=0;
+        }
+        for(int i=1;i<n+1;i++){
+            t[0][i]=0;
+        }
+        t[1][1]=1;
+        for(int i=1;i<m+1;i++){
+            for(int j=1;j<n+1;j++){
+                if(i==1&&j==1)continue;
+                t[i][j]= t[i-1][j]+t[i][j-1];
+            }
+        }
+        return t[m][n];
+    }
+63. Unique Paths II Medium LeetCode problem Tags: Matrix, DP
+16 June, 2022
+Using Recursion. Gives TLE
+class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length;
+        int n = obstacleGrid[0].length;
+        return solve(obstacleGrid, m,n);
+    }
+    int solve(int[][] obstacleGrid, int m, int n){
+        if(obstacleGrid[m-1][n-1]==1){
+            return 0;
+        }
+        if(m==1 && n==1){
+            return 1;
+        }
+        if(m==1){
+            return solve(obstacleGrid, m,n-1);
+        }
+        if(n==1){
+            return solve(obstacleGrid, m-1,n);
+        }
+        return solve(obstacleGrid, m-1,n)+solve(obstacleGrid, m,n-1);
+    }
+}
+Memoized Solution
+class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length;
+        int n = obstacleGrid[0].length;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(obstacleGrid[i][j]==1){
+                    obstacleGrid[i][j]=-2;
+                }else{
+                    obstacleGrid[i][j]=-1;
+                }
+            }
+        }
+        return solve(obstacleGrid, m,n);
+    }
+    int solve(int[][] obstacleGrid, int m, int n){
+        if(obstacleGrid[m-1][n-1]==-2){
+            return 0;
+        }
+        if(m==1 && n==1){
+            return 1;
+        }
+        if(obstacleGrid[m-1][n-1]!=-1){
+            return obstacleGrid[m-1][n-1];
+        }
+        if(m==1){
+            obstacleGrid[m-1][n-1]= solve(obstacleGrid, m,n-1);
+        }else if(n==1){
+            obstacleGrid[m-1][n-1]=solve(obstacleGrid, m-1,n);
+        }else{
+            obstacleGrid[m-1][n-1]= solve(obstacleGrid, m-1,n)+solve(obstacleGrid, m,n-1);
+        }
+        return obstacleGrid[m-1][n-1];
+    }
+}
+64. Minimum Path Sum Medium LeetCode problem Tags: Matrix, DP
+16 June, 2022
+Brute Force using Recursion. Gives TLE
+class Solution {
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        return recurse(grid,m,n);
+    }
+    int recurse(int[][]grid, int m, int n){
+        if(m==1 && n==1){
+            return grid[m-1][n-1];
+        }
+        if(m==1){
+            return grid[m-1][n-1]+recurse(grid,m,n-1);
+        }
+        if(n==1){
+            return grid[m-1][n-1]+recurse(grid,m-1,n);
+        }
+        return grid[m-1][n-1] + Math.min(recurse(grid,m-1,n), recurse(grid,m,n-1));
+    }
+}
+Bottom up Solution
+class Solution {
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        for(int i=1;i<m;i++){
+            grid[i][0] += grid[i-1][0];
+        }
+        for(int j=1;j<n;j++){
+            grid[0][j] +=grid[0][j-1];
+        }
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                grid[i][j] +=Math.min(grid[i-1][j], grid[i][j-1]);
+            }
+        }
+        return grid[m-1][n-1];
+    }
+}
+https://leetcode.com/problems/pacific-atlantic-water-flow/
+221. Maximal Square Medium LeetCode problem Tags: Matrix, DP
+23 June, 2022
+Using Stack. See stack solution
+Using Top down DP
+class Solution {
+    int[][]dp;
+    int m;
+    int n;
+    public int maximalSquare(char[][] matrix) {
+        m = matrix.length;
+        n = matrix[0].length;
+        dp = new int[m][n];
+        for(int[] row: dp){
+            Arrays.fill(row,-1);
+        }
+        helper(matrix,0,0);
+        int max = Integer.MIN_VALUE;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(dp[i][j]>max){
+                    max = dp[i][j];
+                }
+            }
+        }
+        return max*max;
+    }
+    int helper(char[][] matrix, int i, int j){
+        if(i>=m || j>=n){
+            return 0;
+        }
+        if(dp[i][j]!=-1){
+            return dp[i][j];
+        }
+        int down = helper(matrix, i+1, j);
+        int diag = helper(matrix, i+1, j+1);
+        int right = helper(matrix, i, j+1);
+
+        dp[i][j]=0;
+        if(matrix[i][j]=='1'){
+            dp[i][j] = 1 + Math.min(down, Math.min(diag, right));
+        }
+        return dp[i][j];
+    }
+}
