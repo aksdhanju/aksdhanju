@@ -1,0 +1,441 @@
+Maths Questions
+
+Fizz Buzz
+
+public List<String> fizzBuzz(int n) {
+    // ans list
+    List<String> ans = new ArrayList<String>();
+
+    for (int num = 1; num <= n; num++) {
+
+      boolean divisibleBy3 = (num % 3 == 0);
+      boolean divisibleBy5 = (num % 5 == 0);
+
+      String numAnsStr = "";
+
+      if (divisibleBy3) {
+        // Divides by 3, add Fizz
+        numAnsStr += "Fizz";
+      }
+
+      if (divisibleBy5) {
+        // Divides by 5, add Buzz
+        numAnsStr += "Buzz";
+      }
+
+      if (numAnsStr.equals("")) {
+        // Not divisible by 3 or 5, add the number
+        numAnsStr += Integer.toString(num);
+      }
+
+      // Append the current answer str to the ans list
+      ans.add(numAnsStr);
+    }
+
+    return ans;
+  }
+
+204. Count Primes Medium
+Consider all numbers as prime first. Means all numbers in prime[] array as true. Just strike off the multiple of each number. Make them false. At the end of iteration, only primes will be left. Called The Sieve of Eratosthenes.
+public int countPrimes(int n) {
+        if(n==0 || n==1)return 0;
+        boolean[] notPrime = new boolean[n];
+        int count = 0;
+        for(int i =2;i<n;i++){
+            if(notPrime[i]== false){
+                count++;
+                for(int j=2;i*j<n;j++){
+                    notPrime[i*j]=true;
+                }
+	//for (int j=i; j<n; j=j+i)
+            //    notPrime[j] = true;
+	//for (int j = i * i; j < n; j += i) {
+	//}
+            }
+        }
+        return count;
+    } 
+326. Power of Three Easy
+public boolean isPowerOfThree(int n) {
+        if(n==0)return false;
+        while(n>3){
+            if(n%3!=0){
+                return false;
+            }
+            n=n/3;
+        }
+        return true;
+    }
+136. Single Number Easy
+Using XOR operator
+public int singleNumber(int[] nums) {
+        int xor=0;
+        for(int num:nums){
+            xor=xor^num;
+        }
+        return xor;
+    }
+
+
+Array Maths
+Count of subsequences consisting of the same element
+166. Fraction to Recurring Decimal Medium
+50. Pow(x, n) Medium
+172. Factorial Trailing Zeroes Medium
+Factorial of a large number Difficulty Level : Medium
+How to swap two numbers without using a temporary variable?
+66. Plus One Easy
+1041. Robot Bounded In Circle Medium
+Count of subsequences consisting of the same element GFG Problem. Tags: Arrays, Math, Array math 21 June, 2022. 
+Examples:  
+Input: A[] = {1, 2, 1, 5, 2} 
+Output: 7 
+Explanation: 
+Subsequences {1}, {2}, {1}, {5}, {2}, {1, 1} and {2, 2} satisfy the required conditions.
+Input: A[] = {5, 4, 4, 5, 10, 4} 
+Output: 11 
+Explanation: 
+Subsequences {5}, {4}, {4}, {5}, {10}, {4}, {5, 5}, {4, 4}, {4, 4}, {4, 4} and {4, 4, 4} satisfy the required conditions. 
+ Number of subsequences possible by arr[i] = 2freq[arr[i]] – 1 
+static int CountSubSequence(int A[], int N){
+    int result = 0;
+    Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+ 
+    for(int i = 0; i < N; i++){
+        map.put(A[i], map.getOrDefault(A[i], 0) + 1);
+    }
+ 
+    for(Integer it : map.values()){
+        result = result + (int)Math.pow(2, it) - 1;
+    }
+    return result;
+}
+
+
+166. Fraction to Recurring Decimal Medium LC Problem. Tags: Arrays, Math, 21 June, 2022. 
+Example 1:
+Input: numerator = 1, denominator = 2
+Output: "0.5"
+Example 2:
+Input: numerator = 2, denominator = 1
+Output: "2"
+Example 3:
+Input: numerator = 4, denominator = 333
+Output: "0.(012)"
+
+Using Basic Maths
+Use long to pass INT_MIN wala test case. Use hashMap to store all recurring decimal numbers. Whenever they recur, we get to know. We store length of current sb as value. From that, we get index where opening bracket is to be inserted. Closing bracket will be at the end always.
+class Solution {
+    public String fractionToDecimal(int numerator, int denominator) {
+        if (numerator == 0) {
+            return "0";
+        }
+        StringBuilder sb = new StringBuilder();
+        if((numerator<0 && denominator>0) || (denominator<0 && numerator>0)){
+            sb.append('-');
+        }
+        long num = Math.abs((long)numerator);
+        long deno = Math.abs((long)denominator);
+        
+        long quotient  = num/deno;
+        sb.append(quotient);
+        
+        long remainder = num%deno;
+        if(remainder==0){
+            return sb.toString();
+        }
+        sb.append('.');
+        HashMap<Long, Integer> map = new HashMap<>();
+        while(remainder!=0){
+            if(!map.containsKey(remainder)){
+                map.put(remainder, sb.length());
+            }else{
+                //recurring part
+                //remainder has repeated.
+                int bracketIndex = map.get(remainder);
+                sb.insert(bracketIndex, '(');
+                sb.append(')');
+                break;
+            }
+            remainder = remainder*10;
+            quotient = remainder/deno;
+            remainder = remainder%deno;
+            sb.append(quotient);
+        }
+        return sb.toString();
+    }
+}
+
+50. Pow(x, n) Medium LC Problem. Tags: Arrays, Math, 21 June, 2022. 
+Example 1:
+Input: x = 2.00000, n = 10
+Output: 1024.00000
+Example 2:
+Input: x = 2.10000, n = 3
+Output: 9.26100
+Example 3:
+Input: x = 2.00000, n = -2
+Output: 0.25000
+Explanation: 2-2 = 1/22 = 1/4 = 0.25
+Using basic logic. Gives TLE. Time complexity = O(n)
+class Solution {
+    public double myPow(double x, int n) {
+        boolean sign = (n<0)?true:false;
+        n = Math.abs(n);
+        double prod = 1.0;
+        while(n-->0){
+            prod = x*prod;
+        }
+        if(sign==true){
+            return 1/prod;
+        }
+        return prod;
+    }
+}
+Fails on following test cases.
+0.00001
+2147483647
+Using Divide and Conquer Strategy. O(logn) time. If 2^10 is to be calculated, just calculate 2^5, store it in temp and multiply temp*temp or x*temp*temp depending on whether n is even or odd.
+class Solution {
+    public double myPow(double x, int n) {
+        if(x==0){
+            return 0;
+        }
+        double prod = pow(x,Math.abs(n));
+        if(n<0){
+            return 1/prod;
+        }
+        return prod;
+    }
+    double pow(double x, int n){
+        if(n==0){
+            return 1.0;
+        }
+        double temp = pow(x,n/2);
+        if(n%2==0){
+            return temp*temp;
+        }
+        return x*temp*temp;
+    }
+}
+172. Factorial Trailing Zeroes Medium LC Problem. Tags: Arrays, Math, 27 June, 2022. 
+Example 1:
+Input: n = 3
+Output: 0
+Explanation: 3! = 6, no trailing zero.
+Example 2:
+Input: n = 5
+Output: 1
+Explanation: 5! = 120, one trailing zero.
+Example 3:
+Input: n = 0
+Output: 0
+ 
+Trailing 0s in n! = Count of 5s in prime factors of n!= floor(n/5) + floor(n/25) + floor(n/125) + ....
+Time Complexity: O(log5n) 
+Auxiliary Space: O(1)
+Using Basic Maths
+class Solution {
+    public int trailingZeroes(int n) {
+        int prod = 5;
+        int zeros = 0;
+        while(n/prod >0){
+            zeros += n/prod;
+            prod *= 5;
+        }
+        return zeros;
+    }
+}
+
+Factorial of a large number Difficulty Level : Medium LC Problem. Tags: Arrays, Math, 27 June, 2022. 
+
+Program 2: (BigInteger method)
+Big Integer can also be used to calculate factorial of large numbers.
+// Java program to find large
+// factorials using BigInteger
+import java.math.BigInteger;
+import java.util.Scanner;
+ 
+public class Example {
+     
+    // Returns Factorial of N
+    static BigInteger factorial(int N)
+    {
+        // Initialize result
+        BigInteger f
+            = new BigInteger("1"); // Or BigInteger.ONE
+ 
+        // Multiply f with 2, 3, ...N
+        for (int i = 2; i <= N; i++)
+            f = f.multiply(BigInteger.valueOf(i));
+ 
+        return f;
+    }
+ 
+    // Driver method
+    public static void main(String args[]) throws Exception
+    {
+        int N = 20;
+        System.out.println(factorial(N));
+    }
+}
+
+Output
+2432902008176640000
+
+How to swap two numbers without using a temporary variable? LC Problem. Tags: Arrays, Math, 27 June, 2022. 
+
+
+
+
+Method 1 (Using Arithmetic Operators) 
+The idea is to get a sum in one of the two given numbers. The numbers can then be swapped using the sum and subtraction from the sum.
+import java.io.*;
+ 
+class Geeks {
+ 
+    public static void main(String a[])
+    {
+        int x = 10;
+        int y = 5;
+        x = x + y;
+        y = x - y;
+        x = x - y;
+        System.out.println("After swapping:"
+                           + " x = " + x + ", y = " + y);
+    }
+}
+
+Output
+After Swapping: x =5, y=10
+Time Complexity: O(1).
+Auxiliary Space: O(1).
+
+
+Multiplication and division can also be used for swapping.  
+// Java Program to swap two numbers without using temporary
+// variable
+import java.io.*;
+ 
+class GFG {
+    public static void main(String[] args)
+    {
+        int x = 10;
+        int y = 5;
+ 
+        // Code to swap 'x' and 'y'
+        x = x * y; // x now becomes 50
+        y = x / y; // y becomes 10
+        x = x / y; // x becomes 5
+ 
+        System.out.println("After swaping:"
+                           + " x = " + x + ", y = " + y);
+    }
+}
+ 
+// This code is contributed by Aditya Kumar (adityakumar129)
+
+Output
+After Swapping: x =5, y=10
+Time Complexity: O(1).
+Auxiliary Space: O(1).
+
+
+66. Plus One Easy LC Problem. Tags: Arrays, Math, 27 June, 2022. 
+Using Basic Maths
+class Solution {
+    public int[] plusOne(int[] digits) {
+        int n = digits.length;
+        int lastDigit = digits[n-1];
+        if(lastDigit<=8){
+            lastDigit +=1;
+            digits[n-1]=lastDigit;
+            return digits;
+        }
+        int i = n-1;
+        int carry = 1;
+        List<Integer> list = new ArrayList<>();
+        while(i>=0){
+            int sum = digits[i]+carry;
+            list.add(0,sum%10);
+            carry = sum/10;
+            i--;
+        }
+        if(carry==1){
+            list.add(0, carry);
+        }
+        int[] result = list.stream().mapToInt(Integer::intValue).toArray();
+        return result;
+    }
+}
+Smart way. LC Top voted Solution
+public int[] plusOne(int[] digits) {
+        
+    int n = digits.length;
+    for(int i=n-1; i>=0; i--) {
+        if(digits[i] < 9) {
+            digits[i]++;
+            return digits;
+        }
+        
+        digits[i] = 0;
+    }
+    
+    int[] newNumber = new int [n+1];
+    newNumber[0] = 1;
+    
+    return newNumber;
+}
+
+1041. Robot Bounded In Circle Medium LC Problem. Tags: Arrays, Math, 1 july, 2022
+Example 1:
+Input: instructions = "GGLLGG"
+Output: true
+Example 2:
+Input: instructions = "GG"
+Output: false
+Example 3:
+Input: instructions = "GL"
+Output: true 
+Calculate the final vector of how the robot travels after executing all instructions once - it consists of a change in position plus a change in direction.
+Hide Hint 2
+The robot stays in the circle if and only if (looking at the final vector) it changes direction (ie. doesn't stay pointing north), or it moves 0.
+
+Using Basic Logic
+class Solution {
+    public boolean isRobotBounded(String instructions) {
+        int x = 0;
+        int y = 0;
+        int dir = 0;
+        int n = instructions.length();
+        for(int i=0;i<n;i++){
+            char c = instructions.charAt(i);
+            if(c=='G'){
+                if(dir == 0){
+                    y++;
+                }else if(dir == 1){
+                    x--;
+                }else if(dir == 2){
+                    y--;
+                }else if(dir == 3){
+                    x++;
+                }
+            }else if(c == 'L'){
+                dir = (1+ dir)%4;
+            }else if(c=='R'){
+                if(dir == 0){
+                    dir = 3;
+                }else{
+                    dir = (dir-1)%4;
+                }
+            }
+        }
+        if(x==0 && y==0){
+            return true;
+        }
+        if(dir == 0){
+            return false;
+        }
+        return true;
+    }
+}
