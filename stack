@@ -1,0 +1,1566 @@
+Parent Question. Many questions based on this parent question.
+
+Identification of Stack question:
+Array given in question. Array’s good questions are of stack and heap.
+Brute force is O(n2). If it is dependent for loop like below, then optimize solution using Stack. Second loop(j loop) is dependent on I, then stack can be used.
+    
+
+
+
+Monotonic Stack Problems
+Nearest Greater to Left
+Nearest Greater to Right
+496. Next Greater Element I(hashmap + stack wala)
+503. Next Greater Element II(circular wala)
+Nearest Smaller to Left
+Nearest Smaller to Right
+901. Online Stock Span Medium
+739. Daily Temperatures Medium
+84. Largest Rectangle in Histogram Hard
+85. Maximal Rectangle Hard 
+221. Maximal Square Medium
+907. Sum of Subarray Minimums
+ Sum of Subarray Ranges
+581. Shortest Unsorted Continuous Subarray Medium
+456. 132 Pattern Medium
+Asteroid Collision
+Simple Stack Problems(without Parenthesis)
+
+Reverse String using Stack Easy
+155. Min Stack Easy
+71. Simplify Path
+844. Backspace String Compare(Easy)
+946. Validate Stack Sequences Medium
+Simple Stack Problems(with Parenthesis)
+20. Valid Parentheses Easy
+
+
+
+
+
+
+https://leetcode.com/problems/daily-temperatures/
+https://leetcode.com/problems/shortest-unsorted-continuous-subarray/
+https://leetcode.com/problems/next-greater-element-i/
+https://leetcode.com/problems/next-greater-element-ii/
+https://leetcode.com/problems/online-stock-span/
+https://leetcode.com/problems/132-pattern/
+https://leetcode.com/problems/sum-of-subarray-minimums/
+https://leetcode.com/problems/largest-rectangle-in-histogram/
+https://www.youtube.com/watch?v=m4hvxzLoN_I
+https://1e9.medium.com/monotonic-queue-notes-980a019d5793
+https://leetcode.com/problems/find-the-celebrity/
+Channel: Coding Decoded
+
+https://www.youtube.com/watch?v=sZQo8-iK5sI&list=PLEI-q7w3s9gQpqrVq_9VkYugtILlqSB1I
+
+Channel: Kacy Codes
+Best intuition about monotonically decreasing stack. To find the ngl.
+https://www.youtube.com/watch?v=dtiBmmIPR0E
+Monotonically decreasing for ngl
+Monotonically increasing for ngr
+[1,3,10,7,5,24,4]
+See stack monotonically increasing kaise ho raha hai…Kya intuition hai!!!
+
+
+Monotonic Stack Problems
+
+Nearest Greater to right | Next Largest Element
+class Solution{
+    public static long[] nextLargerElement(long[] ar, int n){ 
+        List<Long>list = new ArrayList<>();
+        Stack<Long>stack = new Stack<>();
+        for(int i=n-1;i>=0;i--){
+            if(stack.size()==0){
+                list.add(new Long(-1));
+            }else if(stack.size()>0 && stack.peek()>ar[i]){
+                list.add(stack.peek());
+            }else if(stack.size()>0 && stack.peek()<=ar[i]){
+                while(stack.size()>0 && stack.peek()<=ar[i]){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    list.add(new Long(-1));
+                }else{
+                    list.add(stack.peek());
+                }
+            }
+            stack.push(ar[i]);
+        }
+        Collections.reverse(list);
+        // long[] result = list.stream().mapToLong(i -> i).toArray();
+        long[] result = new long[list.size()];
+        for (int i = 0; i < list.size(); i++)
+            result[i] = list.get(i);
+        return result;
+    } 
+}
+
+Optimized code solution 1
+class Solution
+{
+    //Function to find the next greater element for each element of the array.
+    public static long[] nextLargerElement(long[] arr, int n)
+    { 
+        Stack<Integer> stack = new Stack<>();
+        long[] res = new long[n];
+        for(int i=n-1;i>=0;i--){
+            while(!stack.isEmpty() && arr[stack.peek()]<= arr[i]){
+                stack.pop();
+            }
+            res[i] = stack.isEmpty()?new Long(-1):arr[stack.peek()];
+            stack.push(i);
+        }
+        return res;
+    } 
+}
+
+Optimized code solution 2
+Optimized code solution 3
+
+496. Next Greater Element I LeetCode Problem. Tags:Stack. 23 June, 2023
+
+Example 1:
+Input: nums1 = [4,1,2], nums2 = [1,3,4,2]
+Output: [-1,3,-1]
+Explanation: The next greater element for each value of nums1 is as follows:
+- 4 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
+- 1 is underlined in nums2 = [1,3,4,2]. The next greater element is 3.
+- 2 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
+
+Example 2:
+Input: nums1 = [2,4], nums2 = [1,2,3,4]
+Output: [3,-1]
+Explanation: The next greater element for each value of nums1 is as follows:
+- 2 is underlined in nums2 = [1,2,3,4]. The next greater element is 3.
+- 4 is underlined in nums2 = [1,2,3,4]. There is no next greater element, so the answer is -1.
+
+Using HashMap and Stack
+class Solution {
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        int n2 = nums2.length;
+        HashMap<Integer, Integer> map = ngr(nums2, n2);
+        int n1 = nums1.length;
+        int[]res = new int[n1];
+        for(int i=0;i<n1;i++){
+            res[i] = map.get(nums1[i]);
+        }
+        return res;
+    }
+    private HashMap<Integer, Integer> ngr(int[] nums, int n) {
+        Stack<Integer> stack = new Stack<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for(int i=n-1;i>=0;i--){
+            while(!stack.isEmpty() && nums[stack.peek()] <= nums[i]){
+                stack.pop();
+            }
+            if(stack.isEmpty()){
+                map.put(nums[i], -1);
+            } else{
+                map.put(nums[i], nums[stack.peek()]);
+            }
+            stack.push(i);
+        }
+        return map;
+    }
+}
+
+503. Next Greater Element IILeetCode Problem. Tags:Stack. 18 June, 2023
+
+Example 1:
+Input: nums = [1,2,1]
+Output: [2,-1,2]
+Explanation: The first 1's next greater number is 2; 
+The number 2 can't find next greater number. 
+The second 1's next greater number needs to search circularly, which is also 2.
+
+Example 2:
+Input: nums = [1,2,3,4,3]
+Output: [2,3,4,-1,4]
+
+Using Stack(Method by Striver)
+Donot make extra array to handle rotations. Just handle indexes as if there is extra array. Ignore other solutions
+class Solution {
+    public int[] nextGreaterElements(int[] nums) {
+        int n = nums.length;
+        int[] res = new int[n];
+        Stack<Integer> stack = new Stack<>();
+        for(int i= 2*n-1; i>=0;i--){
+            while(!stack.isEmpty() && stack.peek()<= nums[i%n]) {
+                stack.pop();
+            }
+            if (i<n){
+                if (stack.isEmpty()) {
+                    res[i] = -1;
+                } else if (stack.peek()> nums[i]) {
+                    res[i] = stack.peek();
+                }
+            }
+            stack.push(nums[i%n]);   
+        }
+        return res;
+    }
+}
+
+
+Using Stack
+Convert circular array to singular array and then apply ngl function on it.
+class Solution {
+public int[] nextGreaterElements(int[] nums) {
+int n = nums.length;
+int[] copyNums = new int[2*n-1];
+for(int i=0;i<=n-1;i++){
+copyNums[i] = nums[i];
+}
+for(int i=n;i<=2*n-2;i++){
+copyNums[i] = nums[i-n];
+}
+int[] res = ngr(copyNums, 2*n-1);
+for(int i = 0;i<n;i++) {
+nums[i] = res[i];
+}
+return nums;
+}
+private int[] ngr(int[] nums,int n){
+int[] res = new int[n];
+int j = n-1;
+Stack<Integer> stack = new Stack<>();
+for(int i=n-1;i>=0 && j>= 0;i--){
+if(stack.isEmpty()) {
+res[j] = -1;
+j--;
+} else if(stack.isEmpty() == false && stack.peek()> nums[i]){
+res[j] = stack.peek();
+j--;
+} else {
+while(stack.isEmpty() == false && stack.peek()<= nums[i]) {
+stack.pop();
+}
+if (stack.isEmpty()) {
+res[j] = -1;
+j--;
+} else if (stack.peek()> nums[i]) {
+res[j] = stack.peek();
+j--;
+}
+}
+stack.push(nums[i]);
+}
+return res;
+}
+}
+
+Solution by Nick White(cant understand)(ignore it)
+
+
+Nearest Greater to left
+Only 2 changes:
+class Solution{
+    public static long[] nextLargerElement(long[] ar, int n){ 
+        List<Long>list = new ArrayList<>();
+        Stack<Long>stack = new Stack<>();
+        for(int i=0;i<n;i++){
+            if(stack.size()==0){
+                list.add(new Long(-1));
+            }else if(stack.size()>0 && stack.peek()>ar[i]){
+                list.add(stack.peek());
+            }else if(stack.size()>0 && stack.peek()<=ar[i]){
+                while(stack.size()>0 && stack.peek()<=ar[i]){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    list.add(new Long(-1));
+                }else{
+                    list.add(stack.peek());
+                }
+            }
+            stack.push(ar[i]);
+        }
+        //Collections.reverse(list);
+       long[] result = list.stream().mapToLong(i -> i).toArray();
+        return result;
+    } 
+}
+Optimized code solution
+class Solution
+{
+    //Function to find the next greater element for each element of the array.
+    public static long[] nextLargerElement(long[] arr, int n)
+    { 
+        Stack<Integer> stack = new Stack<>();
+        long[] res = new long[n];
+        for(int i=0;i<=n-1;i++){
+            while(!stack.isEmpty() && arr[stack.peek()]<= arr[i]){
+                stack.pop();
+            }
+            res[i] = stack.isEmpty()?new Long(-1):arr[stack.peek()];
+            stack.push(i);
+        }
+        return res;
+    } 
+}
+
+
+Nearest Smaller Element Easy (NEAREST SMALLER TO LEFT).InterviewBit problem. Tags: Stack. 25 May,2022
+https://www.youtube.com/watch?v=85LWui3FlVk&list=PL_z_8CaSLPWdeOezg68SKkeLN4-T_jNHd&index=4
+class Solution{
+    public ArrayList<Integer> prevSmaller(ArrayList<Integer> ar) {
+        ArrayList<Integer>list = new ArrayList<>();
+        Stack<Integer>stack = new Stack<>();
+        int n = ar.size();
+        for(int i=0;i<n;i++){
+            if(stack.size()==0){
+                list.add(-1);
+            }else if(stack.size()>0 && stack.peek()<ar.get(i)){
+                list.add(stack.peek());
+            }else if(stack.size()>0 && stack.peek()>=ar.get(i)){
+                while(stack.size()>0 && stack.peek()>=ar.get(i)){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    list.add(-1);
+                }else{
+                    list.add(stack.peek());
+                }
+            }
+            stack.push(ar.get(i));
+        }
+        return list;
+    } 
+}
+
+
+
+
+901. Online Stock Span Medium LC problem. Tags: Stack. 25 May,2022
+Consecutive word is important
+Nearest Greater to Left concept is used. Work with indices in this question.
+General Solution
+class Solution{
+    public ArrayList<Integer> nextLargerElement(ArrayList<Integer>ar, int n){ 
+        List<Integer>list = new ArrayList<>();
+        Stack<Integer>stack = new Stack<>();
+        //store index of element in stack and not the element itself.
+        for(int i=0;i<n;i++){
+            if(stack.size()==0){
+                list.add(i-0+1);
+                //playing with indices
+            }else if(stack.size()>0 && ar.get(stack.peek())>ar.get(i)){
+                //next greater to left index found
+                list.add(i-stack.peek());
+            }else if(stack.size()>0 && ar.get(stack.peek())<=ar.get(i)){
+                while(stack.size()>0 && ar.get(stack.peek())<=ar.get(i)){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    list.add(i-0+1);
+                }else{
+                    list.add(i-stack.peek());
+                }
+            }
+            stack.push(i);
+        }
+        return list;
+    } 
+}
+
+As per LC format. Can also use Pair class and omit array as class property.
+class StockSpanner {
+    ArrayList<Integer>ar;
+    int i;
+    Stack<Integer>stack;
+    public StockSpanner() {
+        ar = new ArrayList<>();
+        i = 0;
+        stack = new Stack<>();
+    }
+    
+    public int next(int price) {
+        int result =0;
+        ar.add(price);
+        if(stack.size()==0){
+            result = i-0+1;
+            //playing with indices
+        }else if(stack.size()>0 && ar.get(stack.peek())>price){
+            //next greater to left index found
+            result = i-stack.peek();
+        }else if(stack.size()>0 && ar.get(stack.peek())<=price){
+            while(stack.size()>0 && ar.get(stack.peek())<=price){
+                stack.pop();
+            }
+            if(stack.size()==0){
+                result = i-0+1;
+            }else{
+                result = i-stack.peek();
+            }
+        }
+        stack.push(i);
+        i++;
+        return result;
+    }
+}
+More efficient solution on LC Discuss. See Later
+
+84. Largest Rectangle in Histogram HardLC problem. Tags: Stack. 25 May,2022
+Maximum Area of Rectangle in Histogram
+O(n) solution
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int n = heights.length;
+        Stack<Integer>stack = new Stack<>();
+        int[] left = nsl(heights, n);
+        int[] right= nsr(heights, n);
+        int max = Integer.MIN_VALUE;
+        for(int i=0;i<n;i++){
+            max = Math.max(max,(right[i]-left[i]-1)*heights[i]);
+        }
+        return max;
+    }
+    public int[] nsl(int[] ar, int n){ 
+        int[]result = new int[n];
+        int index=0;
+        Stack<Integer>stack = new Stack<>();
+        for(int i=0;i<n;i++){
+            if(stack.size()==0){
+                result[index]=-1;
+            }else if(stack.size()>0 && ar[stack.peek()]<ar[i]){
+                result[index]=stack.peek();
+            }else if(stack.size()>0 && ar[stack.peek()]>=ar[i]){
+                while(stack.size()>0 && ar[stack.peek()]>=ar[i]){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    result[index]=-1;
+                }else{
+                    result[index]=stack.peek();
+                }
+            }
+            stack.push(i);
+            index++;
+        }
+        return result;
+    } 
+    public int[] nsr(int[] ar, int n){ 
+        int[]result = new int[n];
+        int index=n-1;
+        Stack<Integer>stack = new Stack<>();
+        for(int i=n-1;i>=0;i--){
+            if(stack.size()==0){
+                result[index]=n;
+            }else if(stack.size()>0 && ar[stack.peek()]<ar[i]){
+                result[index]=stack.peek();
+            }else if(stack.size()>0 && ar[stack.peek()]>=ar[i]){
+                while(stack.size()>0 && ar[stack.peek()]>=ar[i]){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    result[index]=n;
+                }else{
+                    result[index]=stack.peek();
+                }
+            }
+            stack.push(i);
+            index--;
+        }
+        return result;
+    } 
+}
+see similar Q called 907. Sum of Subarray Minimums
+85. Maximal Rectangle Hard LC problem. Tags: Stack. 25 May,2022
+Maximum area of rectangle in binary Matrix
+
+Using Stack. Maximum Area of Histogram concept.
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int max = Integer.MIN_VALUE;
+        for(int i=1;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]=='1'){
+                    matrix[i][j]= (char)(matrix[i][j] + matrix[i-1][j]-'0');
+                }
+            }
+        }
+        for(char[] row: matrix){
+            max= Math.max(max,largestRectangleArea(row));
+        }
+        return max;
+    }
+    public int largestRectangleArea(char[] heights) {
+        int n = heights.length;
+        Stack<Integer>stack = new Stack<>();
+        int[] left = nsl(heights, n);
+        int[] right= nsr(heights, n);
+        int max = Integer.MIN_VALUE;
+        for(int i=0;i<n;i++){
+            max = Math.max(max,(right[i]-left[i]-1)*(heights[i]-'0'));
+        }
+        return max;
+    }
+    public int[] nsl(char[] ar, int n){ 
+        int[]result = new int[n];
+        int index=0;
+        Stack<Integer>stack = new Stack<>();
+        for(int i=0;i<n;i++){
+            if(stack.size()==0){
+                result[index]=-1;
+            }else if(stack.size()>0 && (ar[stack.peek()]-'0')<(ar[i]-'0')){
+                result[index]=stack.peek();
+            }else if(stack.size()>0 && (ar[stack.peek()]-'0')>=(ar[i]-'0')){
+                while(stack.size()>0 && (ar[stack.peek()]-'0')>=(ar[i]-'0')){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    result[index]=-1;
+                }else{
+                    result[index]=stack.peek();
+                }
+            }
+            stack.push(i);
+            index++;
+        }
+        return result;
+    } 
+    public int[] nsr(char[] ar, int n){ 
+        int[]result = new int[n];
+        int index=n-1;
+        Stack<Integer>stack = new Stack<>();
+        for(int i=n-1;i>=0;i--){
+            if(stack.size()==0){
+                result[index]=n;
+            }else if(stack.size()>0 && (ar[stack.peek()]-'0')<(ar[i]-'0')){
+                result[index]=stack.peek();
+            }else if(stack.size()>0 && (ar[stack.peek()]-'0')>=(ar[i]-'0')){
+                while(stack.size()>0 && (ar[stack.peek()]-'0')>=(ar[i]-'0')){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    result[index]=n;
+                }else{
+                    result[index]=stack.peek();
+                }
+            }
+            stack.push(i);
+            index--;
+        }
+        return result;
+    } 
+}
+Using dp
+221. Maximal Square Medium LC problem. Tags: Stack. 26 May,2022
+Refer above problem for code of nsl and nsr.
+public int maximalSquare(char[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int max = Integer.MIN_VALUE;
+        for(int i=1;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]=='1'){
+                    matrix[i][j]= (char)(matrix[i][j] + matrix[i-1][j]-'0');
+                }
+            }
+        }
+        for(char[] row: matrix){
+            max= Math.max(max,largestSquareArea(row));
+        }
+        return max;
+    }
+    public int largestSquareArea(char[] heights) {
+        int n = heights.length;
+        Stack<Integer>stack = new Stack<>();
+        int[] left = nsl(heights, n);
+        int[] right= nsr(heights, n);
+        int max = Integer.MIN_VALUE;
+        for(int i=0;i<n;i++){
+            //largest square woul dbe inside the largest rectangle. Just select min length or breadth of largest rectangle and do side*side to get largest square
+            int side = Math.min((right[i]-left[i]-1),(heights[i]-'0'));
+            max = Math.max(max,side*side);
+        }
+        return max;
+    }
+739. Daily Temperatures Medium LeetCode problem. Tags: Stack. 14 July,2022
+Example 1:
+Input: temperatures = [73,74,75,71,69,72,76,73]
+Output: [1,1,4,2,1,1,0,0]
+Example 2:
+Input: temperatures = [30,40,50,60]
+Output: [1,1,1,0]
+Example 3:
+Input: temperatures = [30,60,90]
+Output: [1,1,0]
+
+Using ngr concept(Montonic stack)
+class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        Stack<Integer> stack = new Stack<>();
+        int n = temperatures.length;
+        int[] res = new int[n];
+        for(int i=n-1;i>=0;i--){
+            if(stack.isEmpty()){
+                res[i]=0;
+            }else if(!stack.isEmpty() && temperatures[stack.peek()]>temperatures[i]){
+                res[i]=stack.peek()-i;
+            }else{
+                while(!stack.isEmpty() && temperatures[stack.peek()]<=temperatures[i]){
+                    stack.pop();
+                }
+                if(stack.isEmpty()){
+                    res[i]=0;
+                }else{
+                    res[i]=stack.peek()-i;
+                }
+            }
+            stack.push(i);
+        }
+        return res;
+    }
+}
+
+42. Trapping Rain Water Hard LC problem. Tags: Array. 26 May,2022
+Here we see absolute greater to left and right of i
+In Maximum area rectangle in Histogram, we see nsl and nsr.
+Do not confuse the 2 questions
+Example 1:
+
+Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
+Output: 6
+Explanation: The above elevation map (black section) is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped.
+Example 2:
+Input: height = [4,2,0,3,2,5]
+Output: 9
+ 
+
+
+
+Using 1D dp. Asked in Nurture.farm interview round
+Time Complexity = O(n).
+Space complexity = O(n).
+We cannot have stored on endpoints. Ie why index start from 1 and n-2 respectively.
+class Solution {
+    public int trap(int[] height) {
+        int size = height.length;
+        int []left = new int[size];
+        int []right = new int[size];
+        left[0] = height[0];
+        right[size-1]=height[size-1];
+        for(int i =1;i<size;i++){
+            //maximum height of bar to left of i
+            left[i] = Math.max(left[i-1], height[i]);
+        }
+        for(int i = size-2;i>=0;i--){
+            //maximum height of bar to right of i
+            right[i]=Math.max(right[i+1], height[i]);
+        }
+        int sum =0;
+        for(int i =0;i<size;i++){
+            sum+=Math.min(left[i], right[i])-height[i];
+        }
+        return sum;
+    }
+}
+Using 2 pointers. 
+Time complexity = O(n). Space complexity = O(1).
+class Solution {
+    public int trap(int[] height) {
+        int n = height.length;
+        int maxL = height[0];
+        int maxR = height[n-1];
+        int left=0, right = n-1;
+        int diff=0, sum=0;
+        while(left<right){
+            if(maxL<=maxR){
+                diff = Math.min(maxL, maxR)-height[left];
+                if(diff>0){
+                    sum+=diff;
+                }
+                left++;
+                maxL = Math.max(maxL, height[left]);
+            }else{
+                diff = Math.min(maxL, maxR)-height[right];
+                if(diff>0){
+                    sum+=diff;
+                }
+                right--;
+                maxR = Math.max(maxR, height[right]);
+            }
+            
+        }
+        return sum;
+    }
+}
+Using Stack. Did not understand. See later.
+class Solution {
+    public int trap(int[] A) {
+        if (A==null) return 0;
+        Stack<Integer> s = new Stack<Integer>();
+        int i = 0, maxWater = 0, maxBotWater = 0;
+        while (i < A.length){
+            if (s.isEmpty() || A[i]<=A[s.peek()]){
+                s.push(i++);
+            }
+            else {
+                int bot = s.pop();
+                maxBotWater = s.isEmpty()? // empty means no il
+                0:(Math.min(A[s.peek()],A[i])-A[bot])*(i-s.peek()-1);
+                maxWater += maxBotWater;
+            }
+        }
+        return maxWater;
+    }
+}
+
+907. Sum of Subarray MinimumsLeetCode Problem. Tags:Stack. 19 June, 2023
+Example 1:
+Input: arr = [3,1,2,4]
+Output: 17
+Explanation: 
+Subarrays are [3], [1], [2], [4], [3,1], [1,2], [2,4], [3,1,2], [1,2,4], [3,1,2,4]. 
+Minimums are 3, 1, 2, 4, 1, 1, 2, 1, 1, 1.
+Sum is 17.
+
+Example 2:
+Input: arr = [11,81,94,43,3]
+Output: 444
+
+Tricky test case
+[71,55,82,55]
+Using Stack
+class Solution {
+public int sumSubarrayMins(int[] arr) {
+int mod = (int) Math.pow(10, 9) + 7;
+int n = arr.length;
+int[] nsl = nsl(arr,n);
+int[] nsr = nsr(arr,n);
+long sum = 0;
+for(int i=0;i<n;i++){
+int left = i-nsl[i];
+int right = nsr[i]-i;
+sum = (sum + ((long)left*right*arr[i])%mod)%mod;
+}
+return (int)sum;
+}
+private int[] nsl(int[] arr, int n){
+List<Integer> res = new ArrayList<>();
+Stack<Integer> stack = new Stack<>();
+for(int i=0;i<n;i++){
+if(stack.isEmpty()){
+res.add(-1);
+} else if(!stack.isEmpty() && arr[stack.peek()]< arr[i]){
+res.add(stack.peek());
+} else{
+while(!stack.isEmpty() && arr[stack.peek()]>= arr[i]){
+stack.pop();
+}
+if(stack.isEmpty()){
+res.add(-1);
+}else{
+res.add(stack.peek());
+}
+}
+stack.push(i);
+}
+
+
+return res.stream().mapToInt(Integer::intValue).toArray();
+}
+private int[] nsr(int[] arr, int n){
+List<Integer> res = new ArrayList<>();
+Stack<Integer> stack = new Stack<>();
+for(int i=n-1;i>=0;i--){
+if(stack.isEmpty()){
+res.add(0,n);
+} else if(!stack.isEmpty() && arr[stack.peek()]<= arr[i]){
+res.add(0,stack.peek());
+} else{
+while(!stack.isEmpty() && arr[stack.peek()]> arr[i]){
+stack.pop();
+}
+if(stack.isEmpty()){
+res.add(0,n);
+}else{
+res.add(0,stack.peek());
+}
+}
+stack.push(i);
+}
+
+
+return res.stream().mapToInt(Integer::intValue).toArray();
+}
+}
+
+
+2104. Sum of Subarray Ranges Medium  LeetCode problem. Tags:Stacks . 21 June,2023
+class Solution {
+    public long subArrayRanges(int[] nums) {
+        return sumSubarrayMaxs(nums) - sumSubarrayMins(nums);
+    }
+    private long sumSubarrayMaxs(int[] arr) {
+        int n = arr.length;
+        int[] ngl = ngl(arr,n);
+        int[] ngr = ngr(arr,n);
+        long sum = 0;
+        for(int i=0;i<n;i++){
+            long left = i-ngl[i];
+            long right = ngr[i]-i;
+            sum = sum + left*right*arr[i];
+        }
+        return sum;
+    }
+    public int[] ngl(int[] ar, int n){ 
+        List<Integer>list = new ArrayList<>();
+        Stack<Integer>stack = new Stack<>();
+        for(int i=0;i<n;i++){
+            if(stack.size()==0){
+                list.add(-1);
+            }else if(stack.size()>0 && ar[stack.peek()]>ar[i]){
+                list.add(stack.peek());
+            }else {
+                while(stack.size()>0 && ar[stack.peek()]<=ar[i]){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    list.add(-1);
+                }else{
+                    list.add(stack.peek());
+                }
+            }
+            stack.push(i);
+        }
+        //Collections.reverse(list);
+        return list.stream().mapToInt(i -> i).toArray();
+    }
+
+    private int[] ngr(int[] ar, int n){ 
+        List<Integer>list = new ArrayList<>();
+        Stack<Integer>stack = new Stack<>();
+        for(int i=n-1;i>=0;i--){
+            if(stack.size()==0){
+                list.add(0, n);
+            }else if(stack.size()>0 && ar[stack.peek()]>=ar[i]){
+                list.add(0, stack.peek());
+            }else {
+                while(stack.size()>0 && ar[stack.peek()]<ar[i]){
+                    stack.pop();
+                }
+                if(stack.size()==0){
+                    list.add(0, n);
+                }else{
+                    list.add(0, stack.peek());
+                }
+            }
+            stack.push(i);
+        }
+        return list.stream().mapToInt(i -> i).toArray();
+    } 
+ 
+    private long sumSubarrayMins(int[] arr) {
+        int n = arr.length;
+        int[] nsl = nsl(arr,n);
+        int[] nsr = nsr(arr,n);
+        long sum = 0;
+        for(int i=0;i<n;i++){
+            long left = i-nsl[i];
+            long right = nsr[i]-i;
+            sum = sum + left*right*arr[i];
+        }
+        return sum;
+    }
+    private int[] nsl(int[] arr, int n){
+        List<Integer> res = new ArrayList<>();
+        Stack<Integer> stack = new Stack<>();
+        for(int i=0;i<n;i++){
+            if(stack.isEmpty()){
+                res.add(-1);
+            } else if(!stack.isEmpty() && arr[stack.peek()]< arr[i]){
+                res.add(stack.peek());
+            } else{
+                while(!stack.isEmpty() && arr[stack.peek()]>= arr[i]){
+                    stack.pop();
+                }
+                if(stack.isEmpty()){
+                    res.add(-1);
+                }else{
+                    res.add(stack.peek());
+                }
+            }
+            stack.push(i);
+        }
+
+        return res.stream().mapToInt(Integer::intValue).toArray();
+    }
+    private int[] nsr(int[] arr, int n){
+        List<Integer> res = new ArrayList<>();
+        Stack<Integer> stack = new Stack<>();
+        for(int i=n-1;i>=0;i--){
+            if(stack.isEmpty()){
+                res.add(0,n);
+            } else if(!stack.isEmpty() && arr[stack.peek()]<= arr[i]){
+                res.add(0,stack.peek());
+            } else{
+                while(!stack.isEmpty() && arr[stack.peek()]> arr[i]){
+                    stack.pop();
+                }
+                if(stack.isEmpty()){
+                    res.add(0,n);
+                }else{
+                    res.add(0,stack.peek());
+                }
+            }
+            stack.push(i);
+        }
+
+        return res.stream().mapToInt(Integer::intValue).toArray();
+    }
+}
+
+
+
+581. Shortest Unsorted Continuous Subarray MediumLeetCode problem. Tags:Stacks . 24 June,2022
+2,5,10,8,13,15,3.
+456. 132 Pattern Medium LeetCode problem. Tags:Stacks . 26 May,2022
+Using Monotonic Stack
+Solution by NeetCode
+int[] nums = {1,0,1,-4,-3};
+For above test case, keeping separate minSoFar does not work.
+Keep minSoFar in Pair class in stack only.
+class Pair{
+    int val;
+    int min;
+    public Pair(int val, int min) {
+        this.val = val;
+        this.min = min;
+    }
+}
+class Solution {
+    public boolean find132pattern(int[] nums) {
+        int minSoFar = nums[0];
+        Stack<Pair> stack = new Stack<>();
+        int n = nums.length;
+        for(int i= 0;i<n;i++){
+            while(!stack.isEmpty() && nums[i] >= stack.peek().val){
+                stack.pop();
+            }
+            //do nothing for empty stack
+            if(!stack.isEmpty() && nums[i]<stack.peek().val && nums[i]>stack.peek().min) {
+                return true;
+            }
+            stack.push(new Pair(nums[i], minSoFar));
+            minSoFar = Math.min(minSoFar, nums[i]);
+        }
+        return false;
+    }
+}
+
+Concept and Coding Solution(ignore)
+Here Stack contains ar[j] ie largest element. secondLargestK contains ar[k] which is second largest element. Iterator I varies form n-1 to 0 and is prospective i. Explained by Concepts and Coding.
+I<j<k
+Ar[i]<ar[k]<ar[j]
+class Solution {
+    public boolean find132pattern(int[] nums) {
+        int n = nums.length;
+        Stack<Integer>stack = new Stack<>();
+        int secondLargestK = Integer.MIN_VALUE;
+        for(int i=n-1;i>=0;i--){
+            if(nums[i]<secondLargestK){
+                return true;
+            }
+            
+            while(stack.isEmpty()==false && nums[i]>stack.peek()){
+                secondLargestK = Math.max(secondLargestK, stack.peek());
+                stack.pop();
+            }
+            stack.push(nums[i]);
+            
+//             if(stack.isEmpty()==true){
+//                 stack.push(nums[i]);
+//             }else{
+//                 if(nums[i]<=stack.peek()){
+//                     stack.push(nums[i]);
+//                 }else if(nums[i]>stack.peek()){
+//                     while(stack.isEmpty()==false && nums[i]>stack.peek()){
+//                         secondLargestK = Math.max(secondLargestK, stack.peek());
+//                         stack.pop();
+//                     }
+//                     stack.push(nums[i]);
+//                 }
+//             }
+        }
+        return false;
+    } 
+}
+(Ignore below solution)
+Did not understand Will come later. Here ar[j] and ar[i] are decided and iterator is looking for prospective ar[k]. Different from above approach.
+The idea is that we can use a stack to keep track of previous min-max intervals.
+Here is the principle to maintain the stack:
+For each number num in the array
+If stack is empty:
+push a new Pair of num into stack
+If stack is not empty:
+if num < stack.peek().min, push a new Pair of num into stack
+if num >= stack.peek().min, we first pop() out the peek element, denoted as last
+if num < last.max, we are done, return true;
+if num >= last.max, we merge num into last, which means last.max = num.
+Once we update last, if stack is empty, we just push back last.
+However, the crucial part is:
+If stack is not empty, the updated last might:
+Entirely covered stack.peek(), i.e. last.min < stack.peek().min (which is always true) && last.max >= stack.peek().max, in which case we keep popping out stack.peek().
+Form a 1-3-2 pattern, we are done ,return true
+So at any time in the stack, non-overlapping Pairs are formed in descending order by their min value, which means the min value of peek element in the stack is always the min value globally.
+   class Pair{
+        int min, max;
+        public Pair(int min, int max){
+            this.min = min;
+            this.max = max;
+        }
+    }
+    public boolean find132pattern(int[] nums) {
+        Stack<Pair> stack = new Stack();
+        for(int n: nums){
+            if(stack.isEmpty() || n <stack.peek().min ) stack.push(new Pair(n,n));
+            else if(n > stack.peek().min){ 
+                Pair last = stack.pop();
+                if(n < last.max) return true;
+                else {
+                    last.max = n;
+                    while(!stack.isEmpty() && n >= stack.peek().max) stack.pop();
+                    // At this time, n < stack.peek().max (if stack not empty)
+                    if(!stack.isEmpty() && stack.peek().min < n) return true;
+                    stack.push(last);
+                }
+                
+            }
+        }
+        return false;
+    }
+1047. Remove All Adjacent Duplicates In String Easy LeetCode Problem. Tags:Strings, Stack. 5 June, 2022
+Example 1:
+Input: s = "abbaca"
+Output: "ca"
+Explanation: 
+For example, in "abbaca" we could remove "bb" since the letters are adjacent and equal, and this is the only possible move.  The result of this move is that the string is "aaca", of which only "aa" is possible, so the final string is "ca".
+Example 2:
+Input: s = "azxxzy"
+Output: "ay"
+
+Using Stack
+class Solution {
+    public String removeDuplicates(String s) {
+        Stack<Character> stack = new Stack<>();
+        int n = s.length();
+        for(int i=0;i<n;i++){
+            if(!stack.isEmpty() && stack.peek()==s.charAt(i)){
+                stack.pop();
+                continue;
+            }
+            stack.push(s.charAt(i));
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            sb.append(stack.pop());
+        }
+        return sb.reverse().toString();
+    }
+}
+Using Recursion
+class Solution {
+    public String removeDuplicates(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        helper(sb, 0);
+        return sb.toString();
+    }
+    
+    private void helper(StringBuilder sb, int start) {
+        for(int i = start; i < sb.length() - 1; i++) {
+            char c = sb.charAt(i);
+            char c2 = sb.charAt(i + 1);
+            if(c == c2) {
+                sb.deleteCharAt(i);
+                sb.deleteCharAt(i);
+                if(i >= 1) helper(sb, i - 1); 
+                else helper(sb, i);
+            }
+        }
+    }
+}
+
+1209. Remove All Adjacent Duplicates in String II Medium LeetCode Problem. Tags:Strings, Stack. 6 June, 2022
+Example 1:
+Input: s = "abcd", k = 2
+Output: "abcd"
+Explanation: There's nothing to delete.
+Example 2:
+Input: s = "deeedbbcccbdaa", k = 3
+Output: "aa"
+Explanation: 
+First delete "eee" and "ccc", get "ddbbbdaa"
+Then delete "bbb", get "dddaa"
+Finally delete "ddd", get "aa"
+Example 3:
+Input: s = "pbbcggttciiippooaais", k = 2
+Output: "ps"
+
+"dtpdtaaaaaaaaappppppppppppppppppppaaaaaaaaaaxxxxxxxxxxxxxxsssssssssjjjjjjjjjjjjjjjjjjjjxxxxxxxxxxxxxxxxxxxxsssssssjjjjjjjjjjjjjjjjjjjjssssxxxxxxatdwvvpctpggggggggggggggggggggajagglaaaaaaaaaaaaaaaaaaaa" 
+20
+"dtpdttdwvvpctpajaggl"
+Using Stack
+Also keep count of each char. So crate a Pair/Node class
+class Node{
+    char c;
+    int count;
+    public Node(char c, int count){
+        this.c = c;
+        this.count = count;
+    }
+}
+class Solution {
+    public String removeDuplicates(String s, int k) {
+        Stack<Node> stack = new Stack<>();
+        int n = s.length();
+        for(int i=0;i<n;i++){
+            if(!stack.isEmpty() && stack.peek().c==s.charAt(i)){
+                if(stack.peek().count==k-1){
+                    stack.pop();
+                }else{
+                    stack.peek().count++;
+                }
+                continue;
+            }
+            stack.push(new Node(s.charAt(i),1));
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            Node node = stack.peek();
+            int count = node.count;
+            while(count-->0){
+                sb.append(node.c);
+            }
+            stack.pop();
+        }
+        return sb.reverse().toString();
+    }
+}
+402. Remove K Digits Medium LeetCode Problem. Tags:Strings, Maths, Greedy, Stack. 6 June, 2022
+
+Pop the most significant digits when they are in decreasing order. Build a monotonically increasing stack
+Using Monotonically Increasing(Non decreasing)Stack
+Unique algortihm
+class Solution {
+    public String removeKdigits(String num, int k) {
+        Stack<Character>stack = new Stack<>();
+        for(char c: num.toCharArray()){
+            while(k>0 && !stack.isEmpty() && stack.peek()>c){
+//pop karte waqt stack ko monotonic increasing banana hai. Jaisa hi vo //monotonic increasing banta hai, iss while loop se bahar nikal jao.
+                stack.pop();
+                k--;
+            }
+            stack.push(c);
+        }
+        //what if num="123456" in ascending order. Not handled by previous case.
+        while(k>0 && !stack.isEmpty()){
+            stack.pop();
+            k--;
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            sb.append(stack.pop());
+        }
+        String result = sb.reverse().toString();
+        //logic to remove leading 0's
+        int j = 0;
+        while(j<result.length() && result.charAt(j)=='0'){
+            j++;
+        }
+        return result.substring(j)==""?"0":result.substring(j);
+//String res = sb.toString().replaceFirst("^0+(?!$)", "");
+       //return res == "" ? "0":res;
+
+    }
+}
+Much cleaner Implementation
+class Solution {
+public String removeKdigits(String num, int k) {
+if (num == null || k == 0) return num;
+    if (num.length() == k) return "0"; 
+    
+    // if more significant digit is greater than less significant digit remove it
+    
+    int index = 0;
+    Stack<Character> stack = new Stack<>();
+    
+    while (index < num.length()) {
+        char ch = num.charAt(index);
+        
+        // remove
+       while (k > 0 && !stack.isEmpty() && stack.peek() > ch) {
+           stack.pop();
+           k--;
+       }    
+                    
+       // push
+        stack.push(ch);
+        index++;
+    }
+    
+    // if k remaining
+    while(k > 0 && !stack.isEmpty()) {
+        stack.pop();
+        k--;
+    }
+    
+    // make answer
+    StringBuilder sb = new StringBuilder();
+    
+    while(!stack.isEmpty()) {
+        sb.append(stack.pop());
+    }
+    
+    // reverse
+    sb.reverse();
+    
+    
+    // remove leading zeros
+    while(sb.length() > 1 && sb.charAt(0) == '0' ) {
+        sb.deleteCharAt(0);
+    }
+    
+    return sb.toString();
+}
+}
+
+
+
+
+735. Asteroid CollisionLeetCode Problem. Tags:Stack. 18 June, 2023
+Example 1:
+Input: asteroids = [5,10,-5]
+Output: [5,10]
+Explanation: The 10 and -5 collide resulting in 10. The 5 and 10 never collide.
+
+Example 2:
+Input: asteroids = [8,-8]
+Output: []
+Explanation: The 8 and -8 collide exploding each other.
+
+Example 3:
+Input: asteroids = [10,2,-5]
+Output: [10]
+Explanation: The 2 and -5 collide resulting in -5. The 10 and -5 collide resulting in 10.
+
+
+Using Stack
+class Solution {
+    public int[] asteroidCollision(int[] asteroids) {
+        Stack<Integer> stack = new Stack<>();
+        int n = asteroids.length;
+        int j = 0;
+        while(j<n && sign(asteroids[j])==-1) {
+            stack.push(asteroids[j]);
+            j++;
+        }
+        if (j<n) {
+            stack.push(asteroids[j]);
+        }
+        for(int i=j+1;i<n;i++){
+            int curr = asteroids[i];
+            if(stack.isEmpty()){
+                stack.push(curr);
+                continue;
+            }
+            if(sign(curr) == sign(stack.peek())|| (sign(curr) == 1 && sign(stack.peek()) == -1)){
+                stack.push(curr);
+            } else {
+                if(Math.abs(curr) > Math.abs(stack.peek())){
+                    while(!stack.isEmpty() && Math.abs(curr)>Math.abs(stack.peek()) && sign(curr) != sign(stack.peek())) {
+                        stack.pop();
+                    }
+                    if (stack.isEmpty() || sign(curr) == sign(stack.peek())){
+                        stack.push(curr);
+                    } else if(Math.abs(curr) == Math.abs(stack.peek())){
+                        stack.pop();
+                    }
+                } else if(Math.abs(curr) == Math.abs(stack.peek())){
+                    stack.pop();
+                }
+            }
+        }
+        List<Integer> res = new ArrayList<>();
+        while(!stack.isEmpty()){
+            res.add(0,stack.peek());
+            stack.pop();
+        }
+        return res.stream().mapToInt(Integer::intValue).toArray();
+    }
+    private int sign(int asteroid){
+        if(asteroid<0) {
+            return -1;
+        }
+        return 1;
+    }
+}
+
+
+Simple Stack Problems(without Parenthesis)
+
+Reverse String using Stack Easy
+155. Min Stack Easy
+71. Simplify Path
+844. Backspace String Compare(Easy)
+946. Validate Stack Sequences Medium
+
+
+
+
+
+Reverse String using Stack Easy InterviewBit problem. Tags: Stack. 25 May,2022
+public class Solution {
+    public String reverseString(String s) {
+        Stack<Character> stack = new Stack<>();
+        for(int i=0;i<s.length();i++){
+            stack.push(s.charAt(i));
+        }
+        StringBuilder sb = new StringBuilder();
+        while(stack.isEmpty()==false){
+            sb.append(stack.pop());
+        }
+        return sb.toString();
+    }
+}
+
+
+155. Min Stack Easy LC problem. Tags:Stacks . 26 May,2022
+Using Helper Stack to store minimum element. Space complexity = O(n). Time complexity = O(1)
+class MinStack {
+    Stack<Integer>stack;
+    Stack<Integer>helperStack;
+    public MinStack() {
+        stack = new Stack<>();
+        helperStack = new Stack<>();
+    }
+    
+    public void push(int val) {
+        if(helperStack.isEmpty()==true){
+            helperStack.push(val);
+        }else{
+            if(val<=helperStack.peek()){
+                helperStack.push(val);
+            }
+        }
+        stack.push(val);
+    }
+    
+    public void pop() {
+        //why stack.peek() == helperStack.peek() does not work????
+        if(stack.peek().equals(helperStack.peek())){
+            helperStack.pop();
+        }
+        stack.pop();
+    }
+    
+    public int top() {
+        return stack.peek();
+    }
+    
+    public int getMin() {
+        return helperStack.peek();
+        
+    }
+}
+Optimized Solution. O(1) Time complexity and O(1) space complexity.
+Transforming above solution into below solution. Remove need of helperStack and store min value in node itself by creating a Pair class.
+class Pair{
+    int min;
+    int value;
+    public Pair(int min, int value){
+        this.min = min;
+        this.value = value;
+    }
+}
+class MinStack {
+    Stack<Pair>stack;
+    public MinStack() {
+        stack = new Stack<>();
+    }
+    
+    public void push(int val) {
+        if(stack.isEmpty()==true){
+            stack.push(new Pair(val, val));
+        }else{
+            int minSoFar = stack.peek().min;
+            if(val<=minSoFar){
+                stack.push(new Pair(val,val));
+            }else{
+                stack.push(new Pair(minSoFar, val));
+            }
+        }
+    }
+    public void pop() {
+        stack.pop();
+    }
+    public int top() {
+        return stack.peek().value;
+    }
+    public int getMin() {
+        return stack.peek().min;
+    }
+}
+71. Simplify PathLeetCode Problem. Tags:Strings, Maths, Greedy, Stack. 15 June, 2023
+Using Stack
+class Solution {
+public String simplifyPath(String path) {
+Stack<String> stack = new Stack<>();
+path = path + "/";
+String curr = "";
+for (Character c : path.toCharArray()) {
+if (c.equals('/')) {
+if (curr.equals("..")) {
+if (!stack.isEmpty()) {
+stack.pop();
+}
+} else if (!curr.equals("") && !curr.equals(".")) {
+stack.push(curr);
+}
+curr = "";
+} else {
+curr = curr + c;
+}
+}
+StringBuilder sb = new StringBuilder();
+
+
+while (!stack.isEmpty()) {
+sb.insert(0, stack.pop());
+
+
+if (!stack.isEmpty()) {
+sb.insert(0, "/");
+}
+}
+sb.insert(0, "/");
+return sb.toString();
+}
+}
+844. Backspace String Compare(Easy)LeetCode Problem. Tags:Stack. 24 June, 2023 
+Example 1:
+Input: s = "ab#c", t = "ad#c"
+Output: true
+Explanation: Both s and t become "ac".
+
+Example 2:
+Input: s = "ab##", t = "c#d#"
+Output: true
+Explanation: Both s and t become "".
+
+Example 3:
+Input: s = "a#c", t = "b"
+Output: false
+Explanation: s becomes "c" while t becomes "b".
+
+ 
+Using Stack
+Time = O(m+n), Space=O(m+n)
+class Solution {
+    public boolean backspaceCompare(String s, String t) {
+        Stack<Character> stack = new Stack<>();
+        String res1 = getDesiredString(s, stack);
+        stack.clear();
+        String res2 = getDesiredString(t, stack);
+        return res1.equals(res2);
+    }
+    private String getDesiredString(String s, Stack<Character> stack){   
+        int n = s.length();
+        for(int i=0;i<n;i++) {
+            char c = s.charAt(i);
+            if (c!= '#') {
+                stack.push(c);
+            }else if (c=='#' && !stack.isEmpty()) {
+                stack.pop();
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()){
+            sb.append(stack.pop() + "");
+        }
+       return sb.toString();
+//return String.valueOf(stack);   (no need of above string builder)
+
+    }
+}
+Using 2 Pointers
+(do later)
+
+946. Validate Stack Sequences MediumLeetCode Problem. Tags:Stack. 24 June, 2023
+ 
+Example 1:
+Input: pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
+Output: true
+Explanation: We might do the following sequence:
+push(1), push(2), push(3), push(4),
+pop() -> 4,
+push(5),
+pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
+
+Example 2:
+Input: pushed = [1,2,3,4,5], popped = [4,3,5,1,2]
+Output: false
+Explanation: 1 cannot be popped before 2.
+(imp)All elements of pushed are unique
+Using Stack
+class Solution {
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> stack = new Stack<>();
+        int n = pushed.length;
+        int m = popped.length;
+        if (m!=n) {
+            return false;
+        }
+        int j = 0;
+        for(int num: pushed) {
+            stack.push(num);
+            while (!stack.isEmpty() && j<m && stack.peek() == popped[j]) {
+                stack.pop();
+                j++;
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+
+
+Simple Stack Problems(with Parenthesis)
+20. Valid Parentheses Easy
+
+20. Valid Parentheses Easy LC problem. Tags: Stack. 25 May,2022
+Using Stack
+class Solution {
+    public boolean isValid(String s) {
+        Stack<Character>stack = new Stack<>();
+        for(char c: s.toCharArray()){
+            if(isOpening(c)){
+                stack.push(c);
+            }else{
+                if(stack.isEmpty()){
+                    return false;
+                }else if(isMatching(stack.peek(),c)==false){
+                    return false;
+                }else{
+                    stack.pop();
+                }
+            }
+        }
+        //if only opening braces in String, then if String is non empty, return false;
+        return stack.isEmpty();
+    }
+    boolean isOpening(char c){
+        if(c=='(' || c=='{' || c=='['){
+            return true;
+        }
+        return false;
+    }
+    boolean isMatching(char a, char b){
+        //opening braces should be at the start, at stack's peek
+        return (a=='(' && b==')') || (a=='{' && b=='}') || (a=='[' && b==']');
+    }
+}
+
