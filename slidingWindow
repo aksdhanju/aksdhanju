@@ -1,0 +1,1000 @@
+
+
+https://leetcode.com/tag/sliding-window/
+
+Array + String given
+Subarray/ Substring asked
+Minimum/Maximum asked
+Window size given/ Window size to be calculated.
+If above 4 points, then sliding window can apply.
+Brute force solution= O(n2).
+Sliding window solution. O(n). We do calculations side by side while traversing. So we donot do duplicate work.
+
+Maximum/ Minimum Sum Subarray of size k. Aditya Verma videos. Not on LC. Tags: SW. 14 May, 2022
+Brute force solution
+Using Sliding window
+class Solution {
+    public int maxSumSubarrayOfSizeK(int[] nums, int k) {
+        int n = nums.length;
+        int i=0,j=0;
+        int sum=0,maxSum=Integer.MIN_VALUE;
+        while(j<n){
+            sum+=nums[j];
+            if(j-i+1<k){
+                j++;
+            }else if(j-i+1==k){
+                if(sum>maxSum){
+                    maxSum=sum;
+                }
+                sum-=nums[i];
+                i++;
+                j++;
+            }
+        }
+        return maxSum;
+    }
+}
+Optimized implementation of above
+class Solution {
+    public int maxSumSubarrayOfSizeK(int[] nums, int k) {
+        int n = nums.length;
+        int i=0,j=0;
+        int sum=0,maxSum=Integer.MIN_VALUE;
+        while(j<n){
+            sum+=nums[j];
+            if(j-i+1==k){
+                if(sum>maxSum){
+                    maxSum=sum;
+                }
+                sum-=nums[i];
+                i++;
+            }
+            j++;
+        }
+        return maxSum;
+    }
+}
+643. Maximum Average Subarray I Easy. LeetCode problem. Tags: SW. 14 May, 2022
+Slight variation of standard question.
+Brute force
+Sliding window Solution. Time complexity = O(n). Space complexity = O(1).
+class Solution {
+    public double findMaxAverage(int[] nums, int k) {
+        int n = nums.length;
+        int i=0,j=0;
+        int sum=0,maxSum=Integer.MIN_VALUE;
+        while(j<n){
+            sum+=nums[j];
+            if(j-i+1==k){
+                if(sum>maxSum){
+                    maxSum=sum;
+                }
+                sum-=nums[i];
+                i++;
+            }
+            j++;
+        }
+        return (double)maxSum/k;
+    }
+}
+1876. Substrings of Size Three with Distinct Characters Easy. LC Problem. Tags: SW. 14 May, 2022
+class Solution {
+    public int countGoodSubstrings(String s) {
+        int n = s.length();
+        int i=0,j=0;
+        HashMap<Character, Integer>map = new HashMap<>();
+        int count=0;
+        while(j<n){
+            map.put(s.charAt(j), map.getOrDefault(s.charAt(j),0)+1);
+            if(j-i+1==3){
+                if(map.size()==3){
+                    count++;
+                }
+                if(map.get(s.charAt(i))==1){
+                    map.remove(s.charAt(i));
+                }else{
+                    map.put(s.charAt(i),map.getOrDefault(s.charAt(i),0)-1);
+                }
+                i++;
+            }
+            j++;
+        }
+        return count;
+    }
+}
+1343. Number of Sub-arrays of Size K and Average Greater than or Equal to Threshold Medium. LC Problem. Tags: SW. 14 May, 2022
+
+class Solution {
+    public int numOfSubarrays(int[] nums, int k, int threshold) {
+        int n = nums.length;
+        int i=0,j=0;
+        int sum=0,count=0;
+        while(j<n){
+            sum+=nums[j];
+            if(j-i+1==k){
+                if(sum/k>=threshold){
+                    count++;
+                }
+                sum-=nums[i];
+                i++;
+            }
+            j++;
+        }
+        return count;
+    }
+}
+1456. Maximum Number of Vowels in a Substring of Given Length Medium LC Problem. Tags: SW. 15 May, 2022
+SW Solution
+class Solution {
+    public int maxVowels(String s, int k) {
+        int n = s.length();
+        int i=0,j=0;
+        int count=0,maxCount=Integer.MIN_VALUE;
+        while(j<n){
+            if(isVowel(s.charAt(j))==true){
+                count++;
+            }
+            if(j-i+1<k){
+                j++;
+            }else if(j-i+1==k){
+                if(count>maxCount){
+                    maxCount=count;
+                }
+                if(isVowel(s.charAt(i))==true){
+                    count--;
+                }
+                i++;
+                j++;
+            }
+        }
+        return maxCount;
+    }
+    boolean isVowel(Character c){
+        if(c=='a' || c=='e'||c=='i'||c=='o'||c=='u'){
+            return true;
+        }
+        return false;
+    }
+}
+First Negative Number in every Window of Size K | Sliding Window. Aditya Verma videos. Not on LC. Tags: SW. 15 May, 2022
+Brute force solution
+class Compute {
+    public long[] printFirstNegativeInteger(long ar[], int n, int k){
+        long[] result = new long[n-k+1];
+        int index=0;
+        for(int i=0;i<=n-k;i++){
+            for(int j=i;j<i+k;j++){
+                if(ar[j]<0){
+                    result[index]=ar[j];
+                    break;
+                }
+            }
+            index++;
+        }
+        return result;
+    }
+}
+Using Sliding window. Using List for storing calculations.
+class Compute {
+    public long[] printFirstNegativeInteger(long nums[], int n, int k){
+        int i=0,j=0;
+        //list for storing calculations
+        List<Long> list = new ArrayList<>();
+        long[] result = new long[n-k+1];
+        int index=0;
+        while(j<n){
+            //do calculations
+            if(nums[j]<0){
+                list.add(nums[j]);
+            }
+            if(j-i+1<k){
+                //window size is not hit
+                j++;
+            }else if(j-i+1==k){
+                //window size is hit
+                //get ans from calculation
+                if(list.size()!=0){
+                    result[index]=list.get(0);
+                }
+                index++;
+                //steps before sliding the window
+                if(nums[i]<0){
+                    list.remove(0);
+                }
+                //slide the window
+                i++;
+                j++;
+            }
+        }
+        return result;
+    }
+}
+Using Sliding window. Using Queue for storing calculations.
+class Compute {
+    public long[] printFirstNegativeInteger(long nums[], int n, int k){
+        int i=0,j=0;
+        //list for storing calculations
+        Queue<Long>queue = new LinkedList<>();
+        long[] result = new long[n-k+1];
+        int index=0;
+        while(j<n){
+            //do calculations
+            if(nums[j]<0){
+                queue.add(nums[j]);
+            }
+            if(j-i+1<k){
+                //window size is not hit
+                j++;
+            }else if(j-i+1==k){
+                //window size is hit
+                //get ans from calculation
+                if(queue.size()!=0){
+                    result[index]=queue.peek();
+                }
+                index++;
+                //steps before sliding the window
+                if(nums[i]<0){
+                    queue.remove();
+                }
+                //slide the window
+                i++;
+                j++;
+            }
+        }
+        return result;
+    }
+}
+239. Sliding Window Maximum Hard/Maximum of all subarrays of size k. LC Problem. Tags: SW, Dequeue. 15 May, 2022
+Deque or Double Ended Queue is a generalized version of Queue data structure that allows insert and delete at both ends. 
+Operations on Deque: Mainly the following four basic operations are performed on queue:
+insertFront():
+insertLast():
+deleteFront():
+deleteLast():
+getFront():
+isEmpty():
+isFull():
+Applications of Deque: Since Deque supports both stack and queue operations, it can be used as both.
+Maximum of all subarrays of size k problem
+(0-1)BFS
+Find the first circular tour that visits all petrol pumps. 
+A-Steal job scheduling algorithm where Deque is used as deletions operation is required at both ends.
+Brute force solution
+Sliding Window solution using Deque
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+        int i=0,j=0;
+        //list for storing calculations
+        Deque<Integer> queue = new LinkedList<>();
+        int[] result = new int[n-k+1];
+        int index=0;
+        while(j<n){
+            //do calculations
+            if(queue.size() == 0){
+                queue.add(nums[j]);
+            }
+            else{
+                while(queue.size() > 0 && queue.peekLast() < nums[j]){
+                    queue.removeLast();
+                }   
+                queue.add(nums[j]);
+            }
+            
+            // System.out.println(queue.toString());
+            if(j-i+1<k){
+                //window size is not hit
+                j++;
+            }else if(j-i+1==k){
+                //window size is hit
+                //get ans from calculation
+                result[i]=queue.peek();
+                //steps before sliding the window
+                if(nums[i]==queue.peek()){
+                    queue.removeFirst();
+                }
+                //slide the window
+                i++;
+                j++;
+            }
+        }
+        return result;
+    }
+}
+438. Find All Anagrams in a String Medium. LC Problem. Tags: SW. 19 May, 2022
+
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+		int k = p.length();
+		int n = s.length();
+		Map<Character, Integer> map = new HashMap<>();
+		for (int i = 0; i < k; i++) {
+			map.put(p.charAt(i),map.getOrDefault(p.charAt(i),0) + 1);
+		}
+		int count = map.size();   //distinctElementCount
+		int i = 0, j = 0, ans = 0;
+		List<Integer> list = new ArrayList<>();   //list of startIndices
+		while (j < n) {
+			if (map.containsKey(s.charAt(j))) {
+				map.put(s.charAt(j), map.get(s.charAt(j)) - 1);
+				if (map.get(s.charAt(j)) == 0) {
+					count--;
+				}
+			}
+			if (j - i + 1 == k) {
+				if (count == 0) {
+					list.add(i);
+				}
+				if (map.containsKey(s.charAt(i))) {
+					map.put(s.charAt(i), map.get(s.charAt(i)) + 1);
+					if (map.get(s.charAt(i)) == 1) {
+						count++;
+					}
+				}
+				i++;
+			}
+			j++;
+		}
+		return list;
+	}
+}
+567. Permutation in String Medium. LC Problem. Tags: SW. 19 May, 2022
+
+class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        int k = s1.length();
+        int n = s2.length();
+        int i=0,j=0;
+        HashMap<Character, Integer>map = new HashMap<>();
+        for(int index=0;index<k;index++){
+            map.put(s1.charAt(index), map.getOrDefault(s1.charAt(index),0)+1);
+        }
+        int count = map.size();   //distinctElementCount
+        while(j<n){
+            if(map.containsKey(s2.charAt(j))){
+                map.put(s2.charAt(j), map.get(s2.charAt(j))-1);
+                if(map.get(s2.charAt(j))==0){
+                    count--;
+                }
+            }
+            if(j-i+1<k){
+                j++;
+            }else if(j-i+1==k){
+                if(count==0){
+                    return true;
+                }
+                if(map.containsKey(s2.charAt(i))){
+                    map.put(s2.charAt(i), map.getOrDefault(s2.charAt(i),0)+1);
+                    if(map.get(s2.charAt(i))==1){
+                        count++;
+                    }
+                }
+                i++;
+                j++;
+            }
+        }
+        return false;
+    }
+}
+187. Repeated DNA Sequences Medium LeetCode Problem. Tags: Variable Size SW. 19 May, 2022
+class Solution {
+    public List<String> findRepeatedDnaSequences(String s) {
+        int n = s.length();
+        int i=0,j=9;
+        List<String> list = new ArrayList<>();
+        HashMap<String, Integer>map = new HashMap<>();
+        while(j<n){
+            map.put(s.substring(i,j+1), map.getOrDefault(s.substring(i,j+1),0)+1);
+            j++;
+            i++;
+        }
+//iterating over a HashMap
+        for (Map.Entry<String, Integer> element :map.entrySet()){
+            if(element.getValue()>1){
+                list.add(element.getKey());
+            }
+        }
+        return list;
+    }
+}
+Other approaches also. See Later
+
+Variable Size Sliding Window
+
+Largest Subarray of sum K. Aditya Verma Problem. Tags: Variable Size SW. 15 May, 2022
+If all elements of array are positive
+class Solution{
+    public static int lenOfLongSubarr (int ar[], int n, int k) {
+        int i=0,j=0;
+        int sum = 0;
+        int max = Integer.MIN_VALUE;
+        while(j<n){
+            sum+=ar[j];
+            if(sum<k){
+                j++;
+            }else if(sum==k){
+                max = Math.max(max, j-i+1);
+                sum-=ar[i];
+                i++;
+                j++;
+            }else if(sum>k){
+                while(sum>k){
+                    sum-=ar[i];
+                    i++;
+                }
+                if(sum==k){
+                    max = Math.max(max,j-i+1);
+                    sum-=ar[i];
+                    i++;
+                }
+                j++;
+            }
+        }
+    return max;
+    }
+}
+If we have negative elements in array
+Q. Will the discussed approach work with negative numbers in the array? A. No. Because let's say in the given array [4,1,1,1,2,3,5] when we found the sum within the window to be greater than the desired value 5 (i=0, j=2 -> [4,1,1]), we started reducing the size of the window by doing i++. Here we assumed that once the sum of elements within the window becomes greater than 5 then increasing the window size will just add to the sum and hence we will not attain the sum 5 again. This is true when all the element are positive and hence reducing the window size by doing i++ makes sense. But this might not be true if array also contains negative numbers. Consider the array [4,1,1,-2,1,5], here we would have found the sum to be greater than 5 for i=0, j=2 and if we would have now started reducing the window size by doing i++, we would have missed the potential subarray (i=0, j=4). In short, the discussed approach will not work with array having negative numbers.
+
+560. Subarray Sum Equals K Medium LeetCode Problem. Tags: Variable Size SW. 17 May, 2022	
+Tell how many subarrays are there whose sum is k
+Using Prefix Sum.
+
+Subarray with Sum Equals k. General Question. Tags: Variable Size SW,20 May,2022
+Return start and end indices of subarray in an array List
+Another Similar question with k=0 given
+If only positive numbers are given. Using Sliding Window technique.
+class Solution{
+    static ArrayList<Integer> subarraySum(int[] ar, int n, int k) {
+        int i=0,j=0;
+        int sum = 0;
+        while(j<n){
+            sum+=ar[j];
+            if(sum<k){
+                j++;
+            }else if(sum>=k){
+                while(sum>k){
+                    sum-=ar[i];
+                    i++;
+                }
+                if(sum==k){
+                    return new ArrayList<>(Arrays.asList(i+1,j+1));
+                }
+                j++;
+            }
+        }
+        return new ArrayList<>(Arrays.asList(-1));
+    }
+}
+If negative numbers are also present
+
+Longest Substring With K Unique Characters. Aditya Verma Problem.GFG Problem. Tags: Variable Size SW. 17 May, 2022
+Sliding Window solution
+class Solution {
+    public int longestkSubstr(String s, int k) {
+        int i=0,j=0;
+        int n = s.length();
+        int length = -1;
+        HashMap<Character, Integer> map = new HashMap<>();
+        while(j<n){
+            map.put(s.charAt(j), map.getOrDefault(s.charAt(j),0)+1);
+            if(map.size()<k){
+                j++;
+            }else if(map.size()==k){
+                length = Math.max(length, j-i+1);
+                j++;
+            }else if(map.size()>k){
+                while(map.size()>k){
+                    if(map.get(s.charAt(i))==1){
+                        map.remove(s.charAt(i));
+                    }else{
+                        map.put(s.charAt(i), map.get(s.charAt(i))-1);
+                    }
+                    //can also do the check like below
+                    // map.put(s.charAt(i), map.get(s.charAt(i))-1);
+                    // if(map.get(s.charAt(i))==0){
+                    //     map.remove(s.charAt(i));
+                    // }
+                    i++;
+                }
+                //no need of this condition. 
+                // if(map.size()==k){
+                //     length = Math.max(length, j-i+1);
+                // }
+                j++;
+            }
+        }
+        return length;
+    }
+}
+
+3. Longest Substring Without Repeating Characters Medium. LeetCode Problem. Tags: Variable Size SW. 17 May, 2022. Blind 75 Problem
+Sliding Window solution
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int n= s.length();
+        int i=0,j=0;
+        int length = 0;
+        HashMap<Character, Integer> map = new HashMap<>();
+        while(j<n){
+            if(map.containsKey(s.charAt(j))){
+                while(map.containsKey(s.charAt(j))){
+                    map.put(s.charAt(i), map.get(s.charAt(i))-1);
+                    if(map.get(s.charAt(i))==0){
+                        map.remove(s.charAt(i));
+                    }
+                    i++;
+                }
+            }
+            map.put(s.charAt(j),map.getOrDefault(s.charAt(j),0)+1);
+            length = Math.max(length, j-i+1);
+            j++;
+        }
+        return length;
+    }
+}
+Using 256 size array instead of HashMap. Fast Solution
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int n= s.length();
+        int i=0,j=0;
+        int length = 0;
+        int[] cache = new int[256];
+        while(j<n){
+            if(cache[s.charAt(j)] > 0){
+                while(cache[s.charAt(j)] > 0){
+                    cache[s.charAt(i)]--;
+                    i++;
+                }
+            }
+            cache[s.charAt(j)]++;
+            length = Math.max(length,j-i+1);
+            j++;
+        }
+        return length;
+    }
+}
+Efficient approach. Top voted LC solution
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int n= s.length();
+        int i=0,j=0;
+        int length = 0;
+        HashMap<Character, Integer> map = new HashMap<>();
+        while(j<n){
+            if(map.containsKey(s.charAt(j))){
+                i = Math.max(i,map.get(s.charAt(j))+1);
+                //If Math.max is not put, for s="abba", test case fails
+//If “i” is coming less than present I, take present i
+            }
+            map.put(s.charAt(j),j);   //put index value here.
+            length = Math.max(length, j-i+1);
+            j++;
+        }
+        return length;
+    }
+}
+Aditya Verma Approach
+In Previous question of k unique characters, replace k with j-i+1(window size). Also reverse the conditions.
+Below Code giving null pointer exception. I donot know why it should be so. See it later.
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int i=0,j=0;
+        int n = s.length();
+        int length = -1;
+        HashMap<Character, Integer> map = new HashMap<>();
+        while(j<n){
+            map.put(s.charAt(j), map.getOrDefault(s.charAt(j),0)+1);
+            int k =j-i+1;
+            if(map.size()==k){
+                length = Math.max(length, j-i+1);
+                j++;
+            }else if(map.size()<k){
+                map.put(s.charAt(j), map.getOrDefault(s.charAt(j),0)-1);
+                while(map.size()<k){
+                    map.put(s.charAt(i), map.get(s.charAt(i))-1);
+                    if(map.get(s.charAt(i))==0){
+                        map.remove(s.charAt(i));
+                    }
+                    i++;
+                }
+                j++;
+            }
+        }
+        return length;
+    }
+}
+
+76. Minimum Window Substring Hard LeetCode Problem. Tags: Variable Size SW. 17 May, 2022. Blind 75 Problem
+class Solution {
+    public String minWindow(String s, String t) {
+        int m = s.length(), n = t.length();
+        if(n>m){
+            return "";
+        }
+        HashMap<Character, Integer>map = new HashMap<>();
+        for(int i=0;i<n;i++){
+            map.put(t.charAt(i), map.getOrDefault(t.charAt(i),0)+1);
+        }
+        int i=0,j=0;
+        int start =0, end=-1;
+        int length=Integer.MAX_VALUE;
+        int count = map.size();   //unique character count
+        while(j<m){
+            if(map.containsKey(s.charAt(j))){
+                map.put(s.charAt(j), map.get(s.charAt(j))-1);
+                if(map.get(s.charAt(j))==0){
+                    count--;
+                }
+            }
+            if(count==0){
+                if(length>(j-i+1)){
+                    length =(j-i+1);
+                    start = i;	
+                    end = j;
+                }
+                while(count==0 &&i<=j){
+                    if(length>(j-i+1)){
+                        length =j-i+1;
+                        start = i;
+                        end = j;
+                    }
+                    if(map.containsKey(s.charAt(i))){
+                        map.put(s.charAt(i), map.get(s.charAt(i))+1);
+                        if(map.get(s.charAt(i))==1){
+                            count++;
+                        }
+                    }
+                    i++;
+                }
+            }
+            j++;
+        }
+        return s.substring(start, end+1);
+    }
+}
+
+209. Minimum Size Subarray Sum Medium LeetCode Problem. Tags: Variable Size SW. 17 May, 2022
+Important Constraint: All values in array are positive or zero. If negative values are present, some code is different.
+Important. Bold code snippet is required when minimum is asked in question.
+class Solution{
+    public int minSubArrayLen (int k, int[] ar) {
+        int n = ar.length;
+        int i=0,j=0;
+        int sum = 0;
+        int min = Integer.MAX_VALUE;
+        while(j<n){
+            sum+=ar[j];
+            if(sum<k){
+                j++;
+            }else if(sum==k){
+                min = Math.min(min, j-i+1);
+                sum-=ar[i];
+                i++;
+                j++;
+            }else if(sum>k){
+                while(sum>k){
+                    min = Math.min(min, j-i+1);
+                    sum-=ar[i];
+                    i++;
+                }
+                if(sum==k){
+                    min = Math.min(min, j-i+1);
+                    sum-=ar[i];
+                    i++;
+                }
+                j++;
+            }
+        }
+    return min==Integer.MAX_VALUE?0:min;
+    }
+}
+Can be optimized as follows:
+class Solution{
+    public int minSubArrayLen (int k, int[] ar) {
+        int n = ar.length;
+        int i=0,j=0;
+        int sum = 0;
+        int min = Integer.MAX_VALUE;
+        while(j<n){
+            sum+=ar[j];
+            if(sum<k){
+                j++;
+            }
+            // else if(sum==k){
+            //     min = Math.min(min, j-i+1);
+            //     sum-=ar[i];
+            //     i++;
+            //     j++;
+            // }
+            else if(sum>=k){
+                while(sum>k){
+                    min = Math.min(min, j-i+1);
+                    sum-=ar[i];
+                    i++;
+                }
+                if(sum==k){
+                    min = Math.min(min, j-i+1);
+                    sum-=ar[i];
+                    i++;
+                }
+                j++;
+            }
+        }
+    return min==Integer.MAX_VALUE?0:min;
+    }
+}
+Further optimized as follows:
+class Solution{
+    public int minSubArrayLen (int k, int[] ar) {
+        int n = ar.length;
+        int i=0,j=0;
+        int sum = 0;
+        int min = Integer.MAX_VALUE;
+        while(j<n){
+            sum+=ar[j];
+            while(sum>=k){
+                min = Math.min(min, j-i+1);
+                sum-=ar[i];
+                i++;
+            }
+            j++;
+        }
+        return min==Integer.MAX_VALUE?0:min;
+    }
+}
+Problems where count of Subarrays is asked.
+Given in 2 pointers section in InterviewBit.com. Here 2 pointers start at same start.
+Nature of problems is Sliding Window. But count of Subarrays satisfying some condition is asked. Some of these can be solved by prefix Sum method.
+1248. Count Number of Nice Subarrays Medium
+Subarrays with at most K Different Integers
+992. Subarrays with K Different Integers Hard.
+713. Subarray Product Less Than K Medium
+1358. Number of Substrings Containing All Three Characters Medium
+Replace the Substring for Balanced String
+
+
+Max Consecutive Ones III
+
+
+Binary Subarrays With Sum
+Fruit Into Baskets
+
+
+Shortest Subarray with Sum at Least K
+
+
+Minimum Size Subarray Sum
+Subarrays with at most K Different Integers. Not on LC. Used in next problem. Tags: (similar to)Variable Size SW, count wala of Variable size SW. 18 May, 2022
+public int subarraysWithAtmostKDistinct(int[]nums, int n, int k){
+        HashMap<Integer, Integer>map = new HashMap<>();
+        int i=0,j=0,res=0;
+        while(j<n){
+            map.put(nums[j], map.getOrDefault(nums[j],0)+1);
+            while(map.size()>k){
+                map.put(nums[i], map.getOrDefault(nums[i],0)-1);
+                if(map.get(nums[i])==0){
+                    map.remove(nums[i]);
+                }
+                i++;
+            }
+            res= res + (j-i+1);
+            j++;
+        }
+        return res;
+    }
+}
+
+
+992. Subarrays with K Different Integers Hard. LeetCode Problem. Tags: Variable Size SW. 18 May, 2022
+class Solution {
+    public int subarraysWithKDistinct(int[] nums, int k) {
+        int n = nums.length;
+        return subarraysWithAtmostKDistinct(nums,n,k)-subarraysWithAtmostKDistinct(nums,n,k-1);
+    }
+    public int subarraysWithAtmostKDistinct(int[]nums, int n, int k){
+        HashMap<Integer, Integer>map = new HashMap<>();
+        int i=0,j=0,res=0;
+        while(j<n){
+            map.put(nums[j], map.getOrDefault(nums[j],0)+1);
+            while(map.size()>k){
+                map.put(nums[i], map.getOrDefault(nums[i],0)-1);
+                if(map.get(nums[i])==0){
+                    map.remove(nums[i]);
+                }
+                i++;
+            }
+            res= res + (j-i+1);
+            j++;
+        }
+        return res;
+    }
+}
+
+1248. Count Number of Nice Subarrays Medium LeetCode Problem. Tags: Prefix Sum, Sliding Window. 18 May, 2022
+Sliding Window approach
+class Solution {
+    public int numberOfSubarrays(int[] nums, int k) {
+        int oddcount=0;   //odd count till present iteration.
+        int res=0;
+        int i=0,j=0;
+        int count=0;   //it is count of subarrays with given property
+        int n = nums.length;
+        while(j<n){
+            if(nums[j]%2==1){
+                oddcount++;
+                count=0;
+            }
+            while(oddcount==k){
+                if(nums[i]%2==1){
+                    oddcount--;
+                } 
+                i++;
+                count++;
+            }
+            res=res+count;
+            j++;
+        }
+        return res;
+    }
+}
+713. Subarray Product Less Than K Medium LeetCode Problem. Tags: Variable Size SW. 18 May, 2022
+Sliding Window Approach
+Note that the Sliding window approach is only valid because numbers are positive.
+class Solution {
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        int n = nums.length;
+        int i=0,j=0,prod=1, res=0;
+        while(j<n){
+            prod=prod*nums[j];
+            while(prod>=k && i<=j){
+                prod=prod/nums[i];
+                i++;
+            }
+            res=res+(j-i+1);
+            j++;
+        }
+        return res;
+    }
+}
+1358. Number of Substrings Containing All Three Characters Medium LeetCode Problem. Tags: Variable Size SW. 18 May, 2022
+Sliding Window solution
+class Solution {
+    public int numberOfSubstrings(String s) {
+        int n = s.length();
+        int i=0,j=0;
+        int frequency[] = {0,0,0};
+        int res=0;
+        while(j<n){
+            frequency[s.charAt(j)-'a']++;
+            while(frequency[0]>0 && frequency[1]>0 && frequency[2]>0){
+                frequency[s.charAt(i)-'a']--;
+                i++;
+            }
+            res = res+i;   //(i-1)-0+1
+            j++;
+        }
+        return res;
+    }
+}
+930. Binary Subarrays With Sum Medium LeetCode Problem. Tags: Variable Size SW. 19 May, 2022
+Counting Subarrays! Medium IB Problem. Tags: Variable Size SW. 18 June, 2022
+Given an array A of N non-negative numbers and you are also given non-negative number B.
+You need to find the number of subarrays in A having sum less than B. 
+Example Input
+Input 1:
+ A = [2, 5, 6]
+ B = 10
+Input 2:
+ A = [1, 11, 2, 3, 15]
+ B = 10
+
+
+Example Output
+Output 1:
+ 4
+Output 2:
+ 4
+
+
+Example Explanation
+Explanation 1:
+ The subarrays with sum less than B are {2}, {5}, {6} and {2, 5},
+Explanation 2:
+ The subarrays with sum less than B are {1}, {2}, {3} and {2, 3}
+
+public class Solution {
+    public int solve(ArrayList<Integer> nums, int k) {
+        int n = nums.size();
+        int i=0,j=0;
+        int sum = 0, res =0;
+        while(j<n){
+            sum+=nums.get(j);
+            while(sum>=k && i<=j){
+                sum-=nums.get(i);
+                i++;
+            }
+            res+=j-i+1;
+            j++;
+        }
+        return res;
+    }
+}
+424. Longest Repeating Character Replacement Medium. Solve later. Cannot understand the problem. Blind 75 Problem
+
+
+Not Sliding Window but Subarray/Subset related
+Product of the maximums of all subsets of an array. Asked in Arcesium OA. 18 June, 2022
+For(i=1;i<=n;i++)
+Nums[i]^((2^i) - 1) is the ans
+Implementation is little bit different. 
+Examples:
+Input: arr[] = {1, 2, 3}
+Output:
+Explanation:
+All possible subsets of the given array with their respective maximum elements are:
+{1}, the maximum element is 1.
+{2}, the maximum element is 2.
+{3}, the maximum element is 3.
+{1, 2}, the maximum element is 2.
+{1, 3}, the maximum element is 3.
+{2, 3}, the maximum element is 3.
+{1, 2, 3}, the maximum element is 3.
+The product of all the above maximum element is 1*2*3*2*3*3*3 = 324.
+Input: arr[] = {1, 1, 1, 1}
+Output: 1
+
+// Function to find the product of the
+// maximum of all possible subsets
+static long maximumProduct(int arr[], int N)
+{
+    long mod = 1000000007;
+ 
+    // Sort the given array arr[]
+    Arrays.sort(arr);
+ 
+    // Stores the power of 2
+    long power[] = new long[N + 1];
+    power[0] = 1;
+ 
+    // Calculate the power of 2
+    for(int i = 1; i <= N; i++)
+    {
+        power[i] = 2 * power[i - 1];
+        power[i] %= mod;
+    }
+ 
+    // Stores the resultant product
+    long result = 1;
+ 
+    // Traverse the array from the back
+    for(int i = N - 1; i > 0; i--)
+    {
+         
+        // Find the value of 2^i - 1
+        long value = (power[i] - 1);
+ 
+        // Iterate value number of times
+        for(int j = 0; j < value; j++)
+        {
+             
+            // Multiply value with
+            // the result
+            result *= arr[i];
+            result %= mod;
+        }
+    }
+ 
+    // Calculate the product of array
+    // elements with result to consider
+    // the subset of size 1
+    for(int i = 0; i < N; i++)
+    {
+        result *= arr[i];
+        result %= mod;
+    }
+ 
+    // Return the resultant product
+    return result;
+}
+
