@@ -1,0 +1,2248 @@
+Linked List
+
+Delete without head pointer Easy GFG Problem. Tags: LL. 31 May, 2022
+Efficient Solution
+Just change value of to be deleted node. Set its value to next node’s value. Set its next to next of next node.
+class Solution{
+    void deleteNode(Node del){
+        del.data = del.next.data;
+        del.next = del.next.next;
+    }
+}
+Inefficient solution
+class Solution{
+    void deleteNode(Node del){
+        while(del.next.next!=null){
+            del.data = del.next.data;
+            del = del.next;
+        }
+        del.data = del.next.data;
+        del.next = null;
+    }
+}
+83. Remove Duplicates from Sorted List Easy LC Problem. Tags: LL. 24 March, 2022, 26 June, 2022
+Using Basic Pointers
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null){
+            return head;
+        }
+        ListNode curr = head;
+        while(curr.next!=null){
+            if(curr.val == curr.next.val){
+                curr.next = curr.next.next;
+            }else{
+                curr = curr.next;
+            }
+        }
+        return head;
+    }
+}
+Using Recursion
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head==null){
+            return head;
+        }
+        recurse(head);
+        return head;
+    }
+    void recurse(ListNode curr){
+        if(curr.next == null){
+            return;
+        }
+        if(curr.val == curr.next.val){
+            curr.next = curr.next.next;
+            recurse(curr);
+        }else{
+            recurse(curr.next);
+        }
+    }
+}
+
+Earlier Implementation. Do not see
+public ListNode deleteDuplicates(ListNode head) {
+        if(head == null){
+            return head;
+        }
+        ListNode temp1 = head;
+        ListNode temp2 = temp1.next;
+        while(temp2!=null){
+            if(temp1.val == temp2.val){
+                // deleteNode(temp1, temp2);
+                temp1.next = temp2.next;
+                temp2 = temp2.next;     
+            } else{
+                temp1 = temp1.next;
+                temp2 = temp2.next;
+            }
+        }
+        return head;
+    }
+    // public void deleteNode(ListNode temp1, ListNode temp2){
+    //     temp1.next = temp2.next;
+        // temp2 = temp2.next;
+    // }
+82. Remove Duplicates from Sorted List II Medium LC Problem. Tags: LL, 2 pointers. 26 June, 2022
+Example 1:
+
+Input: head = [1,2,3,3,4,4,5]
+Output: [1,2,5]
+Example 2:
+
+Input: head = [1,1,1,2,3]
+Output: [2,3]
+ 
+
+My Own implementation 
+Using LL Pointers
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head==null){
+            return null;
+        }
+        ListNode dummy = new ListNode(-1, head);
+        ListNode curr = dummy, nxt = head;
+        boolean detectedDuplicate = false;
+        while(nxt.next!=null){
+            if(curr.next.val == nxt.next.val){
+                nxt = nxt.next;
+                detectedDuplicate = true;
+            }else{
+                if(detectedDuplicate){
+                    curr.next = nxt.next;
+                    detectedDuplicate = false;
+                }else{
+                    curr = curr.next;
+                }
+                nxt = nxt.next;
+            }
+        }
+        if(detectedDuplicate){
+            curr.next = null;   //nxt.next
+        }
+        return dummy.next;
+    }
+}
+LC Solution. More concise.
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode dummy = new ListNode(-1, head);
+        ListNode curr = dummy, nxt = head;
+        while(nxt!=null){
+            if(nxt.next!=null && curr.next.val == nxt.next.val){
+                while(nxt.next!=null && nxt.val == nxt.next.val){
+                    nxt = nxt.next;
+                }
+                curr.next = nxt.next;
+                nxt = nxt.next;
+            }else{
+                curr = curr.next;
+                nxt = nxt.next;
+            }
+        }
+        return dummy.next;
+    }
+}
+Remove duplicates from an unsorted linked list Easy GFG/LC Premium Problem. Tags: LL, 2 pointers. 26 June, 2022
+
+Example 1:
+Input:
+N = 4
+value[] = {5,2,2,4}
+Output: 5 2 4
+Explanation:Given linked list elements are
+5->2->2->4, in which 2 is repeated only.
+So, we will delete the extra repeated
+elements 2 from the linked list and the
+resultant linked list will contain 5->2->4
+Example 2:
+Input:
+N = 5
+value[] = {2,2,2,2,2}
+Output: 2
+Explanation:Given linked list elements are
+2->2->2->2->2, in which 2 is repeated. So,
+we will delete the extra repeated elements
+2 from the linked list and the resultant
+linked list will contain only 2.
+
+  
+
+class Solution
+{
+    //Function to remove duplicates from unsorted linked list.
+    public Node removeDuplicates(Node head) {
+        if(head==null){
+            return null;
+        }
+        Node curr = head;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(head.data, 1);
+        while(curr.next!=null){
+            Integer value = map.get(curr.next.data);
+            if(value == null){
+                map.put(curr.next.data, 1);
+                curr = curr.next;
+            }else{
+                curr.next = curr.next.next;
+            }
+        }
+        return head;
+    }
+}
+876. Middle of the Linked List Easy
+Using 2 Pointer
+Fast, slow pointers
+public ListNode middleNode(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while(fast!= null && fast.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+
+See getMid(head) method of merge Sort in Linked List
+Kth Node From Middle Easy InterviewBit Problem. Tags: LL. 28 May,2022
+public class Solution {
+    public int solve(ListNode A, int k) {
+        ListNode slow = A;
+        ListNode fast = A;
+        int n =0;
+        while(fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+            n++;
+        }
+        if(n-k<0){
+            return -1;
+        }
+        ListNode curr = A;
+        while(n-k>0){
+            curr = curr.next;
+            n--;
+        }
+        return curr.val;
+    }
+}
+Sorting Questions
+21. Merge Two Sorted Lists Easy
+148. Sort List Medium
+Sort Binary Linked List Easy
+Given a linked list of 0s, 1s and 2s, sort it.
+Flattening a Linked List Medium
+21. Merge Two Sorted Lists Easy LC Problem. Tags: LL. 28 May,2022
+This method is same as merge step of merge sort where we obtain 2 sorted list from 2 recursive calls and then we merge these lists into one.
+KK’s implementation on LeetCode
+public ListNode mergeTwoLists (ListNode list1, ListNode list2) {
+        ListNode dummy = new ListNode();
+        ListNode curr = dummy;
+        while(list1!=null && list2!=null){
+            if(list1.val<list2.val){
+                curr.next = list1;
+                list1 = list1.next;
+                curr = curr.next;
+            } else{
+                curr.next = list2;
+                list2 = list2.next;
+                curr = curr.next;
+            }
+        }
+        if(list1!=null){
+            curr.next = list1;
+        }
+        if(list2!=null){
+            curr.next = list2;
+        }
+        // curr.next = (list1!=null)?list1:list2;
+        return dummy.next;
+    }
+23. Merge k Sorted Lists Hard. LC Problem. Tags: Sorting, LL. 7 June, 2022
+If we take sequentially the lists and then merge them, then time complexity would be O(n*k). Convert merge k lists problem to merge 2 lists (k-1) times. 
+(Divide and Conquer strategy)Using Merge 2 sorted lists concept. Time Complexity=O(nlogk). Where k is number of linked lists. And n is at worst length of each list.
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists.length==0){
+            return null;
+        }
+        return solve(lists, 0, lists.length-1);
+    }
+    ListNode solve(ListNode[] lists, int low, int high){
+        if(low<high){
+            int mid = low+(high-low)/2;
+            ListNode list1 = solve(lists,low, mid);
+            ListNode list2 = solve(lists,mid+1,high);
+            return mergeTwoLists(list1,list2);
+        }
+        return lists[low];
+    }
+
+    ListNode mergeTwoLists(ListNode list1, ListNode list2){
+        ListNode dummy = new ListNode();
+        ListNode curr = dummy;
+        while(list1!=null && list2!=null){
+            if(list1.val<list2.val){
+                curr.next = list1;
+                list1=list1.next;
+                curr=curr.next;
+            }else{
+                curr.next = list2;
+                list2=list2.next;
+                curr=curr.next;
+            }
+        }
+        curr.next = (list1!=null)?list1:list2;
+        return dummy.next;
+    }
+}
+Using MinHeap
+Time Complexity = O(nk). Put everything in MinHeap. Then take it out, create Nodes, establish link to next nodes, and return head of resultant list
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists){
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        for(int i = 0; i < lists.length;i++){
+            ListNode curr = lists[i];
+            while(curr!=null){
+                minHeap.offer(curr.val);
+                curr = curr.next;
+            }
+        }
+    
+        ListNode dummy = new ListNode();
+        ListNode temp = dummy;
+
+        while(!minHeap.isEmpty()){
+            ListNode node = new ListNode();
+            node.val = minHeap.poll();
+            temp.next = node;
+            temp = temp.next;
+        }
+        return dummy.next;
+    }
+}
+148. Sort List Medium. LC Problem. Tags: Sorting, LL. 30 May, 2022
+Using Merge Sort
+Time complexity: O(nlogn). Space complexity:O(logn)
+class Solution {
+    public ListNode sortList(ListNode head) {
+        if(head == null || head.next == null){
+            return head;
+        }
+        ListNode mid = getMid(head);
+        ListNode left = sortList(head);
+        ListNode right = sortList(mid);
+        return mergeTwoLists(left, right);  //same as merge 2 sorted lists.
+    }
+    public ListNode getMid(ListNode head){
+        ListNode slow = new ListNode(0);
+        slow.next = head;
+        ListNode fast = head;        
+        while(fast != null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode mid = slow.next;
+        slow.next = null;  //**important step. Did not think this
+        return mid;
+    }
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode dummy = new ListNode();
+        ListNode curr = dummy;
+        while(list1!=null && list2!=null){
+            if(list1.val<list2.val){
+                curr.next = list1;
+                list1 = list1.next;
+                curr = curr.next;
+            } else{
+                curr.next = list2;
+                list2 = list2.next;
+                curr = curr.next;
+            }
+        }
+        if(list1!=null){
+            curr.next = list1;
+        }
+        if(list2!=null){
+            curr.next = list2;
+        }
+        // curr.next = (list1!=null)?list1:list2;
+        return dummy.next;
+    }
+}
+Using Bottom up Merge Sort. Later
+See Bottom up solution on LeetCode solutions tab. It takes O(nlogn) time and O(1) space complexity.
+
+Using Heap Sort
+Simple Heap Sort. Time : O(nlogn), Space: O(n)
+class Solution {
+    public ListNode sortList(ListNode head) {
+        
+        ListNode curr = head;
+        Queue<ListNode> queue = new PriorityQueue<>((n1, n2) -> n1.val - n2.val); 
+        while (curr != null) {
+            queue.add(curr);
+            curr = curr.next;
+        }
+        
+        ListNode dummy = new ListNode();
+        ListNode prev = dummy;
+        while (!queue.isEmpty()) {
+            curr = queue.poll();
+            curr.next = null;
+            prev.next = curr;
+            prev = curr;
+        }
+        return dummy.next;
+    }
+}
+Using Quick Sort
+Sort Binary Linked List Easy. InterviewBit Problem. Tags: Sorting, LL. 31 May,2022
+Changing value of nodes
+Traverse once. Count number of zeros and ones. Set zeros nodes equal to 0 and ones nodes equal to 1
+public class Solution {
+    public ListNode solve(ListNode head) {
+        int zeros = 0;
+        int ones = 0;
+        ListNode curr = head;
+        while(curr!=null){
+            if(curr.val==0){
+                zeros++;
+            }else{
+                ones++;
+            }
+            curr = curr.next;
+        }
+        curr = head;
+        for(int i=1;i<=zeros;i++){
+            curr.val = 0;
+            curr = curr.next;
+        }
+        for(int i=1;i<=ones;i++){
+            curr.val = 1;
+            curr = curr.next;
+        }
+        return head;
+    }
+}
+Without Changing value of nodes.
+public class Solution {
+    public ListNode solve(ListNode head) {
+        int zeros = 0;
+        int ones = 0;
+        ListNode curr = head;
+        while(curr!=null){
+            if(curr.val==0){
+                zeros++;
+            }else{
+                ones++;
+            }
+            curr = curr.next;
+        }
+        curr = head;
+        for(int i=1;i<=zeros;i++){
+            curr.val = 0;
+            curr = curr.next;
+        }
+        for(int i=1;i<=ones;i++){
+            curr.val = 1;
+            curr = curr.next;
+        }
+        return head;
+    }
+}
+
+
+
+Given a linked list of 0s, 1s and 2s, sort it. InterviewBit Problem. Tags: Sorting, LL. 31 May,2022
+Changing value of nodes
+class Solution {
+    static Node segregate(Node head) {
+        int zeros = 0;
+        int ones = 0;
+        int twos = 0;
+        Node curr = head;
+        while(curr!=null){
+            if(curr.data==0){
+                zeros++;
+            }else if(curr.data == 1){
+                ones++;
+            }else{
+                twos++;
+            }
+            curr = curr.next;
+        }
+        curr = head;
+        for(int i=1;i<=zeros;i++){
+            curr.data = 0;
+            curr = curr.next;
+        }
+        for(int i=1;i<=ones;i++){
+            curr.data = 1;
+            curr = curr.next;
+        }
+        for(int i=1;i<=twos;i++){
+            curr.data = 2;
+            curr = curr.next;
+        }
+        return head;
+    }
+}
+Without Changing value of nodes. Create 3 LL of 0’s, 1’s and 2’s. Then merge these LL. Create 3 dummy nodes at start of these lists for easy implementation of code.
+
+
+class Solution {
+    static Node segregate(Node head) {
+        Node dummyZero = new Node(0);
+        Node dummyOne = new Node(0);
+        Node dummyTwo = new Node(0);
+        Node zero = dummyZero, one = dummyOne, two = dummyTwo;
+        Node curr = head;
+        while(curr!=null){
+            if(curr.data == 0){
+                zero.next = curr;
+                curr = curr.next;
+                zero = zero.next;
+            }else if(curr.data == 1){
+                one.next = curr;
+                curr = curr.next;
+                one = one.next;
+            }else{
+                two.next = curr;
+                curr = curr.next;
+                two = two.next;
+            }
+        }
+        //1s list is not empty
+        if(dummyOne.next!=null){
+            zero.next = dummyOne.next;
+            one.next = dummyTwo.next;
+        }else{
+            //1s list is empty
+            //if list is like 022  //there is no 1 in LL
+            zero.next = dummyTwo.next;
+        }
+        //this step is important //  in absence of it, was giving runtime error.
+        //run for 2->2->0->1. If two.next is not set to null, then final list would be //0->1->2->2------>0(starting wala)
+        two.next = null;
+        return dummyZero.next;
+    }
+}
+
+Flattening a Linked List Medium. GFG Problem. Tags: Sorting, LL. 31 May,2022
+Similar Question in Trees: Flatten a BT to LL, DLL
+Using Recursion
+Uses recursion concept of Reverse LL(LC Top voted solution). Also Merge 2 sorted lists. Not working solution.
+class GfG{
+    Node flatten(Node root){
+        if(root==null || root.next==null){
+            return root;
+        }
+        root.next = flatten(root.next);
+        return mergeTwoLists(root);
+    }
+    Node mergeTwoLists(Node curr){
+        Node dummy = new Node(0);
+        dummy.bottom = curr;
+        Node list1 = curr.bottom;
+        Node list2 = curr.next;
+        while(list1!=null && list2!=null){
+            if(list1.data<list2.data){
+                curr.bottom = list1;
+                list1 = list1.bottom;
+                curr = curr.bottom;
+            }else{
+                curr.bottom = list2;
+                list2 = list2.bottom;
+                curr = curr.bottom;
+            }
+        }
+        curr.bottom = (list1==null)?list2:list1;
+        return dummy.bottom;
+    }
+}
+Working Solution
+class GfG
+{
+    Node flatten(Node root)
+    {
+    	if(root == null || root.next ==  null)
+    		return root;
+    	
+    	// Recursion for right lists
+    	root.next = flatten(root.next);
+    	
+    	// Now merging them all
+    	root = mergeTwoLists(root, root.next);
+    	
+    	return root; // Returning root in merge with its Left
+    }
+    
+    
+    Node mergeTwoLists(Node a, Node b){
+    	// pointing variables
+        Node temp = new Node(0); 
+        Node res = temp;
+        
+        while(a != null && b != null){
+        	// comparison and  Goes on
+            if(a.data < b.data){ 
+                temp.bottom = a;
+                temp = temp.bottom;
+                a = temp.bottom;
+            }else{
+                temp.bottom = b;
+                temp = temp.bottom;
+                b = temp.bottom;
+            }
+        }
+        
+        // Shifting remaining els to the last/bottom point of LL
+        if(a != null) temp.bottom = a; 
+        else temp.bottom = b;
+        
+        return res.bottom; // Head of flatten LL
+    }
+}
+Reverse Questions in LL
+
+206. Reverse Linked List
+Recursive solution
+Using head, temp, prev
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head == null){
+            return head;
+        }
+        ListNode prev = null;
+        ListNode temp = head.next;
+        return helper(prev, head, temp);
+    }
+    public ListNode helper(ListNode prev, ListNode head, ListNode temp){
+        head.next = prev;
+        if(temp != null){
+            return helper(head, temp, temp.next); 
+        }
+        return head;
+    }
+}
+Recursive solution 2(More concise)
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head == null){
+            return head;
+        }
+        if(head.next == null){
+            return head;
+        }
+        ListNode newHead = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return newHead;
+    }
+}
+Iterative solution
+Modification of Recursive solution 1 using temp, head, prev
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head == null){
+            return head;
+        }
+        ListNode temp = head.next;
+        ListNode prev = null;
+        while(temp!=null){
+            head.next = prev;
+            prev = head;
+            head = temp;
+            temp = temp.next;
+        }
+        head.next = prev;
+        return head;
+    }
+}
+Iterative Solution more concise
+public ListNode reverse(ListNode head) {
+    ListNode prev = null;
+    while (head != null) {
+        ListNode temp = head.next;
+        head.next = prev;
+        prev = head;
+        head = temp;
+    }
+    return prev;
+}
+
+92. Reverse Linked List II Medium
+Top Voted LC solution
+To solve the problem recursively, step by step.
+First, I know the classic recursive way to reverse a linked list:
+    ListNode reverse(ListNode head) {
+        if (head.next == null) return head;
+        ListNode last = reverse(head.next);
+        head.next.next = head;
+        head.next = null;
+        return last;
+    }
+Then I come up this way to reverse the first N elements:
+    ListNode successor = null;
+    ListNode reverseN(ListNode head, int n) {
+        if (n == 1) {
+            successor = head.next;
+            return head;
+        }
+        ListNode last = reverseN(head.next, n - 1);
+        head.next.next = head;
+        head.next = successor;
+        return last;
+    }    
+Finally I solve this problem:
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (m == 1) {
+            // You can also expand the code here to get rid of the helper function 'reverseN'
+            return reverseN(head, n);
+        }
+        head.next = reverseBetween(head.next, m - 1, n - 1);
+        return head;
+    }
+
+Iterative solution(My own)
+public ListNode reverseBetween(ListNode head, int left, int right) {
+        if(left == right){
+            return head;
+        }
+        ListNode present = head;
+        ListNode prev = null;
+        for(int i =0;i<left -1 && present!=null;i++){
+            prev = present;
+            present = present.next;
+        }
+        ListNode leftMinusOneNode = prev;
+        ListNode leftNode = present;
+        int count =0;
+        prev = present;
+        present = present.next;
+        ListNode temp = present.next;
+        while(count<right - left){
+            present.next = prev;
+            count++;
+            prev = present;
+            present = temp;
+            if(temp!=null){
+                temp = temp.next;
+            }
+        }
+        if(leftMinusOneNode != null){
+            leftMinusOneNode.next = prev;
+        } else{
+	head = prev;
+	}
+        leftNode.next = present;
+        return head;
+    }
+
+KK’s solution(minor optimization changes)
+public ListNode reverseBetween(ListNode head, int left, int right) {
+        if(left == right){
+            return head;
+        }
+        ListNode present = head;
+        ListNode prev = null;
+        for(int i =0;i<left -1 && present!=null;i++){
+            prev = present;
+            present = present.next;
+        }
+        ListNode leftMinusOneNode = prev;
+        ListNode leftNode = present;
+        int count =0;
+        ListNode temp = present.next;
+        while(count<right - left + 1){
+            present.next = prev;
+            count++;
+            prev = present;
+            present = temp;
+            if(temp!=null){
+                temp = temp.next;
+            }
+        }
+        if(leftMinusOneNode != null){
+            leftMinusOneNode.next = prev;
+        } else{
+	    head = prev;
+	    }
+        leftNode.next = present;
+        return head;
+    }
+
+234. Palindrome Linked List (Easy)
+My Implementation
+public boolean isPalindrome(ListNode head) {
+        ListNode middleNode = middleNode(head);
+        ListNode newMiddleNode = reverseList(middleNode);
+        ListNode temp1 = head;
+        ListNode temp2 = newMiddleNode;
+        while(temp1 != null && temp2!=null){
+//only temp2!=null would have worked
+            if(temp1.val == temp2.val){
+                temp1 = temp1.next;
+                temp2 = temp2.next;
+            } else{
+                return false;
+            }
+        }
+        return true;
+    }
+KK Implementation(minor change: re reversed list at end)
+See other approaches from Leet code
+Use Array. 
+Put LL elements in array. Check is array is Palindrome. Can be done easily
+141. Linked List Cycle Easy
+To detect cycle in LL
+Using 2 pointers(fast and slow). Floyds Cycle detection algorithm. Time complexity = O(n). Space complexity = O(1)
+public boolean hasCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+            if(fast == slow){
+                return true;
+            }
+        }
+        return false;
+    }
+Using Map
+Length of Linked List cycle
+public int hasCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        int count = 0;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+            if(fast == slow){
+                //can use do while loop
+                slow = slow.next;
+                while(slow != fast){
+                    count++;
+                    slow = slow.next;
+                }
+                return count + 1;
+                // return true;
+            }
+        }
+        return -1;
+    }
+142. Linked List Cycle II Medium
+public ListNode detectCycle(ListNode head) {
+        ListNode meetingNode =  hasCycle(head);
+        if(meetingNode !=null){
+            while(head!=meetingNode){
+                head = head.next;
+                meetingNode = meetingNode.next;
+            }
+            return head;
+        } else{
+            return null;
+        }
+    }
+    public ListNode hasCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+            if(fast == slow){
+                return slow;
+            }
+        }
+        return null;
+    }
+
+Remove loop in Linked List Medium
+class Solution
+{
+    public static void removeLoop(Node head){
+        Node slow = head;
+        Node fast = head;
+        while(fast!=null && fast.next!=null){
+            fast = fast.next.next;
+            slow = slow.next;
+            if(slow==fast){
+                break;
+            }
+        }
+        //if fast!=slow
+        if(fast==null || fast.next == null){  
+            return;
+        }
+        slow = head;
+        if(slow==fast){ 
+         //IMPORTANT : In case the loop start with head only 
+        //Example 7->58->36->34->16
+        //Here after step 1, fast and slow point to 7. So make fast point to 16 and do fast.next=null
+           while(fast.next != slow){
+              fast = fast.next;
+          }
+        }else{
+            while(slow.next!=fast.next){
+                slow = slow.next;
+                fast= fast.next;
+            }
+        }
+        fast.next = null;
+        
+    }
+}
+Applications of Linked List cycle problems: 
+202. Happy Number Easy
+287. Find the Duplicate Number Medium
+
+202. Happy Number Easy
+Brute Force solution by me(used HashSet as a DS)
+public boolean isHappy(int n) {
+        int digitSum = 0;
+        HashSet<Integer> set = new HashSet<>();
+        int newN = n;
+        while(true){
+        	digitSum = calculateSum(newN);
+            if(set.contains(digitSum)){
+                return false;
+            }
+            set.add(digitSum);
+            if(digitSum == 1){
+                return true;
+            }
+            newN = digitSum;
+        }
+    }
+    static int calculateSum(int n){
+        int sum = 0;
+        while(n>0){
+            int remainder = n%10;
+            sum += remainder*remainder;
+            n = n/10;
+        }
+        return sum;
+    }
+Clean implementation using HashSet
+The reason we use a HashSet and not a Vector, List, or Array is because we're repeatedly checking whether or not numbers are in it. Checking if a number is in a HashSet takes O(1) time, whereas for the other data structures it takes O(n) time. Choosing the correct data structures is an essential part of solving these problems.
+public boolean isHappy(int n) {
+        Set<Integer> seen = new HashSet<>();
+        while (n != 1 && !seen.contains(n)) {
+            seen.add(n);
+            n = calculateSum(n);
+        }
+        return n == 1;
+    }
+Using Linked List cycle concept(not using LL as a DS but using fast and slow pointer approach here)
+public boolean isHappy(int n) {
+    	int slow = n;
+    	int fast = n;
+        do{
+            slow = calculateSum(slow);
+            fast = calculateSum(calculateSum(fast));
+        } while(fast != slow);
+        if(fast == 1){
+            return true;
+        }
+        return false; 
+        // while(fast != 1) {
+        // 	slow = calculateSum(slow);
+        //     fast = calculateSum(calculateSum(fast));
+        //     if(fast == slow && fast!=1) {
+        //     	return false;
+        //     }
+        // }
+        // return true;
+    }
+    static int calculateSum(int n){
+        int sum = 0;
+        while(n>0){
+            int remainder = n%10;
+            sum += remainder*remainder;
+            n = n/10;
+        }
+        return sum;
+    }
+Clean implementation of 2 pointers approach
+public boolean isHappy(int n) {
+        int slowRunner = n;
+        int fastRunner = calculateSum(n);
+        while (fastRunner != 1 && slowRunner != fastRunner) {
+            slowRunner = calculateSum(slowRunner);
+            fastRunner = calculateSum (calculateSum (fastRunner));
+        }
+        return fastRunner == 1;
+    }
+
+See time and space complexity of above
+61. Rotate List Medium
+My own implementation(Brute force)
+public ListNode rotateRight(ListNode head, int k) {
+        if(head == null){
+            return head;
+        }
+        ListNode temp = head;
+        int size =1;
+        while(temp.next!=null){
+            size++;
+            temp =temp.next;  
+        }
+        //this temp would be tail. Do tail.next = originalHead
+        k = k%size;
+        if(k==0){
+            return head;
+        }
+        ListNode temp2 =head;
+        for(int i=1;i<size - k;i++){
+            temp2 = temp2.next;
+        }
+        ListNode newHead = temp2.next;
+        temp2.next = null;
+        temp.next = head;
+        return newHead;        
+    }
+Clean code(same code as above)
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head == null){
+            return head;
+        }
+        ListNode fast = head;
+        int size =1;
+        //find length/size of LL
+        while(fast.next!=null){
+            size++;
+            fast =fast.next;  
+        }
+        //this temp would be tail. Do tail.next = originalHead
+        k = k%size;
+        if(k==0){
+            return head;
+        }
+        fast.next = head;
+        //no need to declare ListNode slow = head and then iterate slow. Because we already have fast pointing to node previous to head. So just do fast.next to get head and come at start of list.
+        for(int i=1;i<=size - k;i++){
+            fast = fast.next;
+        }
+        ListNode newHead = fast.next;
+        fast.next = null;
+        return newHead;        
+    }
+}
+19. Remove Nth Node From End of List Medium
+Using 2 passes of the list
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        int size =1;
+        ListNode temp = head;
+        while(temp.next != null){
+            temp = temp.next;
+            size++;
+        }
+        if(n == size){
+            head = head.next;
+            return head;
+        }
+        temp = head;
+        for(int i=1;i<size-n;i++){
+            temp = temp.next;
+        }
+        temp.next = temp.next.next;
+        return head;
+    }
+}
+Using 1 Pass
+2 pointers approach. Solution explained by NeetCode
+Can use fast, slow pointers instead of left, right pointers. We basically want pointer to node before the node which we are deleting. So if we maintain n length between left and right pointers and right pointer reaches end of list ie null, we will have left pointer at node to be deleted. Ie why start left pointer 1 step before at dummy node.
+Constraint given in Question: n can be greater than length of list, so whenever right reaches null, just stop and remove head of list.
+public class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode left = dummy;
+        ListNode right = head;
+        while(right!=null && n>0){
+            right=right.next;
+            n--;
+        }
+        while(right!=null){
+            left = left.next;
+            right = right.next;
+        }
+        left.next = left.next.next;
+        return dummy.next;
+    }
+}
+Another approach : Reverse List. Then delete nth node from beginning of reversed list. Inefficient solution.
+2. Add Two Numbers MediumLC Problem. Tags: LL. 29 May, 2022
+2 non empty LL
+No negative digit
+Digits stored in reverse order
+Without using additional LL
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        int carryForward = 0;
+        ListNode temp1 = new ListNode(0);
+        temp1.next = l1;
+        ListNode temp2 = new ListNode(0);
+        temp2.next = l2;
+        //created 2 dummy nodes because we want pointer to last node so that if there is carryForward we can create new node and set last node's next to new node.
+        while(temp1.next!=null && temp2.next!=null){
+            temp1 = temp1.next;
+            temp2 = temp2.next;
+            temp1.val = temp1.val + temp2.val + carryForward;
+            carryForward = temp1.val/10;
+            temp1.val=temp1.val%10;
+        }
+        if(temp1.next==null && temp2.next == null){
+            if(carryForward!=0){
+                temp1.next = new ListNode(carryForward);
+            }
+        }else if(temp2.next==null){
+            while(temp1.next!=null){
+                temp1 = temp1.next;
+                temp1.val = temp1.val + carryForward;
+                carryForward = temp1.val/10;
+                temp1.val=temp1.val%10;
+            }
+            if(carryForward!=0){
+                temp1.next = new ListNode(carryForward);
+            }
+        }else if(temp1.next==null){
+            temp1.next = temp2.next;
+            while(temp2.next!=null){
+                temp2 = temp2.next;
+                temp2.val = temp2.val + carryForward;
+                carryForward = temp2.val/10;
+                temp2.val=temp2.val%10;
+            }
+            if(carryForward!=0){
+                temp2.next = new ListNode(carryForward);
+            }
+        }
+        return l1;
+    }
+}
+Using additional LL/Infact creating it on the go
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        int carryForward = 0; 
+        ListNode dummy = new ListNode(0); 
+        ListNode head = dummy;
+        while(l1!=null && l2!=null){ 
+            int sum = l1.val + l2.val + carryForward; 
+            carryForward = sum/10; 
+            sum=sum%10;
+            ListNode newNode = new ListNode(sum); 
+            head.next = newNode;
+            head = head.next;
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+        while(l2!=null){
+            int sum = l2.val + carryForward; 
+            carryForward = sum/10; 
+            sum=sum%10;
+            ListNode newNode = new ListNode(sum); 
+            head.next = newNode;
+            head = head.next;
+            l2 = l2.next;
+        }
+        while(l1!=null){
+            int sum = l1.val + carryForward; 
+            carryForward = sum/10; 
+            sum=sum%10;
+            ListNode newNode = new ListNode(sum); 
+            head.next = newNode;
+            head = head.next;
+            l1 = l1.next;
+        }
+        if(carryForward!=0){
+            ListNode newNode = new ListNode(carryForward); 
+            head.next = newNode;
+        }
+        return dummy.next;
+    }
+}
+Optimized implementation of solution 2
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        int carryForward = 0; 
+        ListNode dummy = new ListNode(0); 
+        ListNode curr = dummy;
+        while(l1!=null || l2!=null){ 
+            int x = (l1!=null)?l1.val:0;
+            int y = (l2!=null)?l2.val:0;
+            int sum = x + y + carryForward; 
+            carryForward = sum/10; 
+            sum=sum%10;
+            ListNode newNode = new ListNode(sum); 
+            curr.next = newNode;
+            curr = curr.next;
+            if(l1!=null){
+                l1 = l1.next;
+            }
+            if(l2!=null){
+                l2 = l2.next;
+            }
+        }
+        if(carryForward>0){
+            ListNode newNode = new ListNode(carryForward); 
+            curr.next = newNode;
+        }
+        return dummy.next;
+    }
+}
+
+160. Intersection of Two Linked Lists EasyLC Problem. Tags: LL. 30 May, 2022
+Optimized solution. O(m+n) solution. Calculate length of both traversals. Find difference of lengths. Move longer length list pointer by diff steps. Then compare both nodes. If they come equal, we found the intersection point. Else we return null.
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode a = headA;
+        ListNode b = headB;
+        int lenA = 0;
+        int lenB =0;
+        while(a!=null){
+            a=a.next;
+            lenA++;
+        }
+        while(b!=null){
+            b=b.next;
+            lenB++;
+        }
+        a = headA;
+        b = headB;
+        int diff = Math.abs(lenA -lenB);
+        if(lenA>lenB){
+            while(diff>0){
+                a = a.next;
+                diff--;
+            }
+        }else{
+            while(diff>0){
+                b = b.next;
+                diff--;
+            }
+        }
+        while(a!=b){
+            a=a.next;
+            b=b.next;
+        }
+        if(a==b){
+            return a;
+        }
+        return null;
+	}
+}
+Another approach suggested by Nick White.(Best approach. Tell in Interview)
+If a’s path is x+y. b’s path is z+y. Then if a reaches end, set it to headB. If b reaches to end, set it to headA. Till the time they meet distance covered by a= x+y+z. By b = z+y+x. If there is no intersection point, there are 2 cases. If length of both lists is same, then x=z, means they will exit from while loop by covering x+y/z+y distance.
+If length of both lists is not same, then a will cover x+y+z+y distance and b will cover z+y+x+y distance. They both will be null at same time in both null wale cases.
+While(a!=b) condition breaks when either both a and b are null and we return null. Or when a and b meet at intersection point.
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode a = headA;
+        ListNode b = headB;
+        while(a!=b){
+            if(a == null){
+                a = headB;
+            }else{
+                a = a.next;
+            }
+            if(b== null){
+                b = headA;
+            }else{
+                b = b.next;
+            }
+        }
+        return a;
+	}
+}
+Ignore this solution. Do not see it. Brute force. O(mn) solution
+public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode a = headA;
+        ListNode b = headB;
+        while(a!=null){
+            while(b!=null && a!=b){
+                b=b.next;
+            }
+            
+            if(b==null){
+                a = a.next;
+                b = headB;
+            }else{
+                return a;
+            }
+        }
+        return null;
+	}
+203. Remove Linked List Elements Easy.LC Problem. Tags: LL. 30 May, 2022
+Using basic LL traversal
+To delete a node, reach at its 1 prev element.
+Use dummy node to keep track of head. Use prev pointer to keep pointer at 1 node before the node to be deleted. Can use ListNode curr = head in place of just head pointer.
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode prev = dummy;
+        while(head!=null){
+            if(head.val==val){
+                prev.next = head.next;
+            }else{
+                prev = head;
+            }
+            head = head.next;
+        }
+        return dummy.next;
+    }
+}
+
+2095. Delete the Middle Node of a Linked List Medium LC Problem. Tags: LL. 30 May, 2022
+Using Fast and slow pointer 
+We have to reach just before the middle node. Also at end, we have to return original head or modified head.
+So create a dummy node. Its next will give us the new/modified/original head. 
+Keep slow pointer 1 step behind at dummy node. Keep fast pointer same as while finding middle element. In this way, we will reach 1 node before the middle element. Just set slow.next = slow.next.next.
+Constraint given in question, minimum 1 node. So we can do slow.next.next
+class Solution {
+    public ListNode deleteMiddle(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode slow = dummy;
+        ListNode fast = head;
+        while(fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        slow.next = slow.next.next;
+        return dummy.next;
+    }
+}
+
+328. Odd Even Linked List Medium LC Problem. Tags: LL. 30 May, 2022
+Intuitive/Specific implementation(My own implementation. See LC solution)
+class Solution {
+    public ListNode oddEvenList(ListNode head) {
+        if(head==null){
+            return null;
+        }
+        ListNode evenHead = head.next;
+        ListNode curr = head;
+        ListNode temp = head;
+        int size = 1;
+        while(curr.next!=null){
+            size++;
+            curr = temp;
+            temp = curr.next;
+            curr.next = temp.next;
+        }
+        if(size%2==0){
+            curr.next = evenHead;
+        }else{
+            temp.next = evenHead;
+        }
+        return head;
+    }
+}
+LC top voted Solution
+Very concise and readable. Perform 2 operations at a time. I did only 1. That was the reason I had to keep track of size variable.
+Use variable name odd and even. They are more suitable in this case. 
+//even!=null is condition for odd length list example 1->2->3->4->5
+//even.next!=null is condition for even length list example 1->2->3->4
+public class Solution {
+    public ListNode oddEvenList(ListNode head) {
+        if (head == null) return null;
+        ListNode odd = head, even = head.next, evenHead = even;
+        while (even != null && even.next != null) {
+            odd.next = even.next;
+            odd = odd.next;
+            even.next = odd.next;
+            even = even.next;
+        }
+        odd.next = evenHead;
+        return head;
+    }
+}
+1669. Merge In Between Linked Lists Medium LC Problem. Tags: LL. 30 May, 2022
+given in q, a starts from 1. means we cant remove 1st element ie 0th index element. Reach the node before ath index. In this question, a and b are indices and not values. Store that node in curr2. Then reach bth index.(Notice <= b in while loop condition). Set curr2’s next as list2. From curr2 via list2 reach list2’s end. Set list2’s end’s next as curr’s next;
+Since it is guaranteed a and b will be present in the list1, so do not check in while loop’s if curr!=null and curr2!=null
+Using Basic logic
+class Solution {
+    public ListNode mergeInBetween(ListNode list1, int a, int b, ListNode list2) {
+        ListNode curr = list1;
+        int count = 1;   
+        while(count<a){
+            curr = curr.next;
+            count++;
+        }
+        ListNode curr2 = curr;
+        while(count<=b){
+            curr=curr.next;
+            count++;
+        }
+        curr2.next = list2;
+        while(curr2.next!=null){
+            curr2 = curr2.next;
+        }
+        curr2.next = curr.next;
+        return list1;
+    }
+}
+
+24. Swap Nodes in Pairs Medium LC Problem. Tags: LL. 30 May, 2022
+Using Recursion
+If we see carefully, problem repeats itself after every 2 steps. Also I got the feel that solution would be similar to Reverse a LL solution which was top voted LC solution. Go on recursing passing head.next.next in function calls.
+Set a base condition. Do all post processing after recursion calls. 
+class Solution {
+    public ListNode swapPairs(ListNode head) {
+        if(head==null || head.next== null){
+            return head;
+        }
+        ListNode last = swapPairs(head.next.next);
+        ListNode newHead = head.next;
+        newHead.next = head;
+        head.next = last;
+        return newHead;
+    }
+}
+Using Iteration. Top voted LC Solution
+Thing to see. We can set a pointer curr to dummy. We can do changes in all links from dummy to ll via curr pointer. When we do dummy.next, it is not necessary dummy.next will be same which was when we had created dummy. 
+class Solution {
+    public ListNode swapPairs(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode current = dummy;
+        while (current.next != null && current.next.next != null) {
+            ListNode first = current.next;
+            ListNode second = current.next.next;
+            first.next = second.next;
+            second.next = first;
+            current.next = second;
+            current = current.next.next;
+        }
+        return dummy.next;
+    }
+}
+Using Below Question
+public class Solution {
+    public ListNode swapPairs(ListNode head) {
+        return reverseKGroup(head,2);
+    }
+}
+K reverse linked list Medium InterviewBit Problem. Tags: LL. 30 May, 2022
+NOTE : The length of the list is divisible by K Example : Given linked list 1 -> 2 -> 3 -> 4 -> 5 -> 6 and K=2, You should return 2 -> 1 -> 4 -> 3 -> 6 -> 5
+public class Solution {
+    public ListNode reverseList(ListNode head, int k) {
+        if(head == null){
+            return null;
+        }
+        ListNode temp = head;
+        for(int i=1;i<=k;i++){
+            temp = temp.next;
+        }
+        ListNode succ = reverseList(temp, k);
+        return reverse(head, k, succ);
+    }
+    ListNode reverse(ListNode head, int k, ListNode succ){
+        if(k==1){
+            return head;
+        }
+        ListNode newHead = reverse(head.next, k-1, succ);
+        head.next.next = head;
+        head.next = succ;
+        return newHead;
+    }
+}
+25. Reverse Nodes in k-Group Hard LC Problem. Tags: LL. 30 May, 2022
+Same problem as above. Just k is not divisible by length of list. k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
+So if “i” does not reach k, means last group may not be of length k, so just return head of that group. 
+Using Recursion
+public class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if(head == null){
+            return null;
+        }
+        ListNode temp = head;
+        int i=1;
+        while(temp!=null && i<=k){
+            temp = temp.next;
+            i++;
+        }
+        if(i<=k){
+            return head;
+        }
+        ListNode succ = reverseKGroup(temp, k);
+        return reverse(head, k, succ);
+    }
+    ListNode reverse(ListNode head, int k, ListNode succ){
+        if(k==1){
+            return head;
+        }
+        ListNode newHead = reverse(head.next, k-1, succ);
+        head.next.next = head;
+        head.next = succ;
+        return newHead;
+    }
+}
+Using Iteration
+https://www.youtube.com/watch?v=1UOPsfP85V4&list=PLot-Xpze53leU0Ec0VkBhnf4npMRFiNcB&index=10
+
+Reverse Alternate K Nodes Medium InterviewBit Problem. Tags: LL. 31 May, 2022
+Note: Length of list is divisible by k. Similar to 25. Reverse Nodes in k-Group Hard question and 2074. Reverse Nodes in Even Length Groups Medium. 
+Just run k loop from 1 to <k. Because if isReverse is false, means we donot want to reverse that k group, just set that group’s last node’s next to succ obtained from recursive calls. Also just return head. This was the slight change. Notice we passed temp.next in reverseKGroup recursive call.
+Using Recursion
+public class Solution {
+    public ListNode solve(ListNode head, int k) {
+        return reverseKGroup(head, k, true);
+    }
+    ListNode reverseKGroup(ListNode head, int k, boolean isReverse){
+        if(head==null){
+            return null;
+        }
+        ListNode temp = head;
+        for(int i=1;i<k;i++){
+            temp = temp.next;
+        }
+        ListNode succ = reverseKGroup(temp.next, k, !isReverse);
+        if(isReverse==true){
+            return reverse(head, k, succ);
+        }else{
+            temp.next = succ;
+            return head;
+        }
+    }
+    ListNode reverse(ListNode head, int k, ListNode succ){
+        if(k==1){
+            return head;
+        }
+        ListNode newHead = reverse(head.next, k-1, succ);
+        head.next.next = head;
+        head.next = succ;
+        return newHead;
+    }
+}
+
+2074. Reverse Nodes in Even Length Groups Medium LC Problem. Tags: LL. 30 May, 2022
+See the bold portions for greater insight. Same as 25. Reverse Nodes in k-Group Hard. Just extra conditions need to be added as per demand of question
+
+
+Using Recursion
+class Solution {
+    public ListNode reverseEvenLengthGroups(ListNode head) {
+        return reverseEvenLengthGroupsK(head, 1);
+    }
+    public ListNode reverseEvenLengthGroupsK(ListNode head, int k) {
+        if(head == null){
+            return head;
+        }
+        ListNode temp = head;
+        int i=1;
+        while(temp!=null && i<k){
+            temp = temp.next;
+            i++;
+        }
+        //means i=k hone se pehle hi temp null ho gaya. Then agar to last group mein odd elements to return it as it is. Else agar even elements hai to reverse the last group and return newHead.
+        if(temp==null){
+            if((i-1)%2==0){
+                return reverse(head,i-1,null);
+            }else{
+                return head;
+            }
+        }
+        ListNode succ = reverseEvenLengthGroupsK(temp.next, k+1);
+        if(k%2==0){
+            return reverse(head, k, succ);
+        }else{
+            temp.next = succ;
+            return head;
+        }
+    }
+    public ListNode reverse(ListNode head, int k , ListNode succ){
+        if(k==1){
+            return head;
+        }
+        ListNode newHead = reverse(head.next, k-1, succ);
+        head.next.next = head;
+        head.next = succ;
+        return newHead;
+    }
+}
+725. Split Linked List in Parts Medium
+1721. Swapping Nodes in a Linked List Medium. Tags: LL. 12 July, 2022
+Example 1:
+
+Input: head = [1,2,3,4,5], k = 2
+Output: [1,4,3,2,5]
+Example 2:
+Input: head = [7,9,6,6,7,8,3,0,9,5], k = 5
+Output: [7,9,6,6,8,7,3,0,9,5]
+Using Basic Pointer manipulation
+class Solution {
+    public ListNode swapNodes(ListNode head, int k) {
+        ListNode prev1 = new ListNode(-1, head);
+        ListNode slow = prev1, fast = head;
+        int n =0;  //number of nodes in LL
+        for(int i=1;i<=k;i++){
+            fast = fast.next;
+            n++;
+        }
+        while(fast!=null){
+            slow = slow.next;
+            fast=fast.next;
+            n++;
+        }
+        if(n%2==0 && k>n/2){
+            return swapNodes(head, n-k+1);
+        }
+        if(n%2==1 && k>(n+1)/2){
+            return swapNodes(head, n-k+1);
+        }
+        ListNode prev2 = slow;    //finding kth node from end.
+        for(int i=1;i<=k-1;i++){
+            prev1 = prev1.next;
+        }
+        
+        ListNode first = prev1.next;
+        ListNode second = prev2.next;
+        
+        prev1.next = second;
+        prev2.next = first;
+        
+        ListNode temp = second.next;
+        second.next = first.next;
+        first.next = temp;
+        
+//if k=1, head would have changed.
+        if(prev1.val == -1){
+            return second;
+        }
+        return head;
+    }
+}
+Using Basic Pointer manipulation
+class Solution {
+    public ListNode swapNodes(ListNode head, int k) {
+        //if only 1 element, return it. nothing to swap
+        if(head == null || head.next == null){
+            return head;
+        }
+        ListNode prev1 = new ListNode(-1, head);
+        ListNode slow = prev1, fast = head;
+        for(int i=1;i<=k;i++){
+            fast = fast.next;
+        }
+        //if k=n ie number of nodes in LL.
+        if(fast==null){
+            return swapNodes(head, 1);
+        }
+        while(fast!=null){
+            slow = slow.next;
+            fast=fast.next;
+        }
+        ListNode prev2 = slow;
+        //prev2 points to one node before kth node of LL from the end
+        for(int i=1;i<=k-1;i++){
+            prev1 = prev1.next;
+        }
+        //prev1 points to one node before kth node of LL from the start
+        
+        ListNode first = prev1.next;
+        ListNode second = prev2.next;
+        
+        prev1.next = second;
+        prev2.next = first;
+        
+        ListNode temp = second.next;
+        second.next = first.next;
+        first.next = temp;
+        
+        //if k=1 then head would have changed.
+        if(prev1.val == -1){
+            return second;
+        }
+        return head;
+    }
+}
+Reorder List Medium. Tags: LL. 12 July, 2022
+Using Reverse LL and Merge 2 Lists Concepts
+class Solution {
+    public void reorderList(ListNode head) {
+        //base case
+        if(head.next==null){
+            return;
+        }
+        //find mid(slow will point to node before mid)
+        ListNode dummy = new ListNode(0, head);
+        ListNode slow = dummy, fast = head;
+        while(fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode list2 = slow.next;
+        slow.next = null;
+        //reverse nodes from mid till end
+        list2 = reverse(list2);        
+        //then merge 2 LL 
+        mergeTwoLists (head, list2);
+        
+    }
+    ListNode reverse(ListNode head){
+        if(head == null || head.next == null){
+            return head;
+        }
+        ListNode newHead = reverse(head.next);
+        head.next.next = head;
+        head.next = null;
+        return newHead;
+    }
+    void mergeTwoLists(ListNode list1, ListNode list2){
+        ListNode dummy = new ListNode(0, list1);
+        ListNode curr = dummy;
+        int n = 0;
+        while(list1!=null && list2!=null){
+            if(n%2==0){
+                curr.next = list1;
+                list1 = list1.next;
+                curr = curr.next;
+            }else{
+                curr.next = list2;
+                list2 = list2.next;
+                curr = curr.next;
+            }
+            n++;
+        }
+        curr.next = (list1==null)?list2:list1; 
+    }
+}
+
+
+2:27:14 Q-14: Reorder LinkedList 2:38:52 Q-15: Reverse k-Nodes in LinkedList 2:51:00 Q-16: Reverse Alternate k-Nodes in LinkedList
+
+138. Copy List with Random Pointer Medium
+Using Basic pointer manipulation.
+Time complexity = O(n). 2 passes of the LL. Space complexity = O(n).
+class Solution {
+    public Node copyRandomList(Node head) {
+        Map<Node, Node> map = new HashMap<>();
+        Node curr = head;
+        while(curr!=null){
+            Node newNode = new Node(curr.val);
+            // newNode.random = curr.random;
+            // newNode.next = curr.next;
+            //not necessary. we are updating these in next while loop
+            map.put(curr, newNode);
+            curr = curr.next;
+        }
+        curr = head;
+        while(curr!=null){
+            Node newNode = map.get(curr);
+            newNode.next = map.getOrDefault(curr.next, null);
+            newNode.random = map.getOrDefault(curr.random, null);
+            curr = curr.next;
+        }
+        return map.getOrDefault(head, null);
+    }
+}
+1290. Convert Binary Number in a Linked List to Integer Easy LC Problem. Tags: LL. 25 june, 2022
+Using Reverse recursion concept of LL
+class Solution {
+    int ans;
+    int size;
+    public int getDecimalValue(ListNode head) {
+        ans = 0;
+        reverse(head, 0);
+        return ans;
+    }
+    void reverse(ListNode head, int length){
+        if(head==null){
+            size = length;
+            return;
+        }
+        reverse(head.next, length+1);
+        if(head.val==1){
+            ans += head.val*(Math.pow(2,size-length-1));
+        }
+    }
+}
+Using Basic maths
+abc = 2*(2*a+b) + c
+abcd = 2*(2*(2*(a) + b) + c) + d
+class Solution {
+    public int getDecimalValue(ListNode head) {
+        int num = head.val;
+        while (head.next != null) {
+            num = num * 2 + head.next.val;
+            head = head.next;    
+        }
+        return num;
+    }
+}
+706. Design HashMap Easy LC Problem. Tags: LL. 26 june, 2022
+Assumption in the question: Key is integer only
+Using Chaining
+Using Entry[]hashTable array for chaining. Entry Object is like ListNode object.
+Always reach 1 place before target value. Then either remove target wala node. Or get its value. Or put new value there.
+Basically linked list traverse karni padegi kisi tareeke se.
+10000 is not a value for the max capacity of the hash map but rather the value for max number of operations.
+It is said in the description of problem that "At most 104 calls will be made to put, get, and remove." thus we expect no more than 10000 elements in the map.
+I beleive this is the reason and it actually makes sense. In case of size = 10000 and number of operations = 10000 there will be no collisions if numbers we put in the map are distributed uniformly.
+class MyHashMap {
+    Entry[] hashTable;
+    private final int INITIAL_SIZE=1000000;
+    public MyHashMap() {
+        hashTable = new Entry[INITIAL_SIZE];
+    }
+    
+    public void put(int key, int value) {
+        // int hashCode  = Integer.valueOf(key).hashCode()%hashTable.length;
+        int h = Integer.valueOf(key).hashCode();
+        int hashCode  = h^(h>>>3);
+        Entry node = hashTable[hashCode];
+        if(node == null){
+            Entry newNode = new Entry(key, value);
+            hashTable[hashCode] = newNode;
+        }else{
+            Entry prev = node;
+            while(node!=null){
+                if(node.key == key){
+                    node.value = value;
+                    return;
+                }
+                prev = node;
+                node = node.next;
+            }
+            //here prev will be pointing to last node.
+            prev.next = new Entry(key, value);
+        }
+    }
+    
+    public int get(int key) {
+        int h = Integer.valueOf(key).hashCode();
+        int hashCode  = h^(h>>>3);
+        // int hashCode  = Integer.valueOf(key).hashCode()%hashTable.length;
+        //Integer.hashCode(key).primtive type has no hashCode() method.
+        Entry node = hashTable[hashCode];
+        while(node!=null){
+            if(node.key == key){
+                return node.value;
+            }
+            node = node.next;
+        }
+        return -1;
+    }
+    
+    public void remove(int key) {
+        // int hashCode  = Integer.hashCode(key)%hashTable.length;
+        int h = Integer.valueOf(key).hashCode();
+        int hashCode  = h^(h>>>3);
+        Entry node = hashTable[hashCode];
+        Entry prev = null;
+        while(node!=null){
+            if (node.key == key){
+              break; 
+            } 
+            prev = node;
+            node = node.next;
+        }
+        if(prev==null){
+            hashTable[hashCode]=null;
+            return;
+        }
+        if(prev.next!=null){
+            prev.next = prev.next.next;
+        }
+        //if prev.next = null, means key didnot exist in hashTable.
+    }
+}
+class Entry{
+    int key;
+    int value;
+    Entry next;
+    public Entry(int key, int value){
+        this.key = key;
+        this.value = value;
+    }
+}
+Top voted LC Solution
+Collisions are resolved using linked list
+ class MyHashMap{
+        final ListNode[] nodes = new ListNode[10_000];
+        public void put(int key, int value){
+            int i = idx(key);
+            if(nodes[i] == null)
+                nodes[i] = new ListNode(-1, -1);
+            ListNode prev = find(nodes[i], key);
+            if(prev.next == null)
+                prev.next = new ListNode(key, value);
+            else prev.next.val = value;
+        }
+
+
+        public int get(int key){
+            int i = idx(key);
+            if(nodes[i] == null)
+                return -1;
+            ListNode node = find(nodes[i], key);
+            return node.next == null ? -1 : node.next.val;
+        }
+
+
+        public void remove(int key){
+            int i = idx(key);
+            if(nodes[i] != null){
+                ListNode prev = find(nodes[i], key);
+                if(prev.next != null)
+                    prev.next = prev.next.next;
+            }
+        }
+
+
+        int idx(int key){return Integer.hashCode(key) % nodes.length;}
+
+
+        ListNode find(ListNode bucket, int key){
+            ListNode node = bucket, prev = null;
+            for(; node != null && node.key != key; node = node.next)
+                prev = node;
+            return prev;
+        }
+
+
+        class ListNode{
+            int key, val;
+            ListNode next;
+
+
+            ListNode(int key, int val){
+                this.key = key;
+                this.val = val;
+            }
+        }
+    }
+Some of the questions which can be asked to the interviewer before implementing the solution
+For simplicity, are the keys integers only?
+But I believe the point here is to use hashing algorithm (e.g. fmix64) to convert a non-uniform distribution dataset to a uniform distribution data, so that the collision rate can be lowered.
+For collision resolution, can we use chaining?
+Do we have to worry about load factors?
+Can we assume inputs are valid or do we have to validate them?
+Can we assume this fits memory?
+Simple implementation of find Method:
+      ListNode node = bucket, prev = null;
+            while (node != null) {
+                if (node.key == key) return prev;
+                prev = node;
+                node = node.next;
+            }
+            return prev;
+        }
+Generic Implementation(For generic keys)
+Solution by Shrayansh
+package LowLevelDesign.DesignDataStructures;
+
+public class MyHashMap<K,V> {
+
+    private static final int  INITIAL_SIZE = 1<<4; //16
+    private static final int MAXIMUM_CAPACITY = 1 << 30;
+
+    Entry[] hashTable;
+
+
+    MyHashMap(){
+
+        hashTable= new Entry[INITIAL_SIZE];
+    }
+
+    MyHashMap(int capacity) {
+        int tableSize = tableSizeFor(capacity);
+        hashTable= new Entry[tableSize];
+    }
+
+     final int tableSizeFor(int cap) {
+        int n = cap - 1;
+        n |= n >>> 1;
+        n |= n >>> 2;
+        n |= n >>> 4;
+        n |= n >>> 8;
+        n |= n >>> 16;
+        return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
+    }
+
+
+    class Entry<K,V>{
+
+        K key;
+        V value;
+        Entry next;
+
+        Entry(K k, V v) {
+            key = k;
+            value = v;
+        }
+
+
+        public K getKey() {
+            return key;
+        }
+
+        public void setKey(K key) {
+            this.key = key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        public void setValue(V value) {
+            this.value = value;
+        }
+    }
+
+
+    public void put(K key, V value) {
+
+        int hashCode = key.hashCode() % hashTable.length;
+        Entry node = hashTable[hashCode];
+
+        if(node == null) {
+
+            Entry newNode = new Entry(key, value);
+            hashTable[hashCode] = newNode;
+        } else {
+            Entry previousNode = node;
+            while (node != null) {
+
+                if (node.key == key) {
+                    node.value = value;
+                    return;
+                }
+                previousNode = node;
+                node = node.next;
+            }
+            Entry newNode = new Entry(key,value);
+            previousNode.next = newNode;
+        }
+    }
+
+
+    public V get(K key) {
+
+        int hashCode = key.hashCode() % hashTable.length;
+        Entry node = hashTable[hashCode];
+
+        while(node != null) {
+            if(node.key.equals(key)) {
+                return (V)node.value;
+            }
+            node = node.next;
+        }
+        return null;
+    }
+
+    public static void main(String args[]) {
+
+        MyHashMap<Integer, String> map = new MyHashMap<>(7);
+        map.put(1, "hi");
+        map.put(2, "my");
+        map.put(3, "name");
+        map.put(4, "is");
+        map.put(5, "Shrayansh");
+        map.put(6, "how");
+        map.put(7, "are");
+        map.put(8, "you");
+        map.put(9, "friends");
+        map.put(10, "?");
+
+        String value = map.get(8);
+        System.out.println(value);
+
+
+    }
+}
+
+
+
+
+Let me update the answer. From my perspective, rehash and load factor (they work together) are applied to "open addressing" solutions usually. As we all know, the core of hashmap or hashset is how will you handle "hash collision". There are two general approaches -- Open Addressing and Chaining. If you have noticed that, almost all solutions in the discussion board under this problem are "Chaining", why they don't apply load factor and rehash? Because Chaining generally doesn't need this two techniques. All the collisions in Chaining-based solutions are already taken cared by buckets (container, collection data structures,list, linked list, BST, Black Red Tree, whatever you say), you don't' need to rehash (rehash and load factor actually works together) them at all. That is why Chaining is generally easier to implement. However, if you adopt open addressing, rehashing is something you cannot grid rid of. Because open addressing tries to flat the data structure by evenly distributing items (adaptive hashing method by rehash). Open addressing solution is 1 dimension while Chaining solution are at least 2 dimensions (I mean data structure).
+
+
+Using Rehashing and Load Factor
+class MyHashMap 
+{
+    class node
+    {
+        int key , value;
+        node(int k , int v)
+        {
+            key = k;
+            value = v;
+        }
+    }
+    List<node> container[] = null;
+    int count = 0;
+    int capacity = 1000;
+    double loadfactor = 0.75;
+    public MyHashMap() 
+    {
+        container = new LinkedList[capacity];
+    }
+    
+    public void put(int key, int value) 
+    {
+        if(count==(loadfactor*capacity))
+            rehash();
+        
+        int hash = key%capacity;
+        List<node> temp = container[hash];
+        if(temp==null)
+        {
+            container[hash] = new LinkedList<>();
+            container[hash].add(new node(key , value));
+            count++;
+        }
+        else
+        {
+            Iterator<node> itr = temp.iterator();
+            while(itr.hasNext())
+            {
+                node t = itr.next();
+                if(t.key==key)
+                {
+                    itr.remove();
+                    count--;
+                    break;
+                }
+            }
+            container[hash].add(new node(key , value));
+            count++;
+        }
+    }
+    
+    public int get(int key) 
+    {
+        int hash = key%capacity;
+        List<node> temp = container[hash];
+        if(temp!=null)
+        {
+            Iterator<node> itr = temp.iterator();
+            while(itr.hasNext())
+            {
+                node t = itr.next();
+                if(t.key==key)
+                {
+                    return t.value;
+                }
+            }
+        }
+        return -1;
+    }
+    
+    public void remove(int key) 
+    {
+        int hash = key%capacity;
+        List<node> temp = container[hash];
+        if(temp!=null)
+        {
+            Iterator<node> itr = temp.iterator();
+            while(itr.hasNext())
+            {
+                node t = itr.next();
+                if(t.key==key)
+                {
+                    itr.remove();
+                    count--;
+                    return;
+                }
+            }
+        }
+    }
+    public void rehash()
+    {
+        count = 0;
+        capacity = 2*capacity;
+        List<node> old[] = container;
+        container = new LinkedList[capacity];
+        
+        for(int i=0 ; i<old.length ; i++)
+        {
+            if(old[i]!=null)
+            {
+                for(node x : old[i])
+                {
+                    put(x.key , x.value);
+                }
+            }
+        }
+    }
+}
+
+
+
+705. Design HashSet Easy. Tags: LL, Design, HashMap. 5 July, 2022
+Using Chaining. Same method as used in HashMap
+class MyHashSet {
+    public class Entry{
+        int key;
+        boolean present;
+        Entry next;
+        public Entry(int key, boolean present){
+            this.key = key;
+            this.present = present;
+        }
+    }
+    Entry[] hashTable;
+    private static final int INITIAL_SIZE=100001;
+    public MyHashSet() {
+        hashTable = new Entry[INITIAL_SIZE];
+    }
+    
+    public void add(int key) {
+        int hashCode = Integer.hashCode(key)%hashTable.length;
+        Entry node = hashTable[hashCode];
+        if(node == null){
+            hashTable[hashCode] = new Entry(key, true);
+        }else{
+            Entry prev = node;
+            while(node!=null){
+                if(node.key == key){
+                    return;
+                }
+                prev = node;
+                node = node.next;
+            }
+            prev.next = new Entry(key, true);
+        }
+    }
+    
+    public void remove(int key) {
+        int hashCode = Integer.hashCode(key)%hashTable.length;
+        Entry node = hashTable[hashCode];
+        Entry prev = null;
+        while(node!=null){
+            if (node.key == key){
+              break; 
+            } 
+            prev = node;
+            node = node.next;
+        }
+        if(prev==null){
+            hashTable[hashCode]=null;
+            return;
+        }
+        if(prev.next!=null){
+            prev.next = prev.next.next;
+        }
+    }
+    
+    public boolean contains(int key) {
+        int hashCode = Integer.hashCode(key)%hashTable.length;
+        Entry node = hashTable[hashCode];
+        while(node!=null){
+            if(node.key==key){
+                return true;
+            }
+            node = node.next;
+        }
+        return false;
+    }
+}
